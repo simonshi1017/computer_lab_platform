@@ -1,0 +1,89 @@
+/* =========================================================
+   @clab/tokens · 设计令牌
+   默认浅色（产品主视觉），深色通过 [data-theme="dark"] 切换
+   与 DESIGN.md 保持一一对应，改这里即改全站
+   ========================================================= */
+
+:root {
+  color-scheme: light;
+
+  /* ---- 主色 ---- */
+  --accent: #4f6fff;
+  --accent-strong: #3b54c9;
+  --accent-soft: rgba(79, 111, 255, 0.1);
+  --mint: #3de0c0;
+
+  /* ---- 表面 ---- */
+  --bg: #f4f6fb;
+  --surface: #ffffff;
+  --surface-2: #f3f5fa;
+  --surface-3: #e9edf5;
+
+  /* ---- 文字 ---- */
+  --text: #10131a;
+  --text-2: #4a5568;
+  --text-3: #66718a;
+
+  /* ---- 描边 ---- */
+  --border: rgba(16, 19, 26, 0.09);
+  --border-strong: rgba(16, 19, 26, 0.18);
+
+  /* ---- 语义色 ---- */
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --info: #0284c7;
+  --good-ink: #0c8046;
+  --warn-ink: #96570a;
+  --danger-ink: #be2230;
+  --accent-ink: #3b54c9;
+
+  /* ---- 渐变 / 阴影 ---- */
+  --grad-primary: linear-gradient(135deg, #4f6fff 0%, #0d9e84 100%);
+  --shadow-sm: 0 2px 6px rgba(16, 24, 40, 0.06);
+  --shadow-md: 0 8px 24px -12px rgba(16, 24, 40, 0.18), 0 0 0 1px rgba(16, 19, 26, 0.05);
+  --shadow-lg: 0 24px 60px -24px rgba(16, 24, 40, 0.28), 0 0 0 1px rgba(16, 19, 26, 0.06);
+
+  /* ---- 字体 ---- */
+  --font-sans: "Inter", "PingFang SC", "Noto Sans SC", -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* ---- 动效 ---- */
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur: 180ms;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --accent: #6c8cff;
+  --accent-strong: #4f6fff;
+  --accent-soft: rgba(108, 140, 255, 0.14);
+  --mint: #3de0c0;
+
+  --bg: #07090d;
+  --surface: #0e1219;
+  --surface-2: #151a23;
+  --surface-3: #1d2430;
+
+  --text: #e9edf6;
+  --text-2: #9ba7bc;
+  --text-3: #77839a;
+
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+
+  --success: #3ddc84;
+  --warning: #ffb454;
+  --danger: #ff5c6c;
+  --info: #5bc8ff;
+  --good-ink: #6fe9a5;
+  --warn-ink: #ffc879;
+  --danger-ink: #ff8a95;
+  --accent-ink: #a9bbff;
+
+  --grad-primary: linear-gradient(135deg, #6c8cff 0%, #3de0c0 100%);
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --shadow-lg: 0 24px 60px -20px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}

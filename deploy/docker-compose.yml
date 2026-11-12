@@ -1,0 +1,122 @@
+name: clab
+
+# 三个容器：web（nginx + 静态站）/ api（FastAPI）/ db（PostgreSQL）。
+# 没有 Redis / MinIO：M6 的量级用不上，加了只是多两个要监控的东西。
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: clab-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-clab}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-clab}
+      POSTGRES_DB: ${POSTGRES_DB:-clab}
+      # 中文排序与大小写处理依赖 locale，不设会拿到默认 C locale
+      LANG: C.UTF-8
+    volumes:
+      - clab-db:/var/lib/postgresql/data
+    healthcheck:
+      # api 必须等数据库真的能接受连接，只等容器起来会撞上 "starting up"
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-clab} -d ${POSTGRES_DB:-clab}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  api:
+    build:
+      context: ..
+      dockerfile: apps/api/Dockerfile
+      args:
+        PIP_INDEX_URL: ${PIP_INDEX_URL:-https://pypi.org/simple}
+    # 镜像名可覆盖：CI 里推的是 $CI_REGISTRY_IMAGE/api:latest
+    image: ${API_IMAGE:-clab/api:1.0.0}
+    container_name: clab-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # 默认 dev：内网还没配 SMTP/企微时，dev 是唯一能登录的方式（验证码直接回传）。
+      # 配好凭据后改成 prod —— 那会同时关掉 dev 一键登录。
+      APP_ENV: ${APP_ENV:-dev}
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-clab}:${POSTGRES_PASSWORD:-clab}@db:5432/${POSTGRES_DB:-clab}
+      # 表结构由 entrypoint 里的 alembic 管理；这里关掉 create_all 兜底，
+      # 让「迁移没跑」变成显式失败而不是悄悄建出半套表
+      AUTO_MIGRATE: "false"
+      # 生产必须改：换掉它等于让所有已签发的 token 立即失效
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-me-before-production}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      # 占位值仅保证容器能起来；真实口令请写 deploy/.env（已被 gitignore）
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-CHANGE_ME_IN_DEPLOY_ENV}
+      ADMIN_SESSION_SECRET: ${ADMIN_SESSION_SECRET:-dev-session-secret-change-me}
+      # 企业微信（不填则接口返回 501，前端隐藏扫码入口）
+      WECOM_CORP_ID: ${WECOM_CORP_ID:-}
+      WECOM_AGENT_ID: ${WECOM_AGENT_ID:-}
+      WECOM_SECRET: ${WECOM_SECRET:-}
+      WECOM_REDIRECT_URI: ${WECOM_REDIRECT_URI:-}
+      # SMTP（不填则验证码走开发降级：仅 dev 环境回传）
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-465}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-}
+      # 反向代理后面，生成的分享链接要用对外地址
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:8080}
+      CORS_ORIGINS: ${CORS_ORIGINS:-}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      # ---- M7 数据自动化 ----
+      # 价格超过 N 天没更新就标黄并每日告警
+      PRICE_STALE_DAYS: ${PRICE_STALE_DAYS:-45}
+      SCHEDULER_ENABLED: ${SCHEDULER_ENABLED:-true}
+      # 五段式 cron，默认每天 09:00（Asia/Shanghai）
+      PRICE_CHECK_CRON: ${PRICE_CHECK_CRON:-0 9 * * *}
+      # 企业微信群机器人 webhook；留空则只写日志
+      ALERT_WEBHOOK: ${ALERT_WEBHOOK:-}
+    healthcheck:
+      test:
+        ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=3).status==200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  web:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: ${WEB_IMAGE:-clab/web:1.0.0}
+    container_name: clab-web
+    restart: unless-stopped
+    # 等 api 健康再起：否则 nginx 首次解析 api 主机名会失败退出
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "${CLAB_PORT:-8080}:80"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  clab-db:
+    name: clab-db

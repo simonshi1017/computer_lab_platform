@@ -1,0 +1,1435 @@
+{
+  "models": [
+    {
+      "id": "qwen25-7b",
+      "name": "Qwen2.5-7B-Instruct",
+      "cn": "通义千问 2.5 · 7B",
+      "vendor": "阿里云",
+      "country": "中国",
+      "arch": "dense",
+      "archLabel": "Dense 稠密",
+      "paramsB": 7.6,
+      "layers": 28,
+      "hiddenDim": 3584,
+      "ctxMax": 32768,
+      "license": "Apache-2.0",
+      "releasedAt": "2024-09",
+      "languages": [
+        "中文",
+        "英文"
+      ],
+      "tag": "最稳入门",
+      "color": "#8B7CF6",
+      "metaphor": "像个刚毕业的助理：日常问答、改改文案、写点脚本都没问题，但别指望它独立做复杂决策。",
+      "real": "INT4 量化后权重约 3.5GB，8K 上下文总共约 5.9GB。在 RTX 3060 12G 上约 48 tokens/s，读起来比人说话还快一点。",
+      "mistake": "很多人以为 7B 只能当玩具。实际上 INT4 之后它在 3060 上跑得很稳，做个人知识库问答、日常写作完全够用——真正的瓶颈往往是你没给它接上资料，而不是它不够聪明。",
+      "ollamaTag": "qwen2.5:7b-instruct-q4_K_M",
+      "scenes": [
+        "本地知识库问答",
+        "中文写作润色",
+        "轻量代码补全",
+        "个人助理"
+      ],
+      "strengths": [
+        "中文语感在同尺寸里排前列，写得不像翻译腔",
+        "INT4 后 5.9GB，12GB 显卡就能舒服跑，是零基础第一台机器的默认选择",
+        "Apache-2.0 可商用，量化版本齐全，Ollama 一条命令拉下来"
+      ],
+      "weaknesses": [
+        "多步推理容易跳步，算数学题会一本正经地算错",
+        "上下文写 32K，但真正用满 32K 时速度会掉两成以上"
+      ],
+      "source": "https://huggingface.co/Qwen/Qwen2.5-7B-Instruct",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "qwen25-14b",
+      "name": "Qwen2.5-14B-Instruct",
+      "cn": "通义千问 2.5 · 14B",
+      "vendor": "阿里云",
+      "country": "中国",
+      "arch": "dense",
+      "archLabel": "Dense 稠密",
+      "paramsB": 14.7,
+      "layers": 48,
+      "hiddenDim": 5120,
+      "ctxMax": 32768,
+      "license": "Apache-2.0",
+      "releasedAt": "2024-09",
+      "languages": [
+        "中文",
+        "英文"
+      ],
+      "tag": "均衡首选",
+      "color": "#6C8CFF",
+      "metaphor": "像个有三年经验的工程师：能独立写完一个模块，遇到问题会先想清楚再动手，但还不足以带团队。",
+      "real": "INT4 权重约 6.8GB，8K 上下文合计约 11.9GB；32K 上下文会涨到约 20GB。RTX 4070 Ti SUPER 上约 46 tokens/s。",
+      "mistake": "「14B 比 7B 大两倍，所以显存也要两倍」——权重确实接近两倍，但 KV Cache 只跟层数和上下文有关，所以总显存并不是简单翻倍。真正翻倍的是长上下文场景，这也是很多人估错的地方。",
+      "ollamaTag": "qwen2.5:14b-instruct-q4_K_M",
+      "scenes": [
+        "代码生成与重构",
+        "结构化信息抽取",
+        "客服问答",
+        "报告撰写"
+      ],
+      "strengths": [
+        "中文与代码的平衡点，写业务代码很少出现低级语法错误",
+        "INT4 后 11.9GB，16GB 显卡刚好放得下且留有余量，是性价比拐点",
+        "指令跟随稳定，适合做需要固定输出格式的抽取任务"
+      ],
+      "weaknesses": [
+        "上下文超过 16K 后显存吃紧，32K 需要 24GB 级别显卡",
+        "知识截止较早，问新框架容易编造 API"
+      ],
+      "source": "https://huggingface.co/Qwen/Qwen2.5-14B-Instruct",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "qwen25-32b",
+      "name": "Qwen2.5-32B-Instruct",
+      "cn": "通义千问 2.5 · 32B",
+      "vendor": "阿里云",
+      "country": "中国",
+      "arch": "dense",
+      "archLabel": "Dense 稠密",
+      "paramsB": 32.5,
+      "layers": 64,
+      "hiddenDim": 5120,
+      "ctxMax": 32768,
+      "license": "Apache-2.0",
+      "releasedAt": "2024-09",
+      "languages": [
+        "中文",
+        "英文",
+        "多语言"
+      ],
+      "tag": "性价比拐点",
+      "color": "#4F6FFF",
+      "metaphor": "像个资深专家：能处理需要多步思考的活儿，代价是办公桌要大得多。",
+      "real": "INT4 权重约 15.1GB，8K 上下文合计约 23.9GB；32K 上下文约 34.8GB。单张 24G 卡跑 INT4 8K 只剩 0.1GB 余量，非常临界。",
+      "mistake": "「32B 用一张 4090 就能跑」——权重确实塞得进 24G，但加上 KV Cache 和安全余量就顶到天花板了。能加载不等于能用，长对话一开就 OOM。",
+      "ollamaTag": "qwen2.5:32b-instruct-q4_K_M",
+      "scenes": [
+        "复杂推理",
+        "长文档理解",
+        "专业领域问答",
+        "Agent 任务规划"
+      ],
+      "strengths": [
+        "中文表现接近 70B 级别，但显存只要一半",
+        "INT4 后 24GB 卡临界可跑，双 3090 就很从容",
+        "适合做需要「想清楚再回答」的任务"
+      ],
+      "weaknesses": [
+        "单卡 24G 跑 8K 以上上下文基本没有余量",
+        "速度比 14B 慢一档，双 3090 约 46 tokens/s"
+      ],
+      "source": "https://huggingface.co/Qwen/Qwen2.5-32B-Instruct",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "qwen25-72b",
+      "name": "Qwen2.5-72B-Instruct",
+      "cn": "通义千问 2.5 · 72B",
+      "vendor": "阿里云",
+      "country": "中国",
+      "arch": "dense",
+      "archLabel": "Dense 稠密",
+      "paramsB": 72.7,
+      "layers": 80,
+      "hiddenDim": 8192,
+      "ctxMax": 131072,
+      "license": "Qwen License",
+      "releasedAt": "2024-09",
+      "languages": [
+        "中文",
+        "英文",
+        "多语言"
+      ],
+      "tag": "开源旗舰",
+      "color": "#3D7BFF",
+      "metaphor": "像一位全职顾问：什么问题都能接，但你要给它一间独立办公室和不少电费。",
+      "real": "INT4 权重约 33.9GB，8K 上下文合计约 52.7GB；128K 上下文会飙到 161GB。至少三张 3090，或一张 64GB 以上的卡。",
+      "mistake": "只看权重的 34GB 就买两张 24G 卡——合计 48G 看着够，但算上 KV Cache、框架开销和 20% 余量会到 52.7GB，实际装不下。估显存必须算全。",
+      "ollamaTag": "qwen2.5:72b-instruct-q4_K_M",
+      "scenes": [
+        "高质量内容生产",
+        "复杂 Agent 规划",
+        "多语言翻译",
+        "长文档分析"
+      ],
+      "strengths": [
+        "开源中文能力第一梯队，长文写作逻辑完整",
+        "原生 128K 上下文，能整本读文档",
+        "可商用（需遵守 Qwen License 条款）"
+      ],
+      "weaknesses": [
+        "INT4 也要 40GB 权重，起步就是双卡或专业卡",
+        "128K 上下文的 KV Cache 极其吃显存，实际很难跑满"
+      ],
+      "source": "https://huggingface.co/Qwen/Qwen2.5-72B-Instruct",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "llama31-8b",
+      "name": "Llama-3.1-8B-Instruct",
+      "cn": "Llama 3.1 · 8B",
+      "vendor": "Meta",
+      "country": "美国",
+      "arch": "dense",
+      "archLabel": "Dense 稠密",
+      "paramsB": 8,
+      "layers": 32,
+      "hiddenDim": 4096,
+      "ctxMax": 131072,
+      "license": "Llama 3.1 Community",
+      "releasedAt": "2024-07",
+      "languages": [
+        "英文",
+        "多语言"
+      ],
+      "tag": "生态最全",
+      "color": "#0EA5E9",
+      "metaphor": "像个英语母语的实习生：英文活儿干得漂亮，中文就得连猜带蒙。",
+      "real": "INT4 权重约 3.7GB，8K 上下文合计约 6.4GB。RTX 3060 上约 48 tokens/s。",
+      "mistake": "「上下文写 128K 就等于能用 128K」——8B 模型在超长上下文里的实际检索能力会明显衰减，很多信息放在中段就找不到了（俗称 lost in the middle）。",
+      "ollamaTag": "llama3.1:8b-instruct-q4_K_M",
+      "scenes": [
+        "英文对话",
+        "RAG 检索问答",
+        "轻量 Agent",
+        "教学演示"
+      ],
+      "strengths": [
+        "英文生态最好，几乎所有工具链第一时间支持",
+        "原生 128K 上下文，做长文档检索有优势",
+        "量化版本最多，几乎任何设备都能找到现成权重"
+      ],
+      "weaknesses": [
+        "中文明显弱于同尺寸 Qwen，写中文公文会很别扭",
+        "Llama 社区协议有商用限制条款，公司用要先读一遍"
+      ],
+      "source": "https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "llama33-70b",
+      "name": "Llama-3.3-70B-Instruct",
+      "cn": "Llama 3.3 · 70B",
+      "vendor": "Meta",
+      "country": "美国",
+      "arch": "dense",
+      "archLabel": "Dense 稠密",
+      "paramsB": 70.6,
+      "layers": 80,
+      "hiddenDim": 8192,
+      "ctxMax": 131072,
+      "license": "Llama 3.3 Community",
+      "releasedAt": "2024-12",
+      "languages": [
+        "英文",
+        "多语言"
+      ],
+      "tag": "英文最强",
+      "color": "#0284C7",
+      "metaphor": "像个英文母语的资深顾问：英文写作和推理很稳，中文得靠翻译绕一圈。",
+      "real": "INT4 权重约 32.9GB，8K 上下文合计约 51.4GB；32K 约 73GB。双 3090 只有 48GB，装不下 8K，需要三卡或单卡 64GB 以上。",
+      "mistake": "拿 70B 和 72B 直接对比参数——两者尺寸接近，但中文能力差距明显。选模型要看语种，不是只看参数量。",
+      "ollamaTag": "llama3.3:70b-instruct-q4_K_M",
+      "scenes": [
+        "英文高质量生成",
+        "复杂推理",
+        "代码审查",
+        "多语言任务"
+      ],
+      "strengths": [
+        "70B 级别英文最强开源之一，写作质量接近闭源商用模型",
+        "推理链条完整，适合做代码审查和方案评估",
+        "128K 上下文"
+      ],
+      "weaknesses": [
+        "中文不如同尺寸 Qwen，中英混排会串味",
+        "部署门槛高：双卡起步，机箱、电源、散热都要重新规划"
+      ],
+      "source": "https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "ds-r1-distill-32b",
+      "name": "DeepSeek-R1-Distill-Qwen-32B",
+      "cn": "DeepSeek R1 蒸馏 · 32B",
+      "vendor": "深度求索",
+      "country": "中国",
+      "arch": "dense",
+      "archLabel": "Dense 稠密（R1 蒸馏）",
+      "paramsB": 32.5,
+      "layers": 64,
+      "hiddenDim": 5120,
+      "ctxMax": 131072,
+      "license": "MIT",
+      "releasedAt": "2025-01",
+      "languages": [
+        "中文",
+        "英文"
+      ],
+      "tag": "会思考",
+      "color": "#F59E0B",
+      "metaphor": "像个爱打草稿的学生：答案往往更准，但你要等它把草稿写完。",
+      "real": "INT4 权重约 15.1GB，8K 上下文合计约 23.9GB。双 3090 上约 48 tokens/s，但实际体感慢一半——因为它会先输出几百到几千个思考 token。",
+      "mistake": "用普通模型的速度预期去衡量推理模型。它答一道数学题可能先生成 2000 个思考 token，再给 200 字答案，总耗时是普通模型的 3–5 倍，token 成本同理。",
+      "ollamaTag": "deepseek-r1:32b",
+      "scenes": [
+        "数学解题",
+        "逻辑推理",
+        "代码调试",
+        "复杂问答"
+      ],
+      "strengths": [
+        "推理链质量高，32B 就能处理需要多步验证的问题",
+        "MIT 协议，商用限制最少",
+        "中文推理表现好，适合做解题类应用"
+      ],
+      "weaknesses": [
+        "思考过程很长，token 消耗是普通模型 3–5 倍，速度和成本都要重新估",
+        "不适合闲聊，简单问题也会想很久"
+      ],
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "glm4-9b",
+      "name": "GLM-4-9B-Chat",
+      "cn": "智谱 GLM-4 · 9B",
+      "vendor": "智谱 AI",
+      "country": "中国",
+      "arch": "dense",
+      "archLabel": "Dense 稠密",
+      "paramsB": 9.4,
+      "layers": 40,
+      "hiddenDim": 4096,
+      "ctxMax": 131072,
+      "license": "GLM-4 License",
+      "releasedAt": "2024-06",
+      "languages": [
+        "中文",
+        "英文"
+      ],
+      "tag": "工具调用稳",
+      "color": "#22C55E",
+      "metaphor": "像个特别听话的执行助理：你说什么它做什么，很少自作主张。",
+      "real": "INT4 权重约 4.4GB，8K 上下文合计约 7.7GB。RTX 4070 Ti SUPER 上约 76 tokens/s。",
+      "mistake": "「参数越大工具调用越准」——工具调用更看指令微调质量。9B 的 GLM-4 在函数调用上比不少 14B 模型更稳，因为它专门练过。",
+      "ollamaTag": "glm4:9b",
+      "scenes": [
+        "中文问答",
+        "函数调用 / Agent",
+        "长文档摘要",
+        "企业知识库"
+      ],
+      "strengths": [
+        "函数调用和结构化输出很稳，适合做 Agent 的工具层",
+        "9B 尺寸配 128K 上下文，长文档场景性价比高",
+        "中文指令跟随准确，不爱自由发挥"
+      ],
+      "weaknesses": [
+        "创意写作偏保守，写营销文案会显得干",
+        "GLM-4 协议对商用有额外条款，需确认"
+      ],
+      "source": "https://huggingface.co/THUDM/glm-4-9b-chat",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "mistral-7b",
+      "name": "Mistral-7B-Instruct-v0.3",
+      "cn": "Mistral 7B · v0.3",
+      "vendor": "Mistral AI",
+      "country": "法国",
+      "arch": "dense",
+      "archLabel": "Dense 稠密",
+      "paramsB": 7.2,
+      "layers": 32,
+      "hiddenDim": 4096,
+      "ctxMax": 32768,
+      "license": "Apache-2.0",
+      "releasedAt": "2024-05",
+      "languages": [
+        "英文",
+        "多语言"
+      ],
+      "tag": "生态成熟",
+      "color": "#F97316",
+      "metaphor": "像辆老款但皮实的小车：配置不高，但零件到处都有，坏了随便修。",
+      "real": "INT4 权重约 3.4GB，8K 上下文合计约 5.9GB。RTX 3060 上约 51 tokens/s。",
+      "mistake": "「老模型就没用了」——7B 这一档的推理成本和响应速度是 32B 完全给不了的，做高频简单任务时它反而更划算。",
+      "ollamaTag": "mistral:7b-instruct-v0.3-q4_K_M",
+      "scenes": [
+        "英文轻量任务",
+        "边缘设备部署",
+        "教学演示",
+        "批量文本处理"
+      ],
+      "strengths": [
+        "生态成熟，GGUF / AWQ 量化版本随处可得",
+        "7B 尺寸速度极快，适合高频简单任务",
+        "Apache-2.0，商用无额外限制"
+      ],
+      "weaknesses": [
+        "中文能力弱，基本不要指望",
+        "知识截止早，v0.3 之后没再更新"
+      ],
+      "source": "https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3",
+      "updatedAt": "2026-11"
+    }
+  ],
+  "gpus": [
+    {
+      "id": "rtx3060",
+      "name": "RTX 3060 12G",
+      "vendor": "NVIDIA",
+      "arch": "Ampere",
+      "gpuClass": "消费级",
+      "vramGb": 12,
+      "memoryType": "GDDR6",
+      "busWidth": 192,
+      "bandwidth": 360,
+      "tdpW": 170,
+      "powerConnector": "8pin × 1",
+      "lengthMm": 242,
+      "priceCny": 2000,
+      "priceNote": "全新价，二手约 ¥1,300",
+      "condition": "new",
+      "scene": "零基础第一台机器、7B INT4、轻量知识库",
+      "note": "12GB 显存是入门线，跑 7B INT4 刚好。只有 360GB/s 带宽，速度别期待太高。",
+      "source": "https://www.nvidia.cn/geforce/graphics-cards/",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "rtx4060ti16",
+      "name": "RTX 4060 Ti 16G",
+      "vendor": "NVIDIA",
+      "arch": "Ada Lovelace",
+      "gpuClass": "消费级",
+      "vramGb": 16,
+      "memoryType": "GDDR6",
+      "busWidth": 128,
+      "bandwidth": 288,
+      "tdpW": 165,
+      "powerConnector": "8pin × 1",
+      "lengthMm": 245,
+      "priceCny": 3200,
+      "priceNote": "全新价，与 4070 Ti SUPER 价差约一倍",
+      "condition": "new",
+      "scene": "14B INT4 8K、静音小机箱、长期开机",
+      "note": "显存 16G 但位宽只有 128bit，带宽比 3060 还低。显存够但速度慢，是典型的「装得下、跑不快」。",
+      "source": "https://www.nvidia.cn/geforce/graphics-cards/",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "rtx4070tis",
+      "name": "RTX 4070 Ti SUPER 16G",
+      "vendor": "NVIDIA",
+      "arch": "Ada Lovelace",
+      "gpuClass": "消费级",
+      "vramGb": 16,
+      "memoryType": "GDDR6X",
+      "busWidth": 256,
+      "bandwidth": 672,
+      "tdpW": 285,
+      "powerConnector": "16pin × 1",
+      "lengthMm": 305,
+      "priceCny": 6500,
+      "priceNote": "全新价，2026 年已逐步被 5070 系列替代",
+      "condition": "new",
+      "scene": "14B INT4 全上下文、单卡均衡方案、2K 游戏兼顾",
+      "note": "16G 显存 + 672GB/s 带宽，是单卡跑 14B 的甜点。功耗 285W，850W 电源足够。",
+      "source": "https://www.nvidia.cn/geforce/graphics-cards/",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "rtx4080s",
+      "name": "RTX 4080 SUPER 16G",
+      "vendor": "NVIDIA",
+      "arch": "Ada Lovelace",
+      "gpuClass": "消费级",
+      "vramGb": 16,
+      "memoryType": "GDDR6X",
+      "busWidth": 256,
+      "bandwidth": 736,
+      "tdpW": 320,
+      "powerConnector": "16pin × 1",
+      "lengthMm": 310,
+      "priceCny": 8000,
+      "priceNote": "全新价，库存逐步减少",
+      "condition": "new",
+      "scene": "14B 高速推理、需要低延迟的本地应用",
+      "note": "比 4070 Ti SUPER 快约 9%，但显存一样是 16G。跑 14B 到头了，想上 32B 必须换卡。",
+      "source": "https://www.nvidia.cn/geforce/graphics-cards/",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "rtx3090",
+      "name": "RTX 3090 24G",
+      "vendor": "NVIDIA",
+      "arch": "Ampere",
+      "gpuClass": "消费级",
+      "vramGb": 24,
+      "memoryType": "GDDR6X",
+      "busWidth": 384,
+      "bandwidth": 936,
+      "tdpW": 350,
+      "powerConnector": "8pin × 2",
+      "lengthMm": 313,
+      "priceCny": 7000,
+      "priceNote": "二手行情，无全新货源，成色差异大",
+      "condition": "used",
+      "scene": "32B INT4、双卡跑 70B、性价比多卡方案",
+      "note": "二手市场的多卡之王：24G 显存 + 936GB/s，双卡就能跑 70B INT4。缺点是矿卡风险、功耗高、噪音大。",
+      "source": "https://www.nvidia.cn/geforce/graphics-cards/",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "rtx4090",
+      "name": "RTX 4090 24G",
+      "vendor": "NVIDIA",
+      "arch": "Ada Lovelace",
+      "gpuClass": "消费级",
+      "vramGb": 24,
+      "memoryType": "GDDR6X",
+      "busWidth": 384,
+      "bandwidth": 1008,
+      "tdpW": 450,
+      "powerConnector": "16pin × 1",
+      "lengthMm": 336,
+      "priceCny": 15000,
+      "priceNote": "全新价，受出口管制影响波动较大",
+      "condition": "new",
+      "scene": "32B INT4 8K、单卡最强消费级推理",
+      "note": "单卡消费级天花板：1008GB/s 带宽跑 7B 能到 135 tokens/s。但 24G 显存装不下 32B 的长上下文。",
+      "source": "https://www.nvidia.cn/geforce/graphics-cards/",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "rtx5090",
+      "name": "RTX 5090 32G",
+      "vendor": "NVIDIA",
+      "arch": "Blackwell",
+      "gpuClass": "消费级",
+      "vramGb": 32,
+      "memoryType": "GDDR7",
+      "busWidth": 512,
+      "bandwidth": 1792,
+      "tdpW": 575,
+      "powerConnector": "16pin × 1",
+      "lengthMm": 304,
+      "priceCny": 20000,
+      "priceNote": "全新价，国内货源紧张，溢价明显",
+      "condition": "new",
+      "scene": "32B INT4 全上下文、单卡大显存方案",
+      "note": "32G 显存 + 1792GB/s，单卡就能吃下 32B INT4 的 32K 上下文。575W 功耗需要 1000W 以上电源。",
+      "source": "https://www.nvidia.cn/geforce/graphics-cards/",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "a6000",
+      "name": "RTX A6000 48G",
+      "vendor": "NVIDIA",
+      "arch": "Ampere",
+      "gpuClass": "专业卡",
+      "vramGb": 48,
+      "memoryType": "GDDR6 ECC",
+      "busWidth": 384,
+      "bandwidth": 768,
+      "tdpW": 300,
+      "powerConnector": "8pin × 1",
+      "lengthMm": 267,
+      "priceCny": 30000,
+      "priceNote": "二手行情约 ¥22,000，全新已停产",
+      "condition": "used",
+      "scene": "32B 全上下文、需要 ECC 的稳定长跑",
+      "note": "48G 显存跑 32B 很从容，但 70B INT4 撑不住 8K 上下文（需 51.4G），只能压到 4K 左右。带宽 768GB/s，速度不如 4090。",
+      "source": "https://www.nvidia.cn/geforce/graphics-cards/",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "rtx6000ada",
+      "name": "RTX 6000 Ada 48G",
+      "vendor": "NVIDIA",
+      "arch": "Ada Lovelace",
+      "gpuClass": "专业卡",
+      "vramGb": 48,
+      "memoryType": "GDDR6 ECC",
+      "busWidth": 384,
+      "bandwidth": 960,
+      "tdpW": 300,
+      "powerConnector": "16pin × 1",
+      "lengthMm": 267,
+      "priceCny": 55000,
+      "priceNote": "全新价，渠道报价浮动大",
+      "condition": "channel",
+      "scene": "32B 高速单卡、专业工作站",
+      "note": "A6000 的换代：同样 48G 但带宽提升 25%。跑 70B INT4 约 15 tokens/s，但 8K 上下文要 51.4G，48G 装不下。",
+      "source": "https://www.nvidia.cn/geforce/graphics-cards/",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "l40s",
+      "name": "L40S 48G",
+      "vendor": "NVIDIA",
+      "arch": "Ada Lovelace",
+      "gpuClass": "专业卡",
+      "vramGb": 48,
+      "memoryType": "GDDR6 ECC",
+      "busWidth": 384,
+      "bandwidth": 864,
+      "tdpW": 350,
+      "powerConnector": "16pin × 1",
+      "lengthMm": 267,
+      "priceCny": 70000,
+      "priceNote": "全新价，主要走服务器整机渠道",
+      "condition": "channel",
+      "scene": "多卡推理服务器、企业部署",
+      "note": "为推理优化的专业卡，支持 vGPU 切分。单卡价格能买四张 4090，个人用户不划算。",
+      "source": "https://www.nvidia.cn/geforce/graphics-cards/",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "a100-80",
+      "name": "A100 80G SXM",
+      "vendor": "NVIDIA",
+      "arch": "Ampere",
+      "gpuClass": "数据中心",
+      "vramGb": 80,
+      "memoryType": "HBM2e",
+      "busWidth": 5120,
+      "bandwidth": 2039,
+      "tdpW": 400,
+      "powerConnector": "SXM4 板载",
+      "lengthMm": 0,
+      "priceCny": 120000,
+      "priceNote": "整机/模组报价，非零售卡",
+      "condition": "channel",
+      "scene": "70B FP16、多用户并发推理",
+      "note": "HBM 带宽约为消费级旗舰的两倍，但必须配 SXM 服务器主板，无法单独插消费级平台。",
+      "source": "https://www.nvidia.com/en-us/data-center/a100/",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "h100-80",
+      "name": "H100 80G SXM",
+      "vendor": "NVIDIA",
+      "arch": "Hopper",
+      "gpuClass": "数据中心",
+      "vramGb": 80,
+      "memoryType": "HBM3",
+      "busWidth": 5120,
+      "bandwidth": 3350,
+      "tdpW": 700,
+      "powerConnector": "SXM5 板载",
+      "lengthMm": 0,
+      "priceCny": 250000,
+      "priceNote": "单卡模组报价，对华出口受限",
+      "condition": "channel",
+      "scene": "大模型训练、高并发推理集群",
+      "note": "3350GB/s 带宽，跑 70B INT4 8K 约 50 tokens/s（是 4090 的两倍多）。但这是机房设备，不是桌面显卡。",
+      "source": "https://www.nvidia.com/en-us/data-center/h100/",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "h200-141",
+      "name": "H200 141G",
+      "vendor": "NVIDIA",
+      "arch": "Hopper",
+      "gpuClass": "数据中心",
+      "vramGb": 141,
+      "memoryType": "HBM3e",
+      "busWidth": 6144,
+      "bandwidth": 4800,
+      "tdpW": 700,
+      "powerConnector": "SXM5 板载",
+      "lengthMm": 0,
+      "priceCny": 350000,
+      "priceNote": "单卡模组报价，需整机采购",
+      "condition": "channel",
+      "scene": "超大模型单机推理、长上下文服务",
+      "note": "141G 显存跑 70B INT4 可以撑到 64K 上下文；70B FP16 要 184G，单卡仍然不够。列在这里是为了说明显存上限，不是给个人推荐的。",
+      "source": "https://www.nvidia.com/en-us/data-center/h200/",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "rx7900xtx",
+      "name": "Radeon RX 7900 XTX 24G",
+      "vendor": "AMD",
+      "arch": "RDNA 3",
+      "gpuClass": "消费级",
+      "vramGb": 24,
+      "memoryType": "GDDR6",
+      "busWidth": 384,
+      "bandwidth": 960,
+      "tdpW": 355,
+      "powerConnector": "8pin × 2",
+      "lengthMm": 287,
+      "priceCny": 7000,
+      "priceNote": "全新价，同级 NVIDIA 卡约贵一倍",
+      "condition": "new",
+      "scene": "32B INT4、预算有限的大显存方案",
+      "note": "纸面规格对标 3090 且更便宜，但 ROCm 生态弱：部分模型要等适配，量化工具链也不如 CUDA 全。新手更建议 NVIDIA。",
+      "source": "https://www.amd.com/en/products/graphics/",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "mi210",
+      "name": "Instinct MI210 64G",
+      "vendor": "AMD",
+      "arch": "CDNA 2",
+      "gpuClass": "数据中心",
+      "vramGb": 64,
+      "memoryType": "HBM2e",
+      "busWidth": 4096,
+      "bandwidth": 1638,
+      "tdpW": 300,
+      "powerConnector": "8pin × 2",
+      "lengthMm": 267,
+      "priceCny": 60000,
+      "priceNote": "二手/渠道报价，供货不稳定",
+      "condition": "used",
+      "scene": "70B INT4 单卡、ROCm 技术验证",
+      "note": "64G HBM 单卡跑 70B INT4 8K（需 51.4G）有余量，但 ROCm 在国内的资料和社区支持远不如 CUDA。",
+      "source": "https://www.amd.com/en/products/graphics/",
+      "updatedAt": "2026-11"
+    },
+    {
+      "id": "mi300x",
+      "name": "Instinct MI300X 192G",
+      "vendor": "AMD",
+      "arch": "CDNA 3",
+      "gpuClass": "数据中心",
+      "vramGb": 192,
+      "memoryType": "HBM3",
+      "busWidth": 8192,
+      "bandwidth": 5300,
+      "tdpW": 750,
+      "powerConnector": "OAM 板载",
+      "lengthMm": 0,
+      "priceCny": 200000,
+      "priceNote": "整机报价，非零售",
+      "condition": "channel",
+      "scene": "超大模型推理、显存密集型服务",
+      "note": "192G HBM3 是当前单卡显存上限，5300GB/s 带宽超过 H100。同样属于机房设备。",
+      "source": "https://www.amd.com/en/products/graphics/",
+      "updatedAt": "2026-11"
+    }
+  ],
+  "parts": {
+    "cpus": [
+      {
+        "id": "r5-7600",
+        "name": "Ryzen 5 7600",
+        "priceCny": 1400,
+        "source": "https://www.amd.com/en/products/processors.html",
+        "updatedAt": "2026-11",
+        "tdpW": 65,
+        "vendor": "AMD",
+        "cores": "6 核 12 线程",
+        "socket": "AM5"
+      },
+      {
+        "id": "r7-7700",
+        "name": "Ryzen 7 7700",
+        "priceCny": 2000,
+        "source": "https://www.amd.com/en/products/processors.html",
+        "updatedAt": "2026-11",
+        "tdpW": 65,
+        "vendor": "AMD",
+        "cores": "8 核 16 线程",
+        "socket": "AM5"
+      },
+      {
+        "id": "r9-7950x",
+        "name": "Ryzen 9 7950X",
+        "priceCny": 3800,
+        "source": "https://www.amd.com/en/products/processors.html",
+        "updatedAt": "2026-11",
+        "tdpW": 170,
+        "vendor": "AMD",
+        "cores": "16 核 32 线程",
+        "socket": "AM5"
+      },
+      {
+        "id": "i5-14600k",
+        "name": "Core i5-14600K",
+        "priceCny": 2200,
+        "source": "https://www.amd.com/en/products/processors.html",
+        "updatedAt": "2026-11",
+        "tdpW": 181,
+        "vendor": "Intel",
+        "cores": "14 核 20 线程",
+        "socket": "LGA1700"
+      },
+      {
+        "id": "i9-14900k",
+        "name": "Core i9-14900K",
+        "priceCny": 4300,
+        "source": "https://www.amd.com/en/products/processors.html",
+        "updatedAt": "2026-11",
+        "tdpW": 253,
+        "vendor": "Intel",
+        "cores": "24 核 32 线程",
+        "socket": "LGA1700"
+      },
+      {
+        "id": "xeon-4410y",
+        "name": "Xeon Silver 4410Y",
+        "priceCny": 5200,
+        "source": "https://www.amd.com/en/products/processors.html",
+        "updatedAt": "2026-11",
+        "tdpW": 150,
+        "vendor": "Intel",
+        "cores": "12 核 24 线程",
+        "socket": "LGA4677"
+      },
+      {
+        "id": "tr-7960x",
+        "name": "Threadripper 7960X",
+        "priceCny": 12000,
+        "source": "https://www.amd.com/en/products/processors.html",
+        "updatedAt": "2026-11",
+        "tdpW": 350,
+        "vendor": "AMD",
+        "cores": "24 核 48 线程",
+        "socket": "sTR5"
+      }
+    ],
+    "mobos": [
+      {
+        "id": "b760",
+        "name": "B760 主板",
+        "priceCny": 1100,
+        "source": "https://www.amd.com/en/products/processors.html",
+        "updatedAt": "2026-11",
+        "tdpW": 20,
+        "chipset": "B760",
+        "socket": "LGA1700",
+        "gpuSlots": 1,
+        "ramSlots": 4
+      },
+      {
+        "id": "b650",
+        "name": "B650 主板",
+        "priceCny": 1200,
+        "source": "https://www.amd.com/en/products/processors.html",
+        "updatedAt": "2026-11",
+        "tdpW": 20,
+        "chipset": "B650",
+        "socket": "AM5",
+        "gpuSlots": 1,
+        "ramSlots": 4
+      },
+      {
+        "id": "x670e",
+        "name": "X670E 主板",
+        "priceCny": 2800,
+        "source": "https://www.amd.com/en/products/processors.html",
+        "updatedAt": "2026-11",
+        "tdpW": 25,
+        "chipset": "X670E",
+        "socket": "AM5",
+        "gpuSlots": 2,
+        "ramSlots": 4
+      },
+      {
+        "id": "trx50",
+        "name": "TRX50 工作站主板",
+        "priceCny": 4800,
+        "source": "https://www.amd.com/en/products/processors.html",
+        "updatedAt": "2026-11",
+        "tdpW": 30,
+        "chipset": "TRX50",
+        "socket": "sTR5",
+        "gpuSlots": 2,
+        "ramSlots": 4
+      },
+      {
+        "id": "wrx90",
+        "name": "WRX90 工作站主板",
+        "priceCny": 6800,
+        "source": "https://www.amd.com/en/products/processors.html",
+        "updatedAt": "2026-11",
+        "tdpW": 35,
+        "chipset": "WRX90",
+        "socket": "sTR5",
+        "gpuSlots": 4,
+        "ramSlots": 8
+      },
+      {
+        "id": "c741",
+        "name": "C741 服务器主板",
+        "priceCny": 9800,
+        "source": "https://www.amd.com/en/products/processors.html",
+        "updatedAt": "2026-11",
+        "tdpW": 45,
+        "chipset": "C741",
+        "socket": "LGA4677",
+        "gpuSlots": 4,
+        "ramSlots": 8
+      }
+    ],
+    "rams": [
+      {
+        "id": "ram32",
+        "name": "32GB DDR5",
+        "priceCny": 600,
+        "source": "https://www.amd.com/en/products/processors.html",
+        "updatedAt": "2026-11",
+        "tdpW": 8,
+        "kind": "DDR5 单条",
+        "capacityGb": 32
+      },
+      {
+        "id": "ram64",
+        "name": "64GB DDR5",
+        "priceCny": 1200,
+        "source": "https://www.amd.com/en/products/processors.html",
+        "updatedAt": "2026-11",
+        "tdpW": 12,
+        "kind": "DDR5 单条",
+        "capacityGb": 64
+      },
+      {
+        "id": "ram128",
+        "name": "128GB DDR5",
+        "priceCny": 2400,
+        "source": "https://www.amd.com/en/products/processors.html",
+        "updatedAt": "2026-11",
+        "tdpW": 18,
+        "kind": "DDR5 单条",
+        "capacityGb": 128
+      },
+      {
+        "id": "ram256",
+        "name": "256GB ECC RDIMM",
+        "priceCny": 5200,
+        "source": "https://www.amd.com/en/products/processors.html",
+        "updatedAt": "2026-11",
+        "tdpW": 24,
+        "kind": "DDR5 ECC 服务器内存",
+        "capacityGb": 256
+      }
+    ],
+    "psus": [
+      {
+        "id": "psu650",
+        "name": "650W 金牌",
+        "priceCny": 450,
+        "source": "https://www.clearesult.com/80plus",
+        "updatedAt": "2026-11",
+        "level": "80PLUS 金牌",
+        "watt": 650
+      },
+      {
+        "id": "psu850",
+        "name": "850W 金牌",
+        "priceCny": 700,
+        "source": "https://www.clearesult.com/80plus",
+        "updatedAt": "2026-11",
+        "level": "80PLUS 金牌",
+        "watt": 850
+      },
+      {
+        "id": "psu1000",
+        "name": "1000W 金牌",
+        "priceCny": 900,
+        "source": "https://www.clearesult.com/80plus",
+        "updatedAt": "2026-11",
+        "level": "80PLUS 金牌",
+        "watt": 1000
+      },
+      {
+        "id": "psu1300",
+        "name": "1300W 白金",
+        "priceCny": 1600,
+        "source": "https://www.clearesult.com/80plus",
+        "updatedAt": "2026-11",
+        "level": "80PLUS 白金",
+        "watt": 1300
+      },
+      {
+        "id": "psu1600",
+        "name": "1600W 钛金",
+        "priceCny": 2800,
+        "source": "https://www.clearesult.com/80plus",
+        "updatedAt": "2026-11",
+        "level": "80PLUS 钛金",
+        "watt": 1600
+      },
+      {
+        "id": "psu2000",
+        "name": "2000W 白金",
+        "priceCny": 3800,
+        "source": "https://www.clearesult.com/80plus",
+        "updatedAt": "2026-11",
+        "level": "80PLUS 白金",
+        "watt": 2000
+      },
+      {
+        "id": "psu3200",
+        "name": "双 1600W 冗余电源",
+        "priceCny": 5200,
+        "source": "https://www.clearesult.com/80plus",
+        "updatedAt": "2026-11",
+        "level": "双电源冗余",
+        "watt": 3200
+      }
+    ],
+    "storages": [
+      {
+        "id": "ssd1t",
+        "name": "1TB NVMe",
+        "priceCny": 450,
+        "source": "https://www.amd.com/en/products/processors.html",
+        "updatedAt": "2026-11",
+        "tdpW": 6,
+        "kind": "PCIe 4.0 NVMe",
+        "capacityTb": 1
+      },
+      {
+        "id": "ssd2t",
+        "name": "2TB NVMe",
+        "priceCny": 800,
+        "source": "https://www.amd.com/en/products/processors.html",
+        "updatedAt": "2026-11",
+        "tdpW": 7,
+        "kind": "PCIe 4.0 NVMe",
+        "capacityTb": 2
+      },
+      {
+        "id": "ssd4t",
+        "name": "4TB NVMe",
+        "priceCny": 1600,
+        "source": "https://www.amd.com/en/products/processors.html",
+        "updatedAt": "2026-11",
+        "tdpW": 8,
+        "kind": "PCIe 4.0 NVMe",
+        "capacityTb": 4
+      }
+    ],
+    "coolings": [
+      {
+        "id": "air",
+        "name": "风冷塔式散热",
+        "priceCny": 200,
+        "source": "https://www.coolermaster.com/",
+        "updatedAt": "2026-11",
+        "kind": "风冷",
+        "noiseDb": 42,
+        "capacityW": 200
+      },
+      {
+        "id": "aio240",
+        "name": "240 一体水冷",
+        "priceCny": 500,
+        "source": "https://www.coolermaster.com/",
+        "updatedAt": "2026-11",
+        "kind": "水冷",
+        "noiseDb": 36,
+        "capacityW": 280
+      },
+      {
+        "id": "aio360",
+        "name": "360 一体水冷",
+        "priceCny": 900,
+        "source": "https://www.coolermaster.com/",
+        "updatedAt": "2026-11",
+        "kind": "水冷",
+        "noiseDb": 32,
+        "capacityW": 400
+      },
+      {
+        "id": "turbine",
+        "name": "机箱风道 + 涡轮",
+        "priceCny": 1200,
+        "source": "https://www.coolermaster.com/",
+        "updatedAt": "2026-11",
+        "kind": "风道方案",
+        "noiseDb": 55,
+        "capacityW": 800
+      }
+    ]
+  },
+  "glossary": [
+    {
+      "id": "params",
+      "term": "参数量",
+      "en": "Parameters",
+      "alias": [
+        "参数",
+        "B",
+        "参数量 B"
+      ],
+      "category": "模型",
+      "plain": "模型脑子里有多少个「可调的旋钮」。7B 就是 70 亿个旋钮，70B 就是 700 亿个。",
+      "pro": "神经网络中可训练权重的总数，单位通常为 B（billion，十亿）。直接决定权重显存：FP16 每参数 2 字节，INT4 每参数 0.5 字节。",
+      "mistake": "「参数越大越聪明」不完全成立。数据质量和训练方法影响更大，7B 的 Qwen 在中文任务上常胜过某些更大的旧模型。",
+      "related": [
+        "quant",
+        "vram",
+        "dense-moe"
+      ]
+    },
+    {
+      "id": "ctx",
+      "term": "上下文窗口",
+      "en": "Context Window",
+      "alias": [
+        "上下文",
+        "context",
+        "ctx"
+      ],
+      "category": "模型",
+      "plain": "模型一次能记住多少内容。32K 大约等于一次读进五万字，128K 差不多是一本小说。",
+      "pro": "单次推理可处理的最大 token 数，含输入与输出。超出会被截断。KV Cache 显存随上下文长度线性增长，是长上下文的主要成本。",
+      "mistake": "「标称 32K 就能稳定用 32K」——多数模型在中段信息的检索上会衰减，且上下文越长生成越慢、显存越吃紧。",
+      "related": [
+        "kv-cache",
+        "token",
+        "vram"
+      ]
+    },
+    {
+      "id": "quant",
+      "term": "量化",
+      "en": "Quantization",
+      "alias": [
+        "INT4",
+        "INT8",
+        "FP16",
+        "量化方式"
+      ],
+      "category": "显存",
+      "plain": "把厚书压缩成口袋书。字还是那些字，但纸变薄了，能塞进更小的包。",
+      "pro": "降低权重数值精度以减少显存占用与带宽压力。FP16 每参数 2 字节、INT8 为 1 字节、INT4 为 0.5 字节。INT4 通常带来 3–4 倍显存下降，质量损失在多数对话任务中不明显。",
+      "mistake": "「量化一定掉智商」——INT8 几乎无损，INT4 在通用对话里损失很小，真正掉得多的是数学和长链推理。另外量化省显存但不一定提速，瓶颈在带宽时才有收益。",
+      "related": [
+        "params",
+        "vram",
+        "gguf"
+      ]
+    },
+    {
+      "id": "vram",
+      "term": "显存",
+      "en": "VRAM",
+      "alias": [
+        "显存容量",
+        "显卡内存"
+      ],
+      "category": "显存",
+      "plain": "显卡自己的工作台。模型必须整个摊在台面上才能干活，台面不够就放不下。",
+      "pro": "GPU 板载内存，用于存放模型权重、KV Cache 与中间激活值。容量决定「能不能装下」，带宽决定「算得快不快」，两者不可互相替代。",
+      "mistake": "「显存越大越快」——容量只决定装不装得下。速度取决于带宽；一张 48G 的 A6000（768GB/s）跑 7B 明显慢于 24G 的 4090（1008GB/s）。",
+      "related": [
+        "bandwidth",
+        "kv-cache",
+        "quant"
+      ]
+    },
+    {
+      "id": "kv-cache",
+      "term": "KV Cache",
+      "en": "Key-Value Cache",
+      "alias": [
+        "KV",
+        "缓存"
+      ],
+      "category": "显存",
+      "plain": "模型边聊边记的小抄。聊得越久、记得越多，小抄就越厚，占的地方也越大。",
+      "pro": "自回归生成时缓存历史 token 的 Key/Value 张量，避免重复计算。大小 ≈ 2 × 层数 × KV 维度 × 上下文长度 × batch × 字节数；GQA 架构下 KV 维度约为隐藏维度的 1/4 到 1/8。",
+      "mistake": "估显存只算权重。14B 模型 INT4 权重只有 6.8GB，但 32K 上下文的 KV Cache 要 8.1GB——这部分不算，就会买到「能加载、一对话就崩」的卡。",
+      "related": [
+        "ctx",
+        "gqa",
+        "vram"
+      ]
+    },
+    {
+      "id": "token",
+      "term": "Token",
+      "en": "Token",
+      "alias": [
+        "词元",
+        "tokens"
+      ],
+      "category": "模型",
+      "plain": "模型眼里的「字」。一个汉字大约 1 个 token，一个英文单词大约 1.3 个 token。",
+      "pro": "分词器输出的最小单位。计费、上下文长度、生成速度都以 token 计。中文常见为 1 字 ≈ 1 token（视词表而定）。",
+      "mistake": "把 tokens/s 直接当字/秒。中文场景下大约要乘 0.9，而英文场景差别更大。",
+      "related": [
+        "ctx",
+        "tps"
+      ]
+    },
+    {
+      "id": "tps",
+      "term": "生成速度",
+      "en": "Tokens per Second",
+      "alias": [
+        "tps",
+        "tokens/s",
+        "吞吐"
+      ],
+      "category": "模型",
+      "plain": "模型每秒能蹦几个字。低于 8 个就开始一顿一顿，20 以上读起来才顺。",
+      "pro": "解码阶段的输出速率。单请求场景受显存带宽限制，近似为 带宽 ÷ 权重体积 × 效率系数；并发场景还受算力与批处理策略影响。",
+      "mistake": "「买更贵的卡就一定更快」——跑小模型时瓶颈在带宽，跑大模型时可能在算力，跑并发时又在显存容量。要看具体场景。",
+      "related": [
+        "bandwidth",
+        "token"
+      ]
+    },
+    {
+      "id": "bandwidth",
+      "term": "显存带宽",
+      "en": "Memory Bandwidth",
+      "alias": [
+        "带宽",
+        "GB/s"
+      ],
+      "category": "硬件",
+      "plain": "工作台旁边的传送带有多快。台面再大，传送带慢，搬东西还是慢。",
+      "pro": "单位时间内 GPU 能读写显存的字节数，单位 GB/s，等于等效频率 × 位宽 ÷ 8。自回归解码是典型的访存瓶颈，带宽几乎线性决定单请求速度。",
+      "mistake": "只看显存容量不看带宽。RTX 4060 Ti 16G 显存比 3060 12G 大，但带宽只有 288GB/s，跑同一模型反而更慢。",
+      "related": [
+        "vram",
+        "tps"
+      ]
+    },
+    {
+      "id": "gqa",
+      "term": "GQA",
+      "en": "Grouped-Query Attention",
+      "alias": [
+        "分组查询注意力",
+        "MHA",
+        "MQA"
+      ],
+      "category": "模型",
+      "plain": "多个注意力头共用一份小抄，省纸但记得住重点。",
+      "pro": "Grouped-Query Attention：将 Query 头分组共享同一组 Key/Value 头。相比 MHA 大幅压缩 KV Cache（常见 4–8 倍），是现代大模型长上下文的标配。",
+      "mistake": "用隐藏维度直接算 KV Cache 而不考虑 GQA，会把需求高估 3–4 倍。估算时要看模型卡里写的 num_key_value_heads。",
+      "related": [
+        "kv-cache",
+        "ctx"
+      ]
+    },
+    {
+      "id": "dense-moe",
+      "term": "Dense 与 MoE",
+      "en": "Dense / Mixture of Experts",
+      "category": "模型",
+      "plain": "Dense 是全员上班；MoE 是分科室，每次只叫相关的几个科室来干活。",
+      "pro": "Dense 模型每个 token 都经过全部参数；MoE 通过路由只激活部分专家。MoE 总参数量大但激活参数少，因此显存占用看总参数、计算量看激活参数。",
+      "mistake": "把 MoE 的总参数量当成计算量。一个 236B 的 MoE 可能只激活 21B，但显存仍要按 236B 准备——省算力不省显存。",
+      "related": [
+        "params",
+        "vram"
+      ]
+    },
+    {
+      "id": "tdp",
+      "term": "TDP",
+      "en": "Thermal Design Power",
+      "alias": [
+        "功耗",
+        "热设计功耗"
+      ],
+      "category": "硬件",
+      "plain": "这个部件满负荷干活时会发多少热。发热越大，电源和散热就越要跟上。",
+      "pro": "热设计功耗，单位 W。整机功耗通常按 ΣTDP × 1.2 估算，电源建议 ≥ 整机功耗 × 1.3，以覆盖瞬时峰值与转换损耗。",
+      "mistake": "「电源功率越大越费电」——电源只是上限，实际耗电取决于负载。选小了才会跳闸，选大了不会更费电（但低负载效率略降）。",
+      "related": [
+        "psu",
+        "vram"
+      ]
+    },
+    {
+      "id": "psu",
+      "term": "电源冗余",
+      "en": "PSU Headroom",
+      "category": "硬件",
+      "plain": "电源要留点余量，别让它在满负荷边上喘气。",
+      "pro": "推荐电源额定功率 ≥ 整机峰值功耗 × 1.3。多卡配置还要看 12V 联合输出与 PCIe 供电接口数量，而非只看总瓦数。",
+      "mistake": "只看总瓦数不看接口。四张卡要 8 个 8pin，很多 1600W 电源给不了这么多路。",
+      "related": [
+        "tdp"
+      ]
+    },
+    {
+      "id": "pcie",
+      "term": "PCIe 通道",
+      "en": "PCIe Lanes",
+      "category": "硬件",
+      "plain": "显卡插在主板上的「插座」，插座越多能插的卡越多。",
+      "pro": "主板提供的 PCIe 通道数决定可同时安装的显卡数量与带宽分配。消费级平台通常只能拆分为 x8/x8，多卡推理的卡间通信会受限。",
+      "mistake": "以为能插就能跑。四卡需要 4 条物理 x16 插槽 + 足够通道，消费级主板通常做不到，得用工作站或服务器平台。",
+      "related": [
+        "tdp"
+      ]
+    },
+    {
+      "id": "gguf",
+      "term": "GGUF",
+      "en": "GGUF / GGML",
+      "category": "部署",
+      "plain": "一种把模型打包成「单文件」的格式，下载下来就能跑，像绿色免安装软件。",
+      "pro": "llama.cpp 使用的模型文件格式，支持多种量化等级（Q4_K_M、Q5_K_M、Q8_0 等）与 CPU/GPU 混合推理，是 Ollama、LM Studio 的底层格式。",
+      "mistake": "Q4_K_M 不等于纯 INT4。它是混合精度量化，平均位宽略高于 4bit，显存占用比理论值稍大，但质量更稳。",
+      "related": [
+        "quant",
+        "ollama"
+      ]
+    },
+    {
+      "id": "ollama",
+      "term": "Ollama",
+      "en": "Ollama",
+      "category": "部署",
+      "plain": "一条命令就能把模型跑起来的工具，省掉装驱动、配环境的麻烦。",
+      "pro": "基于 llama.cpp 的本地推理运行时，提供模型拉取、量化版本管理、OpenAI 兼容 API。适合单机验证与轻量服务，不适合高并发生产。",
+      "mistake": "用 Ollama 做生产服务。它默认单请求串行、缺少批处理与多卡调度，并发上来会排队；生产环境应换 vLLM 或 SGLang。",
+      "related": [
+        "gguf",
+        "vllm"
+      ]
+    },
+    {
+      "id": "vllm",
+      "term": "vLLM",
+      "en": "vLLM",
+      "category": "部署",
+      "plain": "给多人同时用准备的加速引擎，能把显卡利用率榨得更干。",
+      "pro": "基于 PagedAttention 的高吞吐推理引擎，支持连续批处理、前缀缓存、张量并行。相同硬件下并发吞吐常为朴素实现的数倍。",
+      "mistake": "单机自用也上 vLLM。它会预占大部分显存做 KV Cache 池，单人场景反而更吃显存、启动更慢。",
+      "related": [
+        "ollama",
+        "kv-cache"
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "id": "l1",
+      "level": 1,
+      "title": "模型入门",
+      "question": "模型是什么？参数、上下文、能力分别代表什么？",
+      "output": "选一个「我的第一个模型」，并说清为什么选它",
+      "points": [
+        "参数量 = 有多少个可调旋钮，决定「要多大显存」",
+        "上下文 = 一次能记住多少，决定「能读多长的文档」",
+        "参数量不等于能力，语种与训练数据同样关键",
+        "Dense 与 MoE：一个全员上班，一个分科室干活"
+      ],
+      "links": [
+        {
+          "label": "模型百科",
+          "to": "/models"
+        },
+        {
+          "label": "概念词典 · 参数量",
+          "to": "/glossary"
+        }
+      ]
+    },
+    {
+      "id": "l2",
+      "level": 2,
+      "title": "显存与算力",
+      "question": "为什么跑模型要显卡？显存到底怎么算？",
+      "output": "完成一次显存估算：给定模型 + 量化 + 上下文，算出需要多少 GB",
+      "points": [
+        "显存 = 权重 + KV Cache + 框架开销 + 安全余量",
+        "量化把每个参数从 2 字节压到 0.5 字节，但 KV Cache 不跟着降",
+        "上下文越长，KV Cache 越大，而且是不成比例地吃",
+        "带宽决定速度，容量只决定装不装得下"
+      ],
+      "links": [
+        {
+          "label": "模型百科 · 显存估算器",
+          "to": "/models"
+        },
+        {
+          "label": "概念词典 · KV Cache",
+          "to": "/glossary"
+        }
+      ]
+    },
+    {
+      "id": "l3",
+      "level": 3,
+      "title": "硬件认知",
+      "question": "显卡、CPU、内存、电源各自干什么？怎么选？",
+      "output": "认识六大部件，能说出每个部件「选错的后果」",
+      "points": [
+        "显卡：决定能不能跑、跑多快，是唯一不能省钱的部件",
+        "CPU 与内存：影响模型加载与数据准备，太弱会拖后腿",
+        "主板：决定能插几张卡、几根内存",
+        "电源与散热：决定能不能稳定长跑，选小会跳闸"
+      ],
+      "links": [
+        {
+          "label": "硬件百科",
+          "to": "/hardware"
+        },
+        {
+          "label": "概念词典 · TDP",
+          "to": "/glossary"
+        }
+      ]
+    },
+    {
+      "id": "l4",
+      "level": 4,
+      "title": "服务器组装",
+      "question": "如何搭一台能跑模型的本地服务器？",
+      "output": "保存一套完整配置，拿到六维评估报告",
+      "points": [
+        "先定目标模型，再倒推显存，最后选卡",
+        "混插不同型号显卡时，可用显存按最小那张算",
+        "电源要 ≥ 整机功耗 × 1.3，不是刚好够",
+        "显存留 20% 余量，吃满会在长对话时崩"
+      ],
+      "links": [
+        {
+          "label": "DIY 组装台",
+          "to": "/builder"
+        },
+        {
+          "label": "配置推荐",
+          "to": "/recommend"
+        }
+      ]
+    },
+    {
+      "id": "l5",
+      "level": 5,
+      "title": "部署实战",
+      "question": "从装系统到跑出第一个模型，要几步？",
+      "output": "生成一份能照着做的部署行动清单",
+      "points": [
+        "装系统 → 装驱动 → 装运行时（Ollama / vLLM）→ 拉模型 → 测通",
+        "先跑最小的量化版本验证链路，再换大模型",
+        "Ollama 适合单机验证，多人并发要换 vLLM",
+        "用固定 prompt 做基线测试，别只看「能出字」"
+      ],
+      "links": [
+        {
+          "label": "我的说明书",
+          "to": "/manual"
+        },
+        {
+          "label": "概念词典 · Ollama",
+          "to": "/glossary"
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-11"
+}

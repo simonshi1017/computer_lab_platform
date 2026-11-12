@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Compute Lab · 算力模型科普学习平台</title>
+<link rel="stylesheet" href="styles.css?v=57" />
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9.5 21v-6h5v6"/></symbol>
+    <symbol id="i-path" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 6h5A3.5 3.5 0 0 1 17 9.5v0a3.5 3.5 0 0 1-3.5 3.5h-3A3.5 3.5 0 0 0 7 16.5v0A3.5 3.5 0 0 0 10.5 20h5"/></symbol>
+    <symbol id="i-model" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3.5 7.5 12 12l8.5-4.5L12 3Z"/><path d="m3.5 12 8.5 4.5L20.5 12"/><path d="m3.5 16.5 8.5 4.5 8.5-4.5"/></symbol>
+    <symbol id="i-gpu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><circle cx="9" cy="12" r="2.6"/><circle cx="16" cy="12" r="2.6"/><path d="M6 18v2.5M18 18v2.5"/></symbol>
+    <symbol id="i-build" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M3 9h18"/><path d="M9 9v12"/><path d="M13 13h5M13 16.5h3"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v18H5.5A1.5 1.5 0 0 1 4 19.5v-15Z"/><path d="M8 3v18"/><path d="M12 8h4M12 12h4"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5h8l4.5 4.5V21H6z"/><path d="M14 2.5V7h4.5"/><path d="M9 12h6M9 16h4"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12.5 5 5L20 6.5"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 21.5 20H2.5L12 3.5Z"/><path d="M12 9.5v4.5M12 17.2v.1"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.8v.1"/></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12L13 2Z"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10" width="15" height="10.5" rx="2.5"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M7 4.5 19.5 12 7 19.5v-15Z"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7.5 10.5 12 15l4.5-4.5"/><path d="M4 19.5h16"/></symbol>
+    <symbol id="i-cpu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10" rx="2"/><rect x="10" y="10" width="4" height="4" rx="1"/><path d="M10 2.5v3M14 2.5v3M10 18.5v3M14 18.5v3M2.5 10h3M2.5 14h3M18.5 10h3M18.5 14h3"/></symbol>
+    <symbol id="i-ram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="10" rx="1.6"/><path d="M6 17v2.5M10 17v2.5M14 17v2.5M18 17v2.5"/><path d="M7 10.5h2M11 10.5h2M15 10.5h2"/></symbol>
+    <symbol id="i-psu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="8.5" cy="12" r="3"/><path d="M15 9.5h4M15 14.5h2.5"/></symbol>
+    <symbol id="i-ssd" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M7 9h5M7 12h3"/><rect x="15" y="9" width="3" height="4" rx=".8"/></symbol>
+    <symbol id="i-fan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/><path d="M12 10c0-3 1.5-5 4-5M14 12c3 0 5 1.5 5 4M12 14c0 3-1.5 5-4 5M10 12c-3 0-5-1.5-5-4"/></symbol>
+    <symbol id="i-board" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="16" rx="2"/><rect x="6" y="8" width="6" height="5" rx="1"/><path d="M15 8h4M15 11h3M6 16h13"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></symbol>
+  </defs>
+</svg>
+
+<div class="app">
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M10 2.5v4M14 2.5v4M10 17.5v4M14 17.5v4M2.5 10h4M2.5 14h4M17.5 10h4M17.5 14h4"/></svg></div>
+      <div class="brand-text"><b>算力实验室</b><span>Compute Lab</span></div>
+    </div>
+
+    <div class="nav-group">学习</div>
+    <div class="nav-item active" data-view="home"><svg><use href="#i-home"/></svg><span>知识地图</span></div>
+    <div class="nav-item" data-view="path"><svg><use href="#i-path"/></svg><span>学习路径</span><span class="kbd-hint">3/5</span></div>
+    <div class="nav-item" data-view="glossary"><svg><use href="#i-book"/></svg><span>概念词典</span></div>
+
+    <div class="nav-group">探索</div>
+    <div class="nav-item" data-view="models"><svg><use href="#i-model"/></svg><span>模型百科</span></div>
+    <div class="nav-item" data-view="hardware"><svg><use href="#i-gpu"/></svg><span>硬件百科</span></div>
+
+    <div class="nav-group">实战</div>
+    <div class="nav-item" data-view="recommend"><svg><use href="#i-zap"/></svg><span>配置推荐</span></div>
+    <div class="nav-item" data-view="builder"><svg><use href="#i-build"/></svg><span>DIY 组装台</span></div>
+    <div class="nav-item" data-view="manual"><svg><use href="#i-doc"/></svg><span>我的说明书</span></div>
+
+    <div class="sidebar-foot">
+      <div class="progress-card">
+        <div class="row"><span style="font-size:11.5px;color:var(--text-2)">学习进度</span><span class="pct mono">60%</span></div>
+        <div class="progress-track"><div class="progress-fill" style="width:60%"></div></div>
+        <div style="font-size:10.5px;color:var(--text-3)">第 3 关 · 硬件认知</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <header class="topbar">
+      <div class="crumb" id="crumb"><span>学习</span><span class="sep">/</span><b>知识地图</b></div>
+      <div class="search-trigger" id="searchTrigger">
+        <svg width="14" height="14"><use href="#i-search"/></svg>
+        <span>搜索模型、显卡、术语…</span>
+        <span class="kbd">⌘K</span>
+      </div>
+      <button class="icon-btn" id="themeToggle" title="切换主题"><svg><use href="#i-moon"/></svg></button>
+      <div class="avatar">WJ</div>
+    </header>
+
+    <div class="views" id="views">
+
+      <!-- ---------------- HOME ---------------- -->
+      <section class="view active" id="view-home">
+        <div class="hero">
+          <div class="card hero-main">
+            <div class="hero-eyebrow"><span class="dot"></span>科普 · 模拟 · 组装 · 评估</div>
+            <h1 class="hero-title">把「跑大模型」<br/>这件事，<em>拆开给你看</em></h1>
+            <p class="hero-desc">不用懂硬件，不用背公式。从「什么是参数」开始，亲手拖出一台能跑模型的服务器，再让它告诉你行不行、快不快、贵不贵。</p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" data-go="builder"><svg><use href="#i-build"/></svg>开始组装我的服务器</button>
+              <button class="btn btn-ghost" data-go="path"><svg><use href="#i-play"/></svg>从第 3 关继续</button>
+            </div>
+          </div>
+
+          <div class="hero-side">
+            <div class="card continue-card">
+              <div class="mini-label">继续上次</div>
+              <h4>第 3 关 · 硬件认知</h4>
+              <p>已认识显卡和显存，接下来搞懂 CPU、内存和电源。</p>
+              <div class="progress-track" style="margin-top:0"><div class="progress-fill" style="width:45%"></div></div>
+              <div class="mini-stats" style="margin-top:14px">
+                <div class="mini-stat"><div class="v mono">3<span style="font-size:10px;color:var(--text-3)">/5</span></div><div class="k">已解锁</div></div>
+                <div class="mini-stat"><div class="v mono">2</div><div class="k">输出物</div></div>
+                <div class="mini-stat"><div class="v mono">1</div><div class="k">配置草稿</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- knowledge map -->
+        <div class="card map-wrap">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <div class="section-title">你的算力知识地图 <span class="count">5 关 · 已完成 2</span></div>
+            <span class="badge badge-info">点击节点进入关卡</span>
+          </div>
+
+          <svg class="map-svg" viewBox="0 0 1000 170" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#6C8CFF" stop-opacity=".9"/>
+                <stop offset="55%" stop-color="#3DE0C0" stop-opacity=".75"/>
+                <stop offset="100%" stop-color="#6C8CFF" stop-opacity=".12"/>
+              </linearGradient>
+              <linearGradient id="nodeDone" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#6C8CFF"/><stop offset="100%" stop-color="#3DE0C0"/>
+              </linearGradient>
+            </defs>
+
+            <path d="M90 70 H910" stroke="url(#lineGrad)" stroke-width="2" fill="none"/>
+            <path d="M90 70 H910" stroke="var(--border-strong)" stroke-width="1" stroke-dasharray="3 7" fill="none"/>
+
+            <!-- 1 -->
+            <g class="map-node" data-go="path">
+              <circle class="node-ring" cx="90" cy="70" r="23" fill="url(#nodeDone)" stroke="none"/>
+              <path d="M82 70.5 l5.5 5.5 L99 64" stroke="#06111A" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <text class="map-node-label" x="90" y="118" text-anchor="middle">模型入门</text>
+              <text class="map-node-sub" x="90" y="134" text-anchor="middle">已完成 · 7B</text>
+            </g>
+            <!-- 2 -->
+            <g class="map-node" data-go="path">
+              <circle class="node-ring" cx="290" cy="70" r="23" fill="url(#nodeDone)" stroke="none"/>
+              <path d="M282 70.5 l5.5 5.5 L299 64" stroke="#06111A" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <text class="map-node-label" x="290" y="118" text-anchor="middle">显存与算力</text>
+              <text class="map-node-sub" x="290" y="134" text-anchor="middle">已完成 · 估算</text>
+            </g>
+            <!-- 3 current -->
+            <g class="map-node" data-go="path">
+              <circle cx="490" cy="70" r="31" fill="rgba(108,140,255,.10)" stroke="none"/>
+              <circle class="node-ring" cx="490" cy="70" r="23" style="fill:var(--surface)" stroke="#6C8CFF" stroke-width="2"/>
+              <circle cx="490" cy="70" r="7" fill="#6C8CFF"/>
+              <text class="map-node-label" x="490" y="118" text-anchor="middle">硬件认知</text>
+              <text class="map-node-sub" x="490" y="134" text-anchor="middle" fill="#6C8CFF">进行中 · 45%</text>
+            </g>
+            <!-- 4 -->
+            <g class="map-node" data-go="builder">
+              <circle class="node-ring" cx="690" cy="70" r="23" style="fill:var(--surface)" stroke="var(--border-strong)" stroke-width="1.6"/>
+              <rect x="684.5" y="69" width="11" height="8.5" rx="1.8" style="stroke:var(--text-2)" stroke-width="1.5" fill="none"/>
+              <path d="M687 69v-2.6a3 3 0 0 1 6 0V69" style="stroke:var(--text-2)" stroke-width="1.5" fill="none"/>
+              <text class="map-node-label" x="690" y="118" text-anchor="middle" style="fill:var(--text-2)">服务器组装</text>
+              <text class="map-node-sub" x="690" y="134" text-anchor="middle">未解锁</text>
+            </g>
+            <!-- 5 -->
+            <g class="map-node" data-go="path">
+              <circle class="node-ring" cx="890" cy="70" r="23" style="fill:var(--surface)" stroke="var(--border)" stroke-width="1.6"/>
+              <path d="M885 66.5 888.5 70.5 885 74.5" style="stroke:var(--text-3)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M891.5 75h5" style="stroke:var(--text-3)" stroke-width="1.6" stroke-linecap="round"/>
+              <text class="map-node-label" x="890" y="118" text-anchor="middle" style="fill:var(--text-3)">部署实战</text>
+              <text class="map-node-sub" x="890" y="134" text-anchor="middle">未解锁</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="home-grid">
+          <div class="card pad">
+            <div class="section-title" style="margin-bottom:6px">今日推荐</div>
+            <div class="rec-list" style="margin-top:8px">
+              <div class="rec-item" data-go="recommend">
+                <div class="rec-icon"><svg><use href="#i-zap"/></svg></div>
+                <div><div class="t">我要部署 27B 模型，需要什么配置？</div><div class="s">输入参数量，直接给三档可落地的装机方案</div></div>
+                <div class="arrow"><svg><use href="#i-chev"/></svg></div>
+              </div>
+              <div class="rec-item" data-go="gpu:rtx3060">
+                <div class="rec-icon"><svg><use href="#i-gpu"/></svg></div>
+                <div><div class="t">RTX 3060 12G：最便宜的入场券</div><div class="s">¥2,000 · 12GB 显存 · 能跑 7B INT4</div></div>
+                <div class="arrow"><svg><use href="#i-chev"/></svg></div>
+              </div>
+              <div class="rec-item" data-go="term:量化">
+                <div class="rec-icon"><svg><use href="#i-zap"/></svg></div>
+                <div><div class="t">量化到底是什么？</div><div class="s">3 分钟看懂 FP16 / INT8 / INT4 的区别</div></div>
+                <div class="arrow"><svg><use href="#i-chev"/></svg></div>
+              </div>
+              <div class="rec-item" data-go="model:qwen25-14b">
+                <div class="rec-icon"><svg><use href="#i-model"/></svg></div>
+                <div><div class="t">Qwen2.5-14B：性价比甜点</div><div class="s">一张 16GB 卡跑得很舒服</div></div>
+                <div class="arrow"><svg><use href="#i-chev"/></svg></div>
+              </div>
+              <div class="rec-item" data-go="term:KV Cache">
+                <div class="rec-icon"><svg><use href="#i-info"/></svg></div>
+                <div><div class="t">为什么聊得越久越卡？</div><div class="s">KV Cache 与上下文长度的关系</div></div>
+                <div class="arrow"><svg><use href="#i-chev"/></svg></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card pad">
+            <div class="section-title" style="margin-bottom:10px">常见误区</div>
+            <div class="risk-list">
+              <div class="risk r-err"><div class="ic"><svg><use href="#i-alert"/></svg></div><div><b>显存越大一定越快？</b><br/><span>不是。生成速度主要由显存带宽决定，24GB 的 3090 常常比 16GB 的 4060 Ti 快一倍以上。</span></div></div>
+              <div class="risk r-warn"><div class="ic"><svg><use href="#i-alert"/></svg></div><div><b>模型越大一定越好？</b><br/><span>在消费级硬件上，一个跑得动的 14B 往往比一个爆显存的 70B 更有用。</span></div></div>
+              <div class="risk r-warn"><div class="ic"><svg><use href="#i-alert"/></svg></div><div><b>电源功率越大越费电？</b><br/><span>实际耗电取决于负载。大电源只是「能供得上」，不会凭空多烧电。</span></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------------- PATH ---------------- -->
+      <section class="view" id="view-path">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">5 关，从「什么是模型」到「跑出第一句话」</h1>
+            <p class="page-sub">每一关都必须留下一个输出物：一个选择、一次估算、一套配置或一份行动清单。看完不算学会。</p>
+          </div>
+          <button class="btn btn-ghost" data-go="builder">跳到第 4 关</button>
+        </div>
+        <div id="lessonList" style="display:flex;flex-direction:column;gap:10px"></div>
+      </section>
+
+      <!-- ---------------- MODELS ---------------- -->
+      <section class="view" id="view-models">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">模型百科</h1>
+            <p class="page-sub">先看「它像什么」，再看「它要多少显存」。点开任意模型可以调量化、拉上下文，实时看显存放不放得下。</p>
+          </div>
+          <button class="btn btn-soft" id="compareBtn"><svg><use href="#i-model"/></svg>对比已选 <span class="mono" id="cmpCount">0</span></button>
+        </div>
+        <div class="filter-bar" id="modelFilters"></div>
+        <div class="grid-cards" id="modelGrid"></div>
+      </section>
+
+      <!-- ---------------- HARDWARE ---------------- -->
+      <section class="view" id="view-hardware">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">硬件百科</h1>
+            <p class="page-sub">显卡是「能装多大」，带宽是「说得多快」，电源是「供不供得上」。先按预算筛，再按模型规模挑。</p>
+          </div>
+        </div>
+        <div class="filter-bar" id="gpuFilters"></div>
+        <div class="grid-cards" id="gpuGrid"></div>
+
+        <div class="section-head"><div class="section-title">其他 5 大部件</div></div>
+        <div class="grid-cards" id="partGrid"></div>
+      </section>
+
+      <!-- ---------------- RECOMMEND ---------------- -->
+      <section class="view" id="view-recommend">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">告诉我要跑什么，我来配硬件</h1>
+            <p class="page-sub">输入模型规模和上下文，直接给出三档可行配置。每套都能一键丢进组装台，自己再动手改。</p>
+          </div>
+        </div>
+
+        <div class="card pad rec-form">
+          <div class="rec-fields">
+            <div class="field">
+              <label>要部署的模型</label>
+              <select class="input" id="recModel"></select>
+            </div>
+            <div class="field">
+              <label>参数量 (B)</label>
+              <input class="input" id="recCustomParams" type="number" value="27" min="1" max="500" step="1" disabled title="选择「自定义参数」后填写" />
+            </div>
+            <div class="field">
+              <label>量化精度</label>
+              <div class="seg" id="recQuant">
+                <button data-q="fp16">FP16</button>
+                <button data-q="int8">INT8</button>
+                <button data-q="int4" class="active">INT4</button>
+              </div>
+            </div>
+            <div class="field">
+              <label>上下文长度</label>
+              <select class="input" id="recCtx">
+                <option value="4096">4K</option>
+                <option value="8192">8K</option>
+                <option value="16384">16K</option>
+                <option value="32768" selected>32K</option>
+                <option value="65536">64K</option>
+                <option value="131072">128K</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>预算上限（元）</label>
+              <input class="input" id="recBudget" type="number" value="25000" step="1000" min="3000" />
+            </div>
+            <div class="field">
+              <label>偏好</label>
+              <div class="seg" id="recPref">
+                <button data-p="save">省钱</button>
+                <button data-p="balance" class="active">均衡</button>
+                <button data-p="perf">性能</button>
+                <button data-p="quiet">静音</button>
+              </div>
+            </div>
+          </div>
+          <div class="rec-summary" id="recSummary"></div>
+        </div>
+
+        <div class="tier-grid" id="tierGrid"></div>
+      </section>
+
+      <!-- ---------------- BUILDER ---------------- -->
+      <section class="view" id="view-builder">
+        <div class="page-head" style="margin-bottom:16px">
+          <div>
+            <h1 class="page-title">DIY 组装台</h1>
+            <p class="page-sub">左边挑件，中间装机，右边实时告诉你：能不能装、跑得多快、要花多少钱、哪里该改。</p>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" id="clearBuild">清空</button>
+            <button class="btn btn-primary btn-sm" id="evalBtn"><svg><use href="#i-zap"/></svg>评估我的配置</button>
+          </div>
+        </div>
+
+        <div class="builder">
+          <!-- palette -->
+          <div class="card palette">
+            <div class="palette-tabs" id="paletteTabs"></div>
+            <div class="palette-body" id="paletteBody"></div>
+          </div>
+
+          <!-- chassis -->
+          <div class="card chassis-wrap">
+            <div class="chassis-head">
+              <h3><svg width="16" height="16" style="color:var(--accent-ink)"><use href="#i-build"/></svg>虚拟机箱 · CL-01</h3>
+              <div class="status-line"><span class="led" id="chassisLed"></span><span id="chassisStatus">待装机</span></div>
+            </div>
+
+            <div class="chassis" id="chassis">
+              <svg id="chassisSvg" class="chassis-svg" viewBox="0 0 680 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="开盖机箱示意图"></svg>
+              <div class="chassis-hint">点击空槽位选择部件，或从左侧拖入 · 悬停可移除</div>
+            </div>
+
+            <div style="padding:0 16px 16px">
+              <div class="chassis-label" style="margin-bottom:8px">快速起步 · 三套推荐组合</div>
+              <div class="preset-row" id="presetRow"></div>
+            </div>
+          </div>
+
+          <!-- eval panel -->
+          <div class="eval-panel">
+            <div class="card panel-block">
+              <div class="panel-title">实时状态 <span class="mono" style="font-size:10px;color:var(--text-3)">随拖拽更新</span></div>
+              <div class="metrics">
+                <div class="metric"><div class="k">总显存</div><div class="v"><span id="m-vram">0</span><small>GB</small></div></div>
+                <div class="metric"><div class="k">系统内存</div><div class="v"><span id="m-ram">0</span><small>GB</small></div></div>
+                <div class="metric"><div class="k">整机功耗</div><div class="v"><span id="m-power">0</span><small>W</small></div></div>
+                <div class="metric"><div class="k">硬件总价</div><div class="v"><span id="m-price">0</span><small>元</small></div></div>
+                <div class="metric wide"><div class="k">月电费 <span class="est">估算</span> · 每天 8 小时 · 0.6 元/度</div><div class="v"><span id="m-elec">0</span><small>元/月</small></div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:11px;color:var(--text-2)">
+                <span>我的预算</span>
+                <input class="input" id="budgetInput" type="number" value="25000" step="1000" style="height:28px;width:96px;font-size:12px;padding:0 8px" />
+                <span>元</span>
+                <span style="margin-left:auto;color:var(--text-3)">用于「成本」维度评分</span>
+              </div>
+            </div>
+
+            <div class="card panel-block">
+              <div class="panel-title">运行模拟 <span class="mono" style="font-size:10px;color:var(--text-3)" id="simModel">未选择模型</span></div>
+              <div class="term" id="term"><span class="p">$</span> <span id="termText">等待配置…</span><span class="cursor"></span></div>
+              <div style="display:flex;justify-content:space-between;margin-top:9px;font-size:11px;color:var(--text-2)">
+                <span>预估速度 <b class="mono" id="simTps" style="color:var(--warn-ink)">—</b> tokens/s <span class="est">估算</span></span>
+                <span>约 <b class="mono" id="simChars" style="color:var(--warn-ink)">—</b> 字/秒</span>
+              </div>
+            </div>
+
+            <div class="card panel-block">
+              <div class="panel-title">配置评估 <span class="mono" style="font-size:10px;color:var(--text-3)">六维模型</span></div>
+              <div class="score-hero">
+                <div class="score-ring">
+                  <svg width="78" height="78" viewBox="0 0 78 78">
+                    <circle cx="39" cy="39" r="32" fill="none" stroke="var(--border)" stroke-width="6"/>
+                    <circle id="scoreArc" cx="39" cy="39" r="32" fill="none" stroke="url(#scoreGrad)" stroke-width="6"
+                            stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201" style="transition:stroke-dashoffset .6s cubic-bezier(.2,.8,.2,1)"/>
+                    <defs><linearGradient id="scoreGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6C8CFF"/><stop offset="100%" stop-color="#3DE0C0"/></linearGradient></defs>
+                  </svg>
+                  <div class="grade" id="scoreGrade">—</div>
+                </div>
+                <div class="score-copy">
+                  <div class="t" id="scoreTitle">还没有配置</div>
+                  <div class="s" id="scoreDesc">拖入部件后，这里会给出总评分和一句话结论。</div>
+                </div>
+              </div>
+              <div class="radar-box"><div id="radar"></div></div>
+            </div>
+
+            <div class="card panel-block">
+              <div class="panel-title">风险与建议</div>
+              <div class="risk-list" id="riskList">
+                <div class="risk r-ok"><div class="ic"><svg><use href="#i-info"/></svg></div><div><span>先放入显卡、CPU、内存和电源，我会告诉你这套配置哪里需要改。</span></div></div>
+              </div>
+              <div id="suggestWrap" style="margin-top:10px"></div>
+            </div>
+
+            <div class="card panel-block">
+              <button class="btn btn-primary btn-block" id="manualBtn"><svg><use href="#i-doc"/></svg>生成我的服务器说明书</button>
+              <button class="btn btn-ghost btn-block" style="margin-top:8px" id="saveBuildBtn">保存这套配置</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------------- GLOSSARY ---------------- -->
+      <section class="view" id="view-glossary">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">概念词典</h1>
+            <p class="page-sub">默认用小白话讲一遍，想看专业定义就展开。每个词都配了一条「常见误区」。</p>
+          </div>
+        </div>
+        <div class="filter-bar">
+          <input class="input" id="termSearch" placeholder="搜索术语，例如：显存、量化、KV Cache" style="width:320px" />
+        </div>
+        <div class="term-grid" id="termGrid"></div>
+      </section>
+
+      <!-- ---------------- MANUAL ---------------- -->
+      <section class="view" id="view-manual">
+        <div class="manual" id="manualBody"></div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL ============ -->
+<div class="mask" id="mask">
+  <div class="modal" id="modal">
+    <div class="modal-head" id="modalHead"></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- ============ CMDK ============ -->
+<div class="cmdk" id="cmdk">
+  <div class="cmdk-box">
+    <input class="cmdk-input" id="cmdkInput" placeholder="搜索模型、显卡、术语或页面…" />
+    <div class="cmdk-list" id="cmdkList"></div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script src="data.js?v=57"></script>
+<script src="app.js?v=57"></script>
+</body>
+</html>

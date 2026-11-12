@@ -1,0 +1,7 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+
+# pnpm 11 起用 allowBuilds 白名单控制安装脚本（旧的 onlyBuiltDependencies 已弃用）
+allowBuilds:
+  esbuild: true

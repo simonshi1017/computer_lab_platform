@@ -1,0 +1,47 @@
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# 工作区会话记忆（仅本地，不入库）
+.workbuddy/
+
+# 后端 seed 的唯一数据源：虽在 dist/ 下，但必须随仓库分发，
+# 否则 clone 后直接 docker compose build 会因缺 catalog.json 失败。
+# 其余构建产物仍然忽略。
+!packages/data/dist/
+packages/data/dist/*
+!packages/data/dist/catalog.json
+
+# logs
+npm-debug.log*
+pnpm-debug.log*
+logs/
+*.log
+
+# editor / os
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+
+# env
+.env
+.env.local
+.env.*.local
+
+# test
+coverage/
+
+# python (apps/api)
+apps/api/.venv/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# docker
+deploy/.env
+
+# e2e
+apps/web/test-results/
+apps/web/playwright-report/

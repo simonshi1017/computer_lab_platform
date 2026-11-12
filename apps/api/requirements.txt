@@ -1,0 +1,25 @@
+# 运行时依赖 —— 版本用区间而非精确锁定，避免内网镜像不同步时直接装不上。
+# 真正的可复现构建靠 Docker 镜像层缓存 + 这里的最小集，不引入传递依赖爆炸的库。
+
+fastapi>=0.115,<0.116
+uvicorn[standard]>=0.32,<0.35
+
+# ORM / 迁移：psycopg3 同时支持同步（Alembic）与异步（请求内），只装一个驱动
+SQLAlchemy[asyncio]>=2.0.36,<2.1
+psycopg[binary,pool]>=3.2,<3.3
+alembic>=1.14,<1.16
+
+pydantic[email]>=2.9,<3
+pydantic-settings>=2.6,<3
+
+# 鉴权
+PyJWT>=2.10,<3
+itsdangerous>=2.2,<3
+python-multipart>=0.0.12
+
+# 管理后台
+sqladmin>=0.20,<0.21
+
+# 出站请求：企业微信 API
+httpx>=0.28,<0.29
+apscheduler>=3.10,<4

@@ -1,0 +1,33 @@
+{
+  "name": "cm-learn-platform",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.24.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @clab/web dev",
+    "build": "pnpm --filter @clab/data test && pnpm -r --if-present run build",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "pnpm -r --if-present run typecheck",
+    "test": "pnpm -r --if-present run test",
+    "test:api": "cd apps/api && .venv/bin/python -m pytest",
+    "dev:api": "cd apps/api && .venv/bin/uvicorn app.main:app --reload --port 8000",
+    "preview": "pnpm --filter @clab/web preview",
+    "docker:build": "docker compose -f deploy/docker-compose.yml build",
+    "docker:up": "docker compose -f deploy/docker-compose.yml up -d",
+    "docker:down": "docker compose -f deploy/docker-compose.yml down",
+    "docker:logs": "docker compose -f deploy/docker-compose.yml logs -f",
+    "verify:data": "pnpm --filter @clab/data test",
+    "e2e": "pnpm --filter @clab/web e2e"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.12.0",
+    "eslint": "^9.12.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "globals": "^15.10.0",
+    "typescript": "^5.6.2",
+    "typescript-eslint": "^8.8.0"
+  }
+}

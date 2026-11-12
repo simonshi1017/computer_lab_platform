@@ -1,0 +1,21 @@
+node_modules
+**/node_modules
+**/dist
+# catalog.json 是后端 seed 的唯一来源，必须进构建上下文（dist 其余产物不要）
+!packages/data/dist/catalog.json
+.git
+.gitlab-ci.yml
+docs
+prototype
+*.md
+!README.md
+.DS_Store
+
+# Python
+**/__pycache__
+**/*.pyc
+**/.venv
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+apps/api/.env

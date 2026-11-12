@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="用动画、拖拽和模拟，把抽象的模型与硬件知识变成看得见、摸得着的算力知识体系。" />
+    <title>算力实验室 · Compute Lab</title>
+    <script>
+      // 首屏前恢复主题，避免刷新时闪一下白/黑
+      (function () {
+        try {
+          if (localStorage.getItem('clab.theme') === 'dark') {
+            document.documentElement.dataset.theme = 'dark';
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <script>
+      // 白屏排查用：平时只写控制台，加 ?debug=1 才把堆栈铺在页面上
+      window.addEventListener('error', function (e) {
+        console.error('[clab] runtime error', e.error || e.message);
+        if (location.search.indexOf('debug') === -1) return;
+        var box = document.createElement('pre');
+        box.style.cssText =
+          'position:fixed;inset:0;z-index:99999;background:#fff;color:#c00;padding:16px;font:11px/1.5 monospace;white-space:pre-wrap;overflow:auto';
+        box.textContent = 'RUNTIME ERROR\n' + (e.message || '') + '\n\n' + ((e.error && e.error.stack) || '');
+        document.body.appendChild(box);
+      });
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
