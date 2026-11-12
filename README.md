@@ -1,11 +1,33 @@
 # Compute Lab · 算力实验室
 
+[English](./README.en.md) · **简体中文**
+
 把「跑大模型」这件事拆开给你看的互动学习平台：先把概念讲明白，再让你亲手拖一台虚拟服务器出来，最后给出多维评估与部署说明书。
 
-- 产品设计：`../prototype/`（可交互原型，作为视觉与交互基线）
-- 设计规范：`DESIGN.md`
-- 技术选型：`TECH-STACK.md`
-- 开发计划：`DEV-PLAN.md`
+![DIY 组装台：实体机箱、实时显存功耗与六维评估](docs/screenshots/05-builder.png)
+
+## 效果预览
+
+截图取自默认浅色主题，1440×960 视口，由真实部署生成，可随时重跑（见文末）。
+
+<table>
+  <tr>
+    <td width="50%" align="center"><img src="docs/screenshots/01-home.png" width="420" alt="知识地图"/><br/><b>知识地图</b><br/>五关渐进式学习路径、今日推荐与继续学习</td>
+    <td width="50%" align="center"><img src="docs/screenshots/02-models.png" width="420" alt="模型百科"/><br/><b>模型百科</b><br/>9 个模型：厂商、场景、擅长与短板、显存估算</td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><img src="docs/screenshots/03-hardware.png" width="420" alt="硬件百科"/><br/><b>硬件百科</b><br/>16 张显卡与五大部件，价格标注来源与采集时间</td>
+    <td width="50%" align="center"><img src="docs/screenshots/04-recommend.png" width="420" alt="配置推荐"/><br/><b>配置推荐</b><br/>省钱 / 均衡 / 性能三档 BOM，含电源与插槽硬校验</td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><img src="docs/screenshots/06-manual.png" width="620" alt="我的说明书"/><br/><b>我的说明书</b><br/>把配置整理成能照着做的部署清单：目标、成本合计、性能预估、风险提示，可打印导出</td>
+  </tr>
+</table>
+
+- 产品设计：[prototype/](prototype/)（可交互原型，作为视觉与交互基线）
+- 设计规范：[DESIGN.md](DESIGN.md)
+- 技术选型：[TECH-STACK.md](TECH-STACK.md)
+- 开发计划：[DEV-PLAN.md](DEV-PLAN.md)
 
 ## 当前进度
 
@@ -20,11 +42,11 @@
 | M6 后端 P1 | ✅ 已完成 |
 | M7 数据自动化 | ✅ 已完成 |
 
-内容基线：9 个模型 · 16 张显卡 · 7 类部件（共 30 项）· 16 条术语 · 5 关学习路径。
+内容基线：9 个模型 · 16 张显卡 · 7 类部件（共 31 项）· 16 条术语 · 5 关学习路径。
 
 组装台能力：实体机箱 SVG（8 类槽位）· 拖拽/点击/键盘三通道 · 实时显存功耗价格 · 六维雷达与可执行建议 · 三套预设 · 本地存档 · 说明书生成与打印。
 
-打磨结果：首屏 97KB gzip（路由懒加载，组装台拆成独立 chunk）· 对比度全部达 AA · 键盘可完成装机 · 页面级错误边界 · 11 条 Playwright E2E · 全局免责页脚。
+打磨结果：首屏 97KB gzip（路由懒加载，组装台拆成独立 chunk）· 对比度全部达 AA · 键盘可完成装机 · 页面级错误边界 · 21 条 Playwright E2E · 全局免责页脚。
 
 数据自动化（M7）：价格经 CSV 导入后写入快照表并同步当前价，前端每张卡都能显示「京东 · 今天」或「目录估算价 · 无采集时间」；异常涨跌（>60%）与越界价在导入时就被拒绝。APScheduler 每日体检，陈旧即告警。分享卡片用 canvas 导出 1200×630 PNG，含显存占用条与保存时单价。埋点走 `sendBeacon` 上报，`/stats` 看板回答四个问题：多少人在用、学习走完没有、推荐是否被采纳、分享有没有传出去。
 
@@ -68,7 +90,7 @@ export APP_ENV=dev JWT_SECRET=dev-secret ADMIN_PASSWORD=devpass
 
 .venv/bin/alembic upgrade head          # 建 9 张表
 .venv/bin/uvicorn app.main:app --reload  # http://127.0.0.1:8000/api/v1/docs
-.venv/bin/python -m pytest              # 42 条用例（默认跑 SQLite，不需要 PG）
+.venv/bin/python -m pytest              # 69 条用例（默认跑 SQLite，不需要 PG）
 ```
 
 ## 目录结构
@@ -90,12 +112,13 @@ export APP_ENV=dev JWT_SECRET=dev-secret ADMIN_PASSWORD=devpass
 ├── apps/web/                # React 18 + Vite + TS
 │   └── src/
 │       ├── layout/          # 应用外壳（侧栏 / 顶栏）
-│       ├── pages/           # 8 个路由页面
+│       ├── pages/           # 路由页面（知识地图 / 百科 / 组装台 / 分享 / 看板 …）
 │       ├── components/      # 业务组件 + ui/ 原子组件
 │       ├── hooks/           # useTheme / useProgress / useBuild / useAuth
 │       ├── lib/             # 格式化、适配判定等纯工具
 │       ├── navigation.ts    # 路由元信息（导航、面包屑、命令面板共用）
 │       └── styles/          # Tailwind 入口 + 语义类
+├── docs/screenshots/        # README 效果图（由 e2e/_readme_shots.spec.ts 生成）
 ├── packages/
 │   ├── tokens/              # 设计令牌（CSS 变量 + Tailwind preset）
 │   ├── engine/              # 计算内核（纯 TS，无框架依赖）
@@ -205,6 +228,17 @@ pnpm docker:down      # 停止并移除
 | 企业微信扫码 | `WECOM_CORP_ID` / `WECOM_AGENT_ID` / `WECOM_SECRET` / `WECOM_REDIRECT_URI` | 接口返回 501，前端隐藏扫码入口并说明原因 |
 | 邮箱验证码 | `SMTP_HOST` / `SMTP_USER` / `SMTP_PASSWORD` | `APP_ENV=dev` 时验证码直接回传前端；`prod` 返回 501 |
 | 开发登录 | `APP_ENV != prod` 且 `ALLOW_DEV_LOGIN=true` | 生产环境关死（判断在服务端，不靠前端隐藏按钮） |
+
+## 重新生成截图
+
+效果图由 [apps/web/e2e/_readme_shots.spec.ts](apps/web/e2e/_readme_shots.spec.ts) 从真实部署抓取，固定 1440×960 视口并强制浅色主题：
+
+```bash
+E2E_BASE_URL=http://localhost:8080 \
+  pnpm --filter @clab/web exec playwright test e2e/_readme_shots.spec.ts
+```
+
+输出到 `docs/screenshots/`。改了 UI 后重跑一次，两版 README 的配图就会同步更新。
 
 ## 约定
 

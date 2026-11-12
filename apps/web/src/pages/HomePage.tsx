@@ -231,11 +231,11 @@ export function HomePage() {
       <div className="card mt-4 flex flex-wrap items-center gap-x-8 gap-y-3 px-5 py-4">
         <div className="text-[12px]" style={{ color: 'var(--text-2)' }}>
           <span className="badge badge-good mr-2">已完成</span>
-          M0–M5 全部交付：基建 · 内核 · 内容 · 组装台 · 推荐 · 打磨（90 单测 + 11 E2E）
+          M0–M5 全部交付：基建 · 内核 · 内容 · 组装台 · 推荐 · 打磨（前端 90 单测）
         </div>
-        <div className="text-[12px]" style={{ color: 'var(--text-3)' }}>
-          <span className="badge badge-mute mr-2">待办</span>
-          M6 后端 P1 · 账号、保存、分享链接
+        <div className="text-[12px]" style={{ color: 'var(--text-2)' }}>
+          <span className="badge badge-good mr-2">已上线</span>
+          M6–M7 · 账号与分享、价格快照、埋点看板（后端 69 用例 · E2E 21 条）
         </div>
       </div>
     </section>

@@ -1,0 +1,41 @@
+import { mkdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { test } from '@playwright/test';
+
+/**
+ * 生成 README 用的效果图（不参与 CI，需显式指向真实部署）：
+ *
+ *   E2E_BASE_URL=http://localhost:8080 \
+ *     pnpm --filter @clab/web exec playwright test e2e/_readme_shots.spec.ts
+ *
+ * 输出到仓库根 docs/screenshots/。视口固定 1440×960、强制浅色主题，
+ * 保证两版 README 里的截图构图一致。
+ */
+const OUT_DIR = join(process.cwd(), '../../docs/screenshots');
+
+const SHOTS = [
+  { file: '01-home.png', path: '/' },
+  { file: '02-models.png', path: '/models' },
+  { file: '03-hardware.png', path: '/hardware' },
+  { file: '04-recommend.png', path: '/recommend' },
+  { file: '05-builder.png', path: '/builder' },
+  { file: '06-manual.png', path: '/manual' },
+];
+
+test('capture README screenshots', async ({ page }) => {
+  test.skip(!process.env.E2E_BASE_URL, '需要 E2E_BASE_URL 指向真实部署');
+  mkdirSync(OUT_DIR, { recursive: true });
+
+  // 平台默认浅色；清掉本地可能残留的 dark，避免截图主题漂移
+  await page.addInitScript(() => {
+    localStorage.setItem('clab.theme', 'light');
+  });
+  await page.setViewportSize({ width: 1440, height: 960 });
+
+  for (const shot of SHOTS) {
+    await page.goto(shot.path, { waitUntil: 'domcontentloaded' });
+    // 等字体、懒加载路由与入场动画稳定
+    await page.waitForTimeout(1200);
+    await page.screenshot({ path: join(OUT_DIR, shot.file) });
+  }
+});
