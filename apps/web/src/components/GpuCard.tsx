@@ -3,6 +3,7 @@ import { maxModelForGpu } from '@/lib/fit';
 import { fmtPrice } from '@/lib/format';
 import { modelSizeLabel } from '@/lib/modelSize';
 import { priceProvenance, usePrices } from '@/hooks/usePrices';
+import { t } from '@/i18n';
 
 const VENDOR_STYLE: Record<string, { bg: string; fg: string }> = {
   NVIDIA: { bg: 'rgba(118,185,0,.12)', fg: '#5E9400' },
@@ -49,9 +50,9 @@ export function GpuCard({ gpu, onOpen, onBuild }: GpuCardProps) {
           style={{ background: 'var(--border)' }}
         >
           {[
-            { k: '显存 GB', v: `${gpu.vramGb}` },
-            { k: '带宽 GB/s', v: `${gpu.bandwidth}` },
-            { k: '功耗 W', v: `${gpu.tdpW}` },
+            { k: t("显存 GB"), v: `${gpu.vramGb}` },
+            { k: t("带宽 GB/s"), v: `${gpu.bandwidth}` },
+            { k: t("功耗 W"), v: `${gpu.tdpW}` },
           ].map((item) => (
             <div key={item.k} style={{ background: 'var(--surface)' }} className="px-2 py-1.5">
               <div className="text-[9.5px]" style={{ color: 'var(--text-3)' }}>
@@ -82,15 +83,15 @@ export function GpuCard({ gpu, onOpen, onBuild }: GpuCardProps) {
         </div>
         <div className="flex shrink-0 items-center gap-1.5">
           {best ? (
-            <span className="badge badge-good" title="按 INT4 · 8K 上下文估算，留 15% 显存余量">
-              最大 {modelSizeLabel(best.model)}
+            <span className="badge badge-good" title={t("按 INT4 · 8K 上下文估算，留 15% 显存余量")}>
+              {t("最大")} {modelSizeLabel(best.model)}
             </span>
           ) : (
-            <span className="badge badge-mute">跑不动 7B</span>
+            <span className="badge badge-mute">{t("跑不动 7B")}</span>
           )}
           {onBuild && (
             <button type="button" className="chip" onClick={() => onBuild(gpu.id)}>
-              装机
+              {t("装机")}
             </button>
           )}
         </div>

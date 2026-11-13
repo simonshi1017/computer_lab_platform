@@ -1,5 +1,6 @@
 import type { MoboRecord } from '@clab/data';
 import { EmptyHint, HitArea, HW, RemoveButton, SlotGroup } from './primitives';
+import { t } from '@/i18n';
 
 interface BoardProps {
   mobo: MoboRecord | null;
@@ -28,7 +29,7 @@ export function Board({ mobo, hovering, onDragOver, onDragLeave, onDrop, onClick
       onDrop={onDrop}
       onClick={onClick}
       role="button"
-      aria-label={mobo ? `主板 ${mobo.name}` : '空的主板位，点击选择主板'}
+      aria-label={mobo ? `主板 ${mobo.name}` : t("空的主板位，点击选择主板")}
     >
       {mobo ? (
         <>
@@ -115,7 +116,7 @@ export function Board({ mobo, hovering, onDragOver, onDragLeave, onDrop, onClick
             strokeDasharray="7 5"
           />
           {/* 空态提示放在右侧空白，避开内存槽位置 */}
-          <EmptyHint x={402} y={194} main="主板 · 先装底板" sub="CPU、内存、显卡都插在它上面" />
+          <EmptyHint x={402} y={194} main={t("主板 · 先装底板")} sub={t("CPU、内存、显卡都插在它上面")} />
           <HitArea x={60} y={96} width={460} height={414} radius={9} />
         </>
       )}

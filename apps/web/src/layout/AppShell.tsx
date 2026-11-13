@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { Cpu, LogIn, LogOut, Moon, Search, Sun } from 'lucide-react';
+import { Cpu, Languages, LogIn, LogOut, Moon, Search, Sun } from 'lucide-react';
+import { getLocale, t, toggleLocale } from '@/i18n';
 import { NAV_GROUPS, metaOf } from '@/navigation';
 import { useTheme } from '@/hooks/useTheme';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
@@ -22,7 +23,7 @@ export function AppShell() {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
 
-  const initials = (user?.nickname ?? user?.email ?? '我').slice(0, 2).toUpperCase();
+  const initials = (user?.nickname ?? user?.email ?? t("我")).slice(0, 2).toUpperCase();
 
   // 埋点初始化放壳层：所有页面都在它下面，注册一次就够
   useEffect(() => {
@@ -48,7 +49,7 @@ export function AppShell() {
   return (
     <div className="shell">
       <a href="#main-content" className="skip-link">
-        跳到主内容
+        {t('跳到主内容')}
       </a>
       <aside className="sidebar">
         <div className="brand">
@@ -56,14 +57,14 @@ export function AppShell() {
             <Cpu size={19} strokeWidth={2} />
           </div>
           <div className="brand-text">
-            <b>算力实验室</b>
+            <b>{t('算力实验室')}</b>
             <span>Compute Lab</span>
           </div>
         </div>
 
         {NAV_GROUPS.map((section) => (
           <div key={section.group}>
-            <div className="nav-group-label">{section.group}</div>
+            <div className="nav-group-label">{t(section.group)}</div>
             {section.items.map((item) => {
               const Icon = item.icon;
               const active = pathname === item.path;
@@ -75,7 +76,7 @@ export function AppShell() {
                   aria-current={active ? 'page' : undefined}
                 >
                   <Icon size={17} strokeWidth={1.7} />
-                  <span>{item.label}</span>
+                  <span>{t(item.label)}</span>
                 </Link>
               );
             })}
@@ -85,7 +86,7 @@ export function AppShell() {
         <div className="sidebar-foot">
           <div className="progress-card">
             <div className="flex items-baseline justify-between">
-              <span style={{ fontSize: 11.5, color: 'var(--text-2)' }}>项目进度</span>
+              <span style={{ fontSize: 11.5, color: 'var(--text-2)' }}>{t('项目进度')}</span>
               <span className="mono" style={{ fontSize: 17, fontWeight: 700 }}>
                 M7
               </span>
@@ -93,7 +94,7 @@ export function AppShell() {
             <div className="progress-track">
               <div className="progress-fill" style={{ width: '100%' }} />
             </div>
-            <div style={{ fontSize: 10.5, color: 'var(--text-3)' }}>数据自动化 · 已完成</div>
+            <div style={{ fontSize: 10.5, color: 'var(--text-3)' }}>{t('数据自动化 · 已完成')}</div>
           </div>
         </div>
       </aside>
@@ -101,23 +102,34 @@ export function AppShell() {
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="topbar">
           <div className="crumb">
-            <span>{meta?.group ?? '页面'}</span>
+            <span>{t(meta?.group ?? t("页面"))}</span>
             <span style={{ opacity: 0.5 }}>/</span>
-            <b>{meta?.label ?? '未找到'}</b>
+            <b>{t(meta?.label ?? t("未找到"))}</b>
           </div>
 
           <button type="button" className="search-btn" onClick={() => setPaletteOpen(true)}>
             <Search size={14} />
-            <span>搜索页面…</span>
+            <span>{t('搜索页面…')}</span>
             <span className="kbd">⌘K</span>
+          </button>
+
+          <button
+            type="button"
+            className="btn btn-ghost btn-sm lang-btn"
+            onClick={toggleLocale}
+            aria-label={t('切换语言')}
+            title={t('切换语言')}
+          >
+            <Languages size={14} />
+            {getLocale() === 'en' ? t("中文") : 'EN'}
           </button>
 
           <button
             type="button"
             className="icon-btn"
             onClick={toggle}
-            aria-label={theme === 'dark' ? '切换到浅色主题' : '切换到深色主题'}
-            title="切换主题"
+            aria-label={t(theme === 'dark' ? t("切换到浅色主题") : t("切换到深色主题"))}
+            title={t('切换主题')}
           >
             {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
           </button>
@@ -127,12 +139,12 @@ export function AppShell() {
               <Link
                 to="/my"
                 className="avatar"
-                title={`${user?.nickname ?? '我的配置'} · 查看我的配置`}
-                aria-label="我的配置"
+                title={`${user?.nickname ?? t('我的配置')} · ${t('查看我的配置')}`}
+                aria-label={t('我的配置')}
               >
                 {initials}
               </Link>
-              <button type="button" className="icon-btn" onClick={logout} title="退出登录" aria-label="退出登录">
+              <button type="button" className="icon-btn" onClick={logout} title={t('退出登录')} aria-label={t('退出登录')}>
                 <LogOut size={15} />
               </button>
             </div>
@@ -141,10 +153,10 @@ export function AppShell() {
               type="button"
               className="btn btn-ghost btn-sm"
               onClick={() => setLoginOpen(true)}
-              title="登录后可跨设备保存配置"
+              title={t('登录后可跨设备保存配置')}
             >
               <LogIn size={13} />
-              登录
+              {t('登录')}
             </button>
           )}
         </header>

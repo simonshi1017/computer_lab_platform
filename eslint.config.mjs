@@ -39,4 +39,9 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
     },
   },
+  {
+    // 根目录的构建 / codemod 脚本跑在 Node 里，console / process 是合法全局
+    files: ['scripts/**/*.mjs'],
+    languageOptions: { globals: globals.node },
+  },
 );

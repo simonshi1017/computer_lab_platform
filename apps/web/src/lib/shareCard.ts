@@ -1,4 +1,5 @@
-/**
+
+import { t } from '@/i18n';/**
  * 分享卡片：把一套配置画成 1200×630 的 PNG。
  *
  * 为什么用 canvas 而不是服务端渲染：
@@ -176,7 +177,7 @@ export async function renderShareCard(data: ShareCardData): Promise<Blob> {
   canvas.dataset.gpuCount = String(data.gpus.length);
 
   const ctx = canvas.getContext('2d');
-  if (!ctx) throw new Error('当前浏览器不支持 canvas');
+  if (!ctx) throw new Error(t("当前浏览器不支持 canvas"));
 
   // 背景
   ctx.fillStyle = BG;
@@ -216,9 +217,9 @@ export async function renderShareCard(data: ShareCardData): Promise<Blob> {
   ctx.textAlign = 'left';
   ctx.fillStyle = INK;
   ctx.font = `650 17px ${FONT}`;
-  ctx.fillText('算力实验室', left + 42, top + 21);
+  ctx.fillText(t("算力实验室"), left + 42, top + 21);
   // 必须在 17px 的字体下量宽度：先改字号再量，量出来是缩小的，两段文字会叠在一起
-  const brandWidth = ctx.measureText('算力实验室').width;
+  const brandWidth = ctx.measureText(t("算力实验室")).width;
   ctx.fillStyle = INK_3;
   ctx.font = `400 13px ${FONT}`;
   ctx.fillText('Compute Lab', left + 42 + brandWidth + 12, top + 20);
@@ -238,9 +239,9 @@ export async function renderShareCard(data: ShareCardData): Promise<Blob> {
   // 指标块
   const statsTop = top + 168;
   const blocks = [
-    { label: '综合评分', value: `${data.score}`, unit: data.grade === '—' ? '未评分' : `${data.grade} 级`, tone: GOOD },
-    { label: '整机参考价', value: money(data.priceCny), unit: '', tone: INK },
-    { label: '可用显存', value: `${data.vramGb.toFixed(0)}G`, unit: `约 ${Math.round(data.tps)} tok/s`, tone: INK },
+    { label: t("综合评分"), value: `${data.score}`, unit: data.grade === '—' ? t("未评分") : `${data.grade} 级`, tone: GOOD },
+    { label: t("整机参考价"), value: money(data.priceCny), unit: '', tone: INK },
+    { label: t("可用显存"), value: `${data.vramGb.toFixed(0)}G`, unit: `约 ${Math.round(data.tps)} tok/s`, tone: INK },
   ];
   const blockW = (contentWidth - 20) / 3;
   blocks.forEach((block, index) => {
@@ -270,7 +271,7 @@ export async function renderShareCard(data: ShareCardData): Promise<Blob> {
   });
 
   // 显卡与其余部件
-  const gpuLine = data.gpus.length > 0 ? `显卡：${data.gpus.join(' + ')}` : '显卡：未选';
+  const gpuLine = data.gpus.length > 0 ? `显卡：${data.gpus.join(' + ')}` : t("显卡：未选");
   ctx.fillStyle = INK_2;
   ctx.font = `400 15px ${FONT}`;
   ctx.fillText(ellipsis(ctx, gpuLine, contentWidth), left, statsTop + 142);
@@ -308,7 +309,7 @@ export async function renderShareCard(data: ShareCardData): Promise<Blob> {
   return await new Promise<Blob>((resolve, reject) => {
     canvas.toBlob((blob) => {
       if (blob) resolve(blob);
-      else reject(new Error('图片生成失败'));
+      else reject(new Error(t("图片生成失败")));
     }, 'image/png');
   });
 }

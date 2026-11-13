@@ -10,6 +10,7 @@ import { Chip, Segmented } from '@/components/ui/controls';
 import { saveBuilderState } from '@/lib/builderStorage';
 import { fmtCtx, fmtGb, fmtPrice } from '@/lib/format';
 import { PAGE_BY_PATH } from '@/navigation';
+import { t } from '@/i18n';
 
 const QUANT_OPTIONS: Array<{ value: Quant; label: string }> = [
   { value: 'fp16', label: 'FP16' },
@@ -18,10 +19,10 @@ const QUANT_OPTIONS: Array<{ value: Quant; label: string }> = [
 ];
 
 const PREF_OPTIONS: Array<{ value: RecommendPref; label: string }> = [
-  { value: 'save', label: '省钱优先' },
-  { value: 'balance', label: '均衡' },
-  { value: 'perf', label: '性能优先' },
-  { value: 'quiet', label: '静音优先' },
+  { value: 'save', label: t("省钱优先") },
+  { value: 'balance', label: t("均衡") },
+  { value: 'perf', label: t("性能优先") },
+  { value: 'quiet', label: t("静音优先") },
 ];
 
 const CTX_OPTIONS = [4096, 8192, 16384, 32768, 65536];
@@ -42,8 +43,8 @@ function customSpec(paramsB: number): ModelSpec {
   const { layers, hiddenDim } = estimateArch(paramsB);
   return {
     id: `custom-${paramsB}b`,
-    name: `自定义 ${paramsB}B`,
-    vendor: '自定义',
+    name: `${t("自定义")} ${paramsB}B`,
+    vendor: t("自定义"),
     arch: 'dense',
     paramsB,
     layers,
@@ -130,11 +131,11 @@ export function RecommendPage() {
     <section className="page">
       <div className="page-head">
         <div>
-          <h1 className="page-title">{meta.title}</h1>
-          <p className="page-sub">{meta.subtitle}</p>
+          <h1 className="page-title">{t(meta.title)}</h1>
+          <p className="page-sub">{t(meta.subtitle)}</p>
         </div>
         <div className="note note-info max-w-[300px] text-[11.5px]">
-          先算显存，再选卡。三档方案都经过电源与主板可行性校验，不会给出「纸面能跑、开机跳闸」的配置。
+          {t("先算显存，再选卡。三档方案都经过电源与主板可行性校验，不会给出「纸面能跑、开机跳闸」的配置。")}
         </div>
       </div>
 
@@ -142,7 +143,7 @@ export function RecommendPage() {
       <div className="card rec-form">
         <div className="rec-field" style={{ gridColumn: 'span 2' }}>
           <label className="field-label" htmlFor="rec-model">
-            要跑什么模型
+            {t("要跑什么模型")}
           </label>
           <select
             id="rec-model"
@@ -155,14 +156,14 @@ export function RecommendPage() {
                 {item.cn} · {item.paramsB}B
               </option>
             ))}
-            <option value="custom">自定义参数量…</option>
+            <option value="custom">{t("自定义参数量…")}</option>
           </select>
         </div>
 
         {isCustom && (
           <div className="rec-field">
             <label className="field-label" htmlFor="rec-params">
-              参数量 (B)
+              {t("参数量 (B)")}
             </label>
             <input
               id="rec-params"
@@ -179,13 +180,13 @@ export function RecommendPage() {
         )}
 
         <div className="rec-field">
-          <span className="field-label">量化方式</span>
-          <Segmented value={quant} options={QUANT_OPTIONS} onChange={setQuant} ariaLabel="量化方式" />
+          <span className="field-label">{t("量化方式")}</span>
+          <Segmented value={quant} options={QUANT_OPTIONS} onChange={setQuant} ariaLabel={t("量化方式")} />
         </div>
 
         <div className="rec-field">
           <label className="field-label" htmlFor="rec-ctx">
-            上下文
+            {t("上下文")}
           </label>
           <select id="rec-ctx" className="input" value={ctx} onChange={(event) => setCtx(Number(event.target.value))}>
             {CTX_OPTIONS.filter((option) => option <= model.ctxMax).map((option) => (
@@ -198,7 +199,7 @@ export function RecommendPage() {
 
         <div className="rec-field">
           <label className="field-label" htmlFor="rec-budget">
-            预算 (元)
+            {t("预算 (元)")}
           </label>
           <input
             id="rec-budget"
@@ -214,7 +215,7 @@ export function RecommendPage() {
 
       <div className="mt-3 flex flex-wrap items-center gap-1.5">
         <span className="mr-1 text-[11px]" style={{ color: 'var(--text-3)' }}>
-          偏好
+          {t("偏好")}
         </span>
         {PREF_OPTIONS.map((option) => (
           <Chip key={option.value} active={pref === option.value} onClick={() => setPref(option.value)}>
@@ -226,16 +227,16 @@ export function RecommendPage() {
       {/* ---------------- 需求摘要 ---------------- */}
       <div className="rec-summary">
         <div className="sum-pill hot">
-          显存需求 <b>{fmtGb(need.total)}</b> GB
+          {t("显存需求")} <b>{fmtGb(need.total)}</b> GB
         </div>
         <div className="sum-pill">
-          权重 <b>{fmtGb(need.weights)}</b>G · KV Cache <b>{fmtGb(need.kvCache)}</b>G
+          {t("权重")} <b>{fmtGb(need.weights)}</b>G · KV Cache <b>{fmtGb(need.kvCache)}</b>G
         </div>
         <div className="sum-pill">
-          预算 <b>{fmtPrice(budget)}</b>
+          {t("预算")} <b>{fmtPrice(budget)}</b>
         </div>
         <div className="sum-pill">
-          可行方案 <b>{rec.tiers.length}</b> 套
+          {t("可行方案")} <b>{rec.tiers.length}</b> {t("套")}
         </div>
         {overBudget && (
           <div
@@ -246,12 +247,12 @@ export function RecommendPage() {
               color: 'var(--warn-ink)',
             }}
           >
-            <AlertTriangle size={12} /> 最便宜的方案也超预算 {fmtPrice(cheapest - budget)}
+            <AlertTriangle size={12} /> {t("最便宜的方案也超预算")} {fmtPrice(cheapest - budget)}
           </div>
         )}
         {isCustom && (
           <div className="sum-pill" style={{ color: 'var(--text-3)' }}>
-            按 {model.layers} 层 / 隐藏维度 {model.hiddenDim} 估算，精度有限
+            {t("按")} {model.layers} {t("层 / 隐藏维度")} {model.hiddenDim} {t("估算，精度有限")}
           </div>
         )}
       </div>
@@ -267,21 +268,20 @@ export function RecommendPage() {
               <AlertTriangle size={17} />
             </span>
             <div className="min-w-0">
-              <div className="text-[14px] font-semibold">当前条件下没有可行方案</div>
+              <div className="text-[14px] font-semibold">{t("当前条件下没有可行方案")}</div>
               <p className="mt-1 text-[12.5px] leading-relaxed" style={{ color: 'var(--text-2)' }}>
-                {model.name} 在 {quant.toUpperCase()} · {fmtCtx(ctx)} 下需要{' '}
-                <b className="mono">{fmtGb(need.total)}GB</b> 显存，即使插满四张最顶级的卡也装不下，
-                或者配出来的电源会在满载时跳闸。这不是预算问题，是物理限制。
+                {model.name} {t("在")} {quant.toUpperCase()} · {fmtCtx(ctx)} {t("下需要")}{' '}
+                <b className="mono">{fmtGb(need.total)}GB</b> {t("显存，即使插满四张最顶级的卡也装不下， 或者配出来的电源会在满载时跳闸。这不是预算问题，是物理限制。")}
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {quant !== 'int4' && (
                   <button type="button" className="btn btn-ghost btn-sm" onClick={() => setQuant('int4')}>
-                    量化降到 INT4
+                    {t("量化降到 INT4")}
                   </button>
                 )}
                 {ctx > 4096 && (
                   <button type="button" className="btn btn-ghost btn-sm" onClick={() => setCtx(4096)}>
-                    上下文降到 4K
+                    {t("上下文降到 4K")}
                   </button>
                 )}
                 <button
@@ -293,12 +293,12 @@ export function RecommendPage() {
                     setCtx(8192);
                   }}
                 >
-                  换成 32B 试试
+                  {t("换成 32B 试试")}
                 </button>
               </div>
               <div className="note note-info mt-3">
                 <Cloud size={12} className="mr-1 inline" />
-                如果只是要用这个模型，租云 API 通常比自建更划算——先跑通业务，再决定要不要买机器。
+                {t("如果只是要用这个模型，租云 API 通常比自建更划算——先跑通业务，再决定要不要买机器。")}
               </div>
             </div>
           </div>
@@ -312,17 +312,16 @@ export function RecommendPage() {
             {rec.limited && (
               <div className="card tier-note">
                 <div className="flex items-center gap-2 text-[13px] font-semibold" style={{ color: 'var(--warn-ink)' }}>
-                  <Gauge size={15} />只有 {rec.tiers.length} 套可行方案
+                  <Gauge size={15} />{t("只有")} {rec.tiers.length} {t("套可行方案")}
                 </div>
                 <p className="mt-2 text-[12px] leading-[1.75]" style={{ color: 'var(--text-2)' }}>
-                  {model.name} 在 {quant.toUpperCase()} · {fmtCtx(ctx)} 下需要{' '}
-                  <b className="mono">{fmtGb(need.total)}GB</b> 显存。其余组合要么装不下，要么价格翻好几倍、
-                  没有推荐价值——宁可不给，也不拿「更贵更慢」的方案凑数。
+                  {model.name} {t("在")} {quant.toUpperCase()} · {fmtCtx(ctx)} {t("下需要")}{' '}
+                  <b className="mono">{fmtGb(need.total)}GB</b> {t("显存。其余组合要么装不下，要么价格翻好几倍、 没有推荐价值——宁可不给，也不拿「更贵更慢」的方案凑数。")}
                 </p>
                 <ul className="mt-2 space-y-1 text-[11.5px]" style={{ color: 'var(--text-2)' }}>
-                  <li>· 降一档量化，显存能省将近一半</li>
-                  <li>· 上下文从 {fmtCtx(ctx)} 降到 8K，KV Cache 会小很多</li>
-                  <li>· 提高预算，多卡方案才有意义</li>
+                  <li>{t("· 降一档量化，显存能省将近一半")}</li>
+                  <li>{t("· 上下文从")} {fmtCtx(ctx)} {t("降到 8K，KV Cache 会小很多")}</li>
+                  <li>{t("· 提高预算，多卡方案才有意义")}</li>
                 </ul>
               </div>
             )}
@@ -330,7 +329,7 @@ export function RecommendPage() {
 
           <p className="mt-4 flex items-start gap-1.5 text-[11px] leading-relaxed" style={{ color: 'var(--text-3)' }}>
             <Sparkles size={11} className="mt-0.5 shrink-0" />
-            价格为估算值；显存与速度由规则计算，不等于实测跑分。点「用这套去组装」会把这套配置原样送进组装台，可以继续改。
+            {t("价格为估算值；显存与速度由规则计算，不等于实测跑分。点「用这套去组装」会把这套配置原样送进组装台，可以继续改。")}
           </p>
         </>
       )}

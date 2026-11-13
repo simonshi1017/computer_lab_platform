@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { BookOpen, Boxes, Cpu, type LucideIcon } from 'lucide-react';
 import { GLOSSARY_LIST, GPUS_LIST, MODELS_LIST } from '@clab/data';
 import { PAGE_META } from '@/navigation';
+import { t } from '@/i18n';
 
 interface CommandPaletteProps {
   open: boolean;
@@ -29,19 +30,19 @@ interface Item {
 function buildIndex(): Item[] {
   const pages: Item[] = PAGE_META.map((page) => ({
     key: `page:${page.path}`,
-    label: page.label,
-    hint: page.subtitle,
-    group: '页面',
+    label: t(page.label),
+    hint: t(page.subtitle),
+    group: '页面' /* i18n-key */,
     to: page.path,
     icon: page.icon,
-    keywords: page.title,
+    keywords: t(page.title),
   }));
 
   const models: Item[] = MODELS_LIST.map((model) => ({
     key: `model:${model.id}`,
     label: model.cn,
     hint: `${model.vendor} · ${model.paramsB}B · ${model.scenes[0]}`,
-    group: '模型',
+    group: '模型' /* i18n-key */,
     to: `/models?model=${model.id}`,
     icon: Boxes,
     keywords: [model.name, model.vendor, ...model.scenes].join(' '),
@@ -51,7 +52,7 @@ function buildIndex(): Item[] {
     key: `gpu:${gpu.id}`,
     label: gpu.name,
     hint: `${gpu.vendor} · ${gpu.vramGb}G · ${gpu.bandwidth}GB/s`,
-    group: '显卡',
+    group: '显卡' /* i18n-key */,
     to: `/hardware?gpu=${gpu.id}`,
     icon: Cpu,
     keywords: [gpu.arch, gpu.gpuClass, gpu.vendor].join(' '),
@@ -61,7 +62,7 @@ function buildIndex(): Item[] {
     key: `term:${entry.id}`,
     label: entry.term,
     hint: entry.en,
-    group: '术语',
+    group: '术语' /* i18n-key */,
     to: `/glossary?term=${entry.id}`,
     icon: BookOpen,
     keywords: [entry.en, ...(entry.alias ?? [])].join(' '),
@@ -129,8 +130,8 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
           ref={inputRef}
           className="palette-input"
           value={query}
-          placeholder="搜页面、模型、显卡或术语…"
-          aria-label="全局搜索"
+          placeholder={t("搜页面、模型、显卡或术语…")}
+          aria-label={t("全局搜索")}
           onChange={(event) => setQuery(event.target.value)}
           onKeyDown={(event) => {
             if (event.key === 'Escape') onClose();
@@ -148,7 +149,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
         />
         <div style={{ maxHeight: 380, overflowY: 'auto', padding: 6 }}>
           {results.length === 0 ? (
-            <div className="palette-empty">没有匹配结果，试试「显存」「3090」「量化」</div>
+            <div className="palette-empty">{t("没有匹配结果，试试「显存」「3090」「量化」")}</div>
           ) : (
             results.map((item, index) => {
               const Icon = item.icon;
@@ -160,7 +161,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                       className="px-2 pb-1 pt-2 text-[9.5px] uppercase tracking-[0.1em]"
                       style={{ color: 'var(--text-3)' }}
                     >
-                      {item.group}
+                      {t(item.group)}
                     </div>
                   )}
                   <button

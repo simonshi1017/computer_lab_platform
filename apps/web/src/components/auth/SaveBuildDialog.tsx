@@ -5,6 +5,7 @@ import { ApiError, buildApi, shareApi, type BuildDetail } from '@/lib/api';
 import { useAuth } from '@/hooks/useAuth';
 import { track } from '@/lib/track';
 import type { UseBuild } from '@/hooks/useBuild';
+import { t } from '@/i18n';
 
 /**
  * 保存配置 + 生成分享链接。
@@ -91,7 +92,7 @@ export function SaveBuildDialog({
       track('build_save', { modelId: builder.modelId, score: result.score });
       onSaved?.(result);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : '保存失败，请稍后再试');
+      setError(err instanceof ApiError ? err.message : t("保存失败，请稍后再试"));
     } finally {
       setBusy(false);
     }
@@ -106,7 +107,7 @@ export function SaveBuildDialog({
       setShareUrl(link.url);
       track('share_create', { buildId: saved.id });
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : '生成分享链接失败');
+      setError(err instanceof ApiError ? err.message : t("生成分享链接失败"));
     } finally {
       setBusy(false);
     }
@@ -121,7 +122,7 @@ export function SaveBuildDialog({
       // http 页面（内网常见）没有 clipboard API，退回到选中输入框内容
       const input = document.getElementById('share-url-input') as HTMLInputElement | null;
       input?.select();
-      setError('当前环境不支持自动复制，链接已选中，请按 Ctrl/⌘ + C');
+      setError(t("当前环境不支持自动复制，链接已选中，请按 Ctrl/⌘ + C"));
     }
   };
 
@@ -133,10 +134,10 @@ export function SaveBuildDialog({
         </div>
         <div>
           <h2 id="save-title" style={{ fontSize: 16, fontWeight: 700 }}>
-            {saved ? '已保存，可以分享给别人了' : '保存这套配置'}
+            {saved ? t("已保存，可以分享给别人了") : t("保存这套配置")}
           </h2>
           <p style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 3 }}>
-            会连同当前评分与风险一起存档，半年后回看仍是当时的结果。
+            {t("会连同当前评分与风险一起存档，半年后回看仍是当时的结果。")}
           </p>
         </div>
       </div>
@@ -158,29 +159,28 @@ export function SaveBuildDialog({
             >
               <ShieldAlert size={15} style={{ flex: 'none', marginTop: 1, color: 'var(--warn-ink)' }} />
               <span>
-                保存到账号需要先登录。不登录的话，配置已经自动存在这个浏览器里（本地存档），
-                换台设备就看不到了。
+                {t("保存到账号需要先登录。不登录的话，配置已经自动存在这个浏览器里（本地存档）， 换台设备就看不到了。")}
               </span>
             </div>
             <button type="button" className="btn btn-primary" onClick={onRequestLogin}>
-              去登录
+              {t("去登录")}
             </button>
           </div>
         ) : saved ? (
           <div style={{ display: 'grid', gap: 10 }}>
             <div className="spec-grid" style={{ gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
               <div className="spec-cell">
-                <div className="k">评分</div>
+                <div className="k">{t("评分")}</div>
                 <div className="v mono">
                   {saved.score} · {saved.grade}
                 </div>
               </div>
               <div className="spec-cell">
-                <div className="k">整机价</div>
+                <div className="k">{t("整机价")}</div>
                 <div className="v mono">¥{saved.priceCny.toLocaleString()}</div>
               </div>
               <div className="spec-cell">
-                <div className="k">配置 ID</div>
+                <div className="k">{t("配置 ID")}</div>
                 <div className="v mono">#{saved.id}</div>
               </div>
             </div>
@@ -188,32 +188,32 @@ export function SaveBuildDialog({
             {shareUrl ? (
               <div style={{ display: 'grid', gap: 7 }}>
                 <label className="field-label" htmlFor="share-url-input">
-                  分享链接（任何人可打开，不需要登录）
+                  {t("分享链接（任何人可打开，不需要登录）")}
                 </label>
                 <div style={{ display: 'flex', gap: 8 }}>
                   <input id="share-url-input" className="input mono" readOnly value={shareUrl} />
                   <button type="button" className="btn btn-ghost" onClick={() => void copy()}>
                     {copied ? <Check size={14} /> : <Copy size={14} />}
-                    {copied ? '已复制' : '复制'}
+                    {copied ? t("已复制") : t("复制")}
                   </button>
                 </div>
               </div>
             ) : (
               <button type="button" className="btn btn-primary" disabled={busy} onClick={() => void doShare()}>
                 {busy ? <Loader2 size={15} className="animate-spin" /> : <Link2 size={15} />}
-                生成分享链接
+                {t("生成分享链接")}
               </button>
             )}
 
             <button type="button" className="btn btn-ghost btn-sm" style={{ justifySelf: 'start' }} onClick={onClose}>
-              关闭
+              {t("关闭")}
             </button>
           </div>
         ) : (
           <>
             <div style={{ display: 'grid', gap: 7 }}>
               <label className="field-label" htmlFor="build-name">
-                配置名称
+                {t("配置名称")}
               </label>
               <input
                 id="build-name"
@@ -221,12 +221,12 @@ export function SaveBuildDialog({
                 value={name}
                 maxLength={60}
                 onChange={(event) => setName(event.target.value)}
-                placeholder="例如：双 4090 跑 14B"
+                placeholder={t("例如：双 4090 跑 14B")}
               />
             </div>
             <div style={{ display: 'grid', gap: 7 }}>
               <label className="field-label" htmlFor="build-note">
-                备注（可选）
+                {t("备注（可选）")}
               </label>
               <input
                 id="build-note"
@@ -234,7 +234,7 @@ export function SaveBuildDialog({
                 value={note}
                 maxLength={200}
                 onChange={(event) => setNote(event.target.value)}
-                placeholder="例如：给算法组的小王配的，预算 3 万"
+                placeholder={t("例如：给算法组的小王配的，预算 3 万")}
               />
             </div>
 
@@ -247,10 +247,10 @@ export function SaveBuildDialog({
             <div style={{ display: 'flex', gap: 8 }}>
               <button type="button" className="btn btn-primary" disabled={busy} onClick={() => void doSave()}>
                 {busy ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
-                保存到我的配置
+                {t("保存到我的配置")}
               </button>
               <button type="button" className="btn btn-ghost" onClick={onClose}>
-                取消
+                {t("取消")}
               </button>
             </div>
           </>

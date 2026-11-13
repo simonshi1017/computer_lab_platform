@@ -7,6 +7,7 @@ import { Dialog } from '@/components/ui/Dialog';
 import { Segmented, SpecGrid } from '@/components/ui/controls';
 import { fmtCtx, fmtGb, tpsToChars } from '@/lib/format';
 import { modelSizeLabel } from '@/lib/modelSize';
+import { t } from '@/i18n';
 
 const QUANT_OPTIONS: Array<{ value: Quant; label: string }> = [
   { value: 'fp16', label: 'FP16' },
@@ -63,8 +64,8 @@ export function ModelDialog({ model, onClose }: ModelDialogProps) {
             <span className="badge badge-brand">{model.tag}</span>
           </div>
           <div className="mt-1 text-[11.5px]" style={{ color: 'var(--text-3)' }}>
-            {model.vendor} · {model.country} · {model.archLabel} · {model.releasedAt} 发布 ·{' '}
-            {model.license ?? '协议未标注'}
+            {model.vendor} · {model.country} · {model.archLabel} · {model.releasedAt} {t("发布 ·")}{' '}
+            {model.license ?? t("协议未标注")}
           </div>
         </div>
       </div>
@@ -73,11 +74,11 @@ export function ModelDialog({ model, onClose }: ModelDialogProps) {
         {/* 先比喻，后数字 —— 这是内容规范里最不该省的一条 */}
         <div className="grid gap-2.5 sm:grid-cols-2">
           <div className="rounded-[12px] border p-3.5" style={{ borderColor: 'var(--border)', background: 'var(--surface-2)' }}>
-            <div className="field-label">生活化比喻</div>
+            <div className="field-label">{t("生活化比喻")}</div>
             <div className="text-[12.5px] leading-[1.7]">{model.metaphor}</div>
           </div>
           <div className="rounded-[12px] border p-3.5" style={{ borderColor: 'var(--border)', background: 'var(--surface-2)' }}>
-            <div className="field-label">真实数字</div>
+            <div className="field-label">{t("真实数字")}</div>
             <div className="text-[12.5px] leading-[1.7]">{model.real}</div>
           </div>
         </div>
@@ -85,14 +86,14 @@ export function ModelDialog({ model, onClose }: ModelDialogProps) {
         <div className="mt-3.5">
           <SpecGrid
             items={[
-              { k: '参数量', v: `${model.paramsB}B`, mono: true },
-              { k: '层数', v: model.layers, mono: true },
-              { k: '隐藏维度', v: model.hiddenDim, mono: true },
-              { k: '最大上下文', v: fmtCtx(model.ctxMax), mono: true },
-              { k: '架构', v: model.archLabel },
-              { k: '厂商', v: model.vendor },
-              { k: '支持语言', v: model.languages.join(' / ') },
-              { k: '许可证', v: model.license ?? '未标注' },
+              { k: t("参数量"), v: `${model.paramsB}B`, mono: true },
+              { k: t("层数"), v: model.layers, mono: true },
+              { k: t("隐藏维度"), v: model.hiddenDim, mono: true },
+              { k: t("最大上下文"), v: fmtCtx(model.ctxMax), mono: true },
+              { k: t("架构"), v: model.archLabel },
+              { k: t("厂商"), v: model.vendor },
+              { k: t("支持语言"), v: model.languages.join(' / ') },
+              { k: t("许可证"), v: model.license ?? t("未标注") },
             ]}
           />
         </div>
@@ -112,7 +113,7 @@ export function ModelDialog({ model, onClose }: ModelDialogProps) {
         <div className="mt-3.5 grid gap-2.5 sm:grid-cols-2">
           <div className="note note-good">
             <div className="mb-1 font-semibold" style={{ color: 'var(--good-ink)' }}>
-              擅长什么
+              {t("擅长什么")}
             </div>
             <ul className="space-y-1">
               {model.strengths.map((item) => (
@@ -125,7 +126,7 @@ export function ModelDialog({ model, onClose }: ModelDialogProps) {
           </div>
           <div className="note note-warn">
             <div className="mb-1 font-semibold" style={{ color: 'var(--warn-ink)' }}>
-              不适合什么
+              {t("不适合什么")}
             </div>
             <ul className="space-y-1">
               {model.weaknesses.map((item) => (
@@ -148,21 +149,21 @@ export function ModelDialog({ model, onClose }: ModelDialogProps) {
         >
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="text-[12.5px] font-semibold">
-              显存估算器 <span className="badge badge-mute ml-1">估算值</span>
+              {t("显存估算器")} <span className="badge badge-mute ml-1">{t("估算值")}</span>
             </div>
-            <Segmented value={quant} options={QUANT_OPTIONS} onChange={setQuant} ariaLabel="量化方式" />
+            <Segmented value={quant} options={QUANT_OPTIONS} onChange={setQuant} ariaLabel={t("量化方式")} />
           </div>
 
           <div className="mt-3 flex items-baseline gap-2">
             <span className="mono text-[32px] font-bold leading-none tracking-[-0.03em]">{fmtGb(need.total)}</span>
             <span className="text-[12px]" style={{ color: 'var(--text-2)' }}>
-              GB 显存需求
+              {t("GB 显存需求")}
             </span>
           </div>
 
           <div className="mt-3 flex items-center gap-3">
             <label htmlFor="ctx-range" className="shrink-0 text-[11.5px]" style={{ color: 'var(--text-2)' }}>
-              上下文
+              {t("上下文")}
             </label>
             <input
               id="ctx-range"
@@ -187,7 +188,7 @@ export function ModelDialog({ model, onClose }: ModelDialogProps) {
             <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px]" style={{ color: 'var(--text-2)' }}>
               <span>
                 <i className="mr-1 inline-block h-1.5 w-1.5 rounded-full align-middle" style={{ background: 'var(--accent)' }} />
-                权重 {fmtGb(need.weights)}G
+                {t("权重")} {fmtGb(need.weights)}G
               </span>
               <span>
                 <i className="mr-1 inline-block h-1.5 w-1.5 rounded-full align-middle" style={{ background: 'var(--mint)' }} />
@@ -195,34 +196,34 @@ export function ModelDialog({ model, onClose }: ModelDialogProps) {
               </span>
               <span>
                 <i className="mr-1 inline-block h-1.5 w-1.5 rounded-full align-middle" style={{ background: 'var(--warning)' }} />
-                开销与余量 {fmtGb(need.overhead + need.margin)}G
+                {t("开销与余量")} {fmtGb(need.overhead + need.margin)}G
               </span>
-              <span className="mono">权重+KV = {fmtGb(raw)}G</span>
+              <span className="mono">{t("权重+KV =")} {fmtGb(raw)}G</span>
             </div>
           </div>
 
           <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[11.5px]" style={{ color: 'var(--text-2)' }}>
             <span>
-              单张 {gpu4090.name.replace(/ \d+G$/, '')} 约{' '}
+              {t("单张")} {gpu4090.name.replace(/ \d+G$/, '')} {t("约")}{' '}
               <b className="mono" style={{ color: 'var(--warn-ink)' }}>
                 {tpsSingle}
               </b>{' '}
               tokens/s
             </span>
             <span>
-              双 {gpu3090.name.replace(/ \d+G$/, '')} 约{' '}
+              {t("双")} {gpu3090.name.replace(/ \d+G$/, '')} {t("约")}{' '}
               <b className="mono" style={{ color: 'var(--warn-ink)' }}>
                 {tpsDual}
               </b>{' '}
               tokens/s
             </span>
-            <span className="mono">≈ {tpsToChars(tpsSingle)} 字/秒</span>
+            <span className="mono">≈ {tpsToChars(tpsSingle)} {t("字/秒")}</span>
           </div>
         </div>
 
         <div className="note note-warn mt-3.5">
           <div className="mb-1 font-semibold" style={{ color: 'var(--warn-ink)' }}>
-            常见误区
+            {t("常见误区")}
           </div>
           {model.mistake}
         </div>
@@ -237,7 +238,7 @@ export function ModelDialog({ model, onClose }: ModelDialogProps) {
             }}
           >
             <Sparkles size={15} />
-            看要买什么硬件
+            {t("看要买什么硬件")}
           </button>
           <button
             type="button"
@@ -248,7 +249,7 @@ export function ModelDialog({ model, onClose }: ModelDialogProps) {
             }}
           >
             <Cpu size={15} />
-            拿去组装台
+            {t("拿去组装台")}
             <ArrowRight size={14} />
           </button>
         </div>

@@ -5,8 +5,9 @@ import { GLOSSARY_LIST, glossaryById, type GlossaryEntry } from '@clab/data';
 import { Dialog } from '@/components/ui/Dialog';
 import { Chip } from '@/components/ui/controls';
 import { PAGE_BY_PATH } from '@/navigation';
+import { t } from '@/i18n';
 
-const CATEGORIES: Array<GlossaryEntry['category'] | '全部'> = ['全部', '模型', '显存', '硬件', '部署'];
+const CATEGORIES: Array<GlossaryEntry['category'] | '全部'> = ['全部', '模型', '显存', '硬件', '部署']; /* i18n-key：筛选逻辑值，只在渲染 Chip 时翻译 */
 
 export function GlossaryPage() {
   const meta = PAGE_BY_PATH['/glossary'];
@@ -41,8 +42,8 @@ export function GlossaryPage() {
     <section className="page">
       <div className="page-head">
         <div>
-          <h1 className="page-title">{meta.title}</h1>
-          <p className="page-sub">{meta.subtitle}</p>
+          <h1 className="page-title">{t(meta.title)}</h1>
+          <p className="page-sub">{t(meta.subtitle)}</p>
         </div>
         <div className="relative w-full max-w-[280px]">
           <Search
@@ -52,10 +53,10 @@ export function GlossaryPage() {
           />
           <input
             className="input pl-8"
-            placeholder="搜术语，中英文都行…"
+            placeholder={t("搜术语，中英文都行…")}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            aria-label="搜索术语"
+            aria-label={t("搜索术语")}
           />
         </div>
       </div>
@@ -63,16 +64,16 @@ export function GlossaryPage() {
       <div className="mb-4 flex flex-wrap gap-1.5">
         {CATEGORIES.map((item) => (
           <Chip key={item} active={category === item} onClick={() => setCategory(item)}>
-            {item}
+            {t(item)}
           </Chip>
         ))}
       </div>
 
       {list.length === 0 ? (
         <div className="card px-6 py-12 text-center">
-          <div className="text-[13.5px] font-semibold">没找到这个术语</div>
+          <div className="text-[13.5px] font-semibold">{t("没找到这个术语")}</div>
           <div className="mt-1.5 text-[12px]" style={{ color: 'var(--text-2)' }}>
-            试试英文缩写，比如 KV Cache、INT4、TDP。
+            {t("试试英文缩写，比如 KV Cache、INT4、TDP。")}
           </div>
         </div>
       ) : (
@@ -121,7 +122,7 @@ export function GlossaryPage() {
                   <span className="badge badge-mute">{active.category}</span>
                   {active.alias?.map((alias) => (
                     <span key={alias} className="text-[10.5px]" style={{ color: 'var(--text-3)' }}>
-                      也叫 {alias}
+                      {t("也叫")} {alias}
                     </span>
                   ))}
                 </div>
@@ -131,26 +132,26 @@ export function GlossaryPage() {
             <div className="dialog-body">
               <div className="note note-info">
                 <div className="mb-1 font-semibold" style={{ color: 'var(--accent-ink)' }}>
-                  先用大白话说
+                  {t("先用大白话说")}
                 </div>
                 <div className="text-[13px] leading-[1.75]">{active.plain}</div>
               </div>
 
               <div className="mt-3">
-                <div className="field-label">专业解释</div>
+                <div className="field-label">{t("专业解释")}</div>
                 <p className="text-[12.5px] leading-[1.8]">{active.pro}</p>
               </div>
 
               <div className="note note-warn mt-3.5">
                 <div className="mb-1 font-semibold" style={{ color: 'var(--warn-ink)' }}>
-                  常见误区
+                  {t("常见误区")}
                 </div>
                 {active.mistake}
               </div>
 
               {active.related.length > 0 && (
                 <div className="mt-4">
-                  <div className="field-label">相关术语</div>
+                  <div className="field-label">{t("相关术语")}</div>
                   <div className="flex flex-wrap gap-1.5">
                     {active.related.map((id) => {
                       const related = glossaryById(id);

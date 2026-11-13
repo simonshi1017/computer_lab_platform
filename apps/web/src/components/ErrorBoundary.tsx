@@ -1,5 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 import { AlertOctagon, RotateCcw } from 'lucide-react';
+import { t } from '@/i18n';
 
 interface Props {
   children: ReactNode;
@@ -30,7 +31,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, info: ErrorInfo): void {
     // 生产环境这里应该上报到监控；当前先落控制台，方便本地排查
-    console.error('[clab] 页面渲染出错', error, info.componentStack);
+    console.error(t("[clab] 页面渲染出错"), error, info.componentStack);
   }
 
   private reset = () => {
@@ -50,9 +51,9 @@ export class ErrorBoundary extends Component<Props, State> {
           >
             <AlertOctagon size={22} />
           </div>
-          <h1 className="mt-4 text-[18px] font-semibold">这个页面出了点问题</h1>
+          <h1 className="mt-4 text-[18px] font-semibold">{t("这个页面出了点问题")}</h1>
           <p className="mt-2 text-[12.5px] leading-relaxed" style={{ color: 'var(--text-2)' }}>
-            {this.props.hint ?? '不是你的操作有误，是页面渲染时抛了异常。可以先重试一次，或者回首页换个入口。'}
+            {this.props.hint ?? t("不是你的操作有误，是页面渲染时抛了异常。可以先重试一次，或者回首页换个入口。")}
           </p>
           <pre
             className="mt-3 max-h-[120px] overflow-auto rounded-lg border p-2.5 text-left text-[10.5px] leading-relaxed"
@@ -63,10 +64,10 @@ export class ErrorBoundary extends Component<Props, State> {
           <div className="mt-4 flex flex-wrap justify-center gap-2">
             <button type="button" className="btn btn-primary btn-sm" onClick={this.reset}>
               <RotateCcw size={13} />
-              重试
+              {t("重试")}
             </button>
             <a href="/" className="btn btn-ghost btn-sm no-underline">
-              回到首页
+              {t("回到首页")}
             </a>
           </div>
         </div>

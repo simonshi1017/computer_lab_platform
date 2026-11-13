@@ -1,5 +1,6 @@
 import { vramNeed, type GpuSpec } from '@clab/engine';
 import { MODELS_LIST, type ModelRecord } from '@clab/data';
+import { t } from '@/i18n';
 
 /** 判定用的上下文：8K 是多数本地对话的真实值，不拿满上下文去评判「能不能跑」 */
 export const FIT_CTX = 8192;
@@ -39,9 +40,9 @@ export function maxModelForGpu(gpu: GpuSpec): ModelFit | null {
 }
 
 export const VERDICT_LABEL: Record<FitVerdict, string> = {
-  ok: '能跑',
-  tight: '临界',
-  no: '放不下',
+  ok: t("能跑"),
+  tight: t("临界"),
+  no: t("放不下"),
 };
 
 export const VERDICT_COLOR: Record<FitVerdict, string> = {

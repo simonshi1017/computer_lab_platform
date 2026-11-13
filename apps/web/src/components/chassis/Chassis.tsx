@@ -15,6 +15,7 @@ import { CaseShell } from './CaseShell';
 import { Board } from './Board';
 import { ChassisDefs } from './primitives';
 import { CoolerSlot, CpuSlot, GpuSlot, PsuSlot, RamSlot, StorageSlot, type SlotHandlers } from './slots';
+import { t } from '@/i18n';
 
 /** 拖拽时塞进 dataTransfer 的自定义类型，避免把浏览器里的文字拖进来 */
 export const DRAG_MIME = 'application/x-clab-part';
@@ -108,7 +109,7 @@ export function Chassis({ build, activeKind, onPlace, onRemove, onFocusKind }: C
 
       const payload = takePayload(event);
       if (!payload) {
-        showReject(slot, '没读到这个部件，改用点击：先点空槽，再在左侧点部件');
+        showReject(slot, t("没读到这个部件，改用点击：先点空槽，再在左侧点部件"));
         return;
       }
 
@@ -145,7 +146,7 @@ export function Chassis({ build, activeKind, onPlace, onRemove, onFocusKind }: C
         viewBox="0 0 680 620"
         xmlns="http://www.w3.org/2000/svg"
         role="img"
-        aria-label="开盖机箱示意图，可拖入或点击添加部件"
+        aria-label={t("开盖机箱示意图，可拖入或点击添加部件")}
       >
         <ChassisDefs />
         <CaseShell />
@@ -201,7 +202,7 @@ export function Chassis({ build, activeKind, onPlace, onRemove, onFocusKind }: C
           <span style={{ color: 'var(--warn-ink)' }}>{reject.message}</span>
         ) : (
           <>
-            拖动左侧部件到对应槽位，或点击空槽再选件 · 悬停已装部件可移除 · 目标槽位会亮起
+            {t("拖动左侧部件到对应槽位，或点击空槽再选件 · 悬停已装部件可移除 · 目标槽位会亮起")}
           </>
         )}
       </div>
@@ -210,13 +211,13 @@ export function Chassis({ build, activeKind, onPlace, onRemove, onFocusKind }: C
 }
 
 const KIND_LABEL: Record<PartKind, string> = {
-  gpu: '显卡',
+  gpu: t("显卡"),
   cpu: 'CPU',
-  mobo: '主板',
-  ram: '内存',
-  psu: '电源',
-  storage: '硬盘',
-  cooling: '散热',
+  mobo: t("主板"),
+  ram: t("内存"),
+  psu: t("电源"),
+  storage: t("硬盘"),
+  cooling: t("散热"),
 };
 
 function kindLabel(kind: PartKind): string {

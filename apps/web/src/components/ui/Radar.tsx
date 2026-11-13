@@ -1,4 +1,5 @@
-interface RadarDatum {
+
+import { t } from '@/i18n';interface RadarDatum {
   label: string;
   /** 0–100 */
   value: number;
@@ -93,10 +94,10 @@ export function Radar({ data, size = 320 }: RadarProps) {
 
 /** 把评估维度转成雷达图数据（标签压缩到 4–5 字，否则会压线） */
 export const RADAR_LABELS: Record<string, string> = {
-  compat: '兼容性',
-  perf: '性能',
-  cost: '成本',
-  thermo: '功耗散热',
-  expand: '扩展性',
-  match: '匹配度',
+  compat: t("兼容性"),
+  perf: t("性能"),
+  cost: t("成本"),
+  thermo: t("功耗散热"),
+  expand: t("扩展性"),
+  match: t("匹配度"),
 };

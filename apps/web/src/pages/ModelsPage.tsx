@@ -7,15 +7,16 @@ import { ModelDialog } from '@/components/ModelDialog';
 import { Chip } from '@/components/ui/controls';
 import { PAGE_BY_PATH } from '@/navigation';
 import { track } from '@/lib/track';
+import { t } from '@/i18n';
 
 type SizeFilter = 'all' | 'small' | 'mid' | 'large' | 'xl';
 
 const SIZE_OPTIONS: Array<{ value: SizeFilter; label: string; min: number; max: number }> = [
-  { value: 'all', label: '全部尺寸', min: 0, max: Infinity },
-  { value: 'small', label: '≤ 8B · 入门', min: 0, max: 8 },
-  { value: 'mid', label: '9–20B · 均衡', min: 8, max: 20 },
-  { value: 'large', label: '21–40B · 进阶', min: 20, max: 40 },
-  { value: 'xl', label: '> 40B · 旗舰', min: 40, max: Infinity },
+  { value: 'all', label: t("全部尺寸"), min: 0, max: Infinity },
+  { value: 'small', label: t("≤ 8B · 入门"), min: 0, max: 8 },
+  { value: 'mid', label: t("9–20B · 均衡"), min: 8, max: 20 },
+  { value: 'large', label: t("21–40B · 进阶"), min: 20, max: 40 },
+  { value: 'xl', label: t("> 40B · 旗舰"), min: 40, max: Infinity },
 ];
 
 const VENDORS = Array.from(new Set(MODELS_LIST.map((m) => m.vendor)));
@@ -64,8 +65,8 @@ export function ModelsPage() {
     <section className="page">
       <div className="page-head">
         <div>
-          <h1 className="page-title">{meta.title}</h1>
-          <p className="page-sub">{meta.subtitle}</p>
+          <h1 className="page-title">{t(meta.title)}</h1>
+          <p className="page-sub">{t(meta.subtitle)}</p>
         </div>
         <div className="relative w-full max-w-[280px]">
           <Search
@@ -75,10 +76,10 @@ export function ModelsPage() {
           />
           <input
             className="input pl-8"
-            placeholder="搜模型、厂商或场景…"
+            placeholder={t("搜模型、厂商或场景…")}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            aria-label="搜索模型"
+            aria-label={t("搜索模型")}
           />
         </div>
       </div>
@@ -91,7 +92,7 @@ export function ModelsPage() {
         ))}
         <span className="mx-1 h-4 w-px" style={{ background: 'var(--border)' }} />
         <Chip active={vendor === 'all'} onClick={() => setVendor('all')}>
-          全部厂商
+          {t("全部厂商")}
         </Chip>
         {VENDORS.map((item) => (
           <Chip key={item} active={vendor === item} onClick={() => setVendor(item)}>
@@ -102,9 +103,9 @@ export function ModelsPage() {
 
       {list.length === 0 ? (
         <div className="card px-6 py-12 text-center">
-          <div className="text-[13.5px] font-semibold">没有符合条件的模型</div>
+          <div className="text-[13.5px] font-semibold">{t("没有符合条件的模型")}</div>
           <div className="mt-1.5 text-[12px]" style={{ color: 'var(--text-2)' }}>
-            换一个尺寸或厂商试试，也可以清空搜索词。
+            {t("换一个尺寸或厂商试试，也可以清空搜索词。")}
           </div>
           <button
             type="button"
@@ -115,7 +116,7 @@ export function ModelsPage() {
               setSize('all');
             }}
           >
-            清空筛选
+            {t("清空筛选")}
           </button>
         </div>
       ) : (
@@ -127,7 +128,7 @@ export function ModelsPage() {
       )}
 
       <p className="mt-5 text-[11px] leading-relaxed" style={{ color: 'var(--text-3)' }}>
-        共 {list.length} 个模型 · 参数与层数来自官方模型卡；显存与速度为规则化估算值，实际以实测为准。
+        {t("共")} {list.length} {t("个模型 · 参数与层数来自官方模型卡；显存与速度为规则化估算值，实际以实测为准。")}
       </p>
 
       <ModelDialog model={activeModel} onClose={closeModel} />

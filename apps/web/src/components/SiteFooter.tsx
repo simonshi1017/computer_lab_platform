@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { DATA_UPDATED_AT } from '@clab/data';
+import { t } from '@/i18n';
 
 /**
  * 全局页脚。
@@ -12,15 +13,15 @@ export function SiteFooter() {
   return (
     <footer className="site-footer">
       <span>
-        显存、速度、功耗、电费均为<b>规则化估算值</b>，用于教学与采购参考，不等于实测跑分。
+        {t("显存、速度、功耗、电费均为")}<b>{t("规则化估算值")}</b>{t("，用于教学与采购参考，不等于实测跑分。")}
       </span>
       <span className="site-footer-sep">·</span>
       <span className="site-footer-source">
-        数据来源：厂商官网与官方模型卡 · 更新于 {DATA_UPDATED_AT}
+        {t("数据来源：厂商官网与官方模型卡 · 更新于")} {DATA_UPDATED_AT}
       </span>
       <span className="site-footer-sep">·</span>
       <Link to="/glossary" className="no-underline" style={{ color: 'var(--accent-ink)' }}>
-        术语表
+        {t("术语表")}
       </Link>
     </footer>
   );

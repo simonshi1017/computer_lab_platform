@@ -1,5 +1,6 @@
 import type { BuildStats, VramBreakdown } from '@clab/engine';
 import { fmtNum } from '@/lib/format';
+import { t } from '@/i18n';
 
 interface MetricsBarProps {
   stats: BuildStats;
@@ -18,22 +19,22 @@ export function MetricsBar({ stats, need, modelName }: MetricsBarProps) {
 
   const items = [
     {
-      key: '显存',
+      key: t("显存"),
       value: `${stats.vramGb}`,
       unit: 'GB',
       sub: `${modelName} 需 ${need.total.toFixed(1)}G`,
       danger: vramShort,
     },
-    { key: '内存', value: `${stats.ramGb}`, unit: 'GB', sub: `权重 ${need.weights.toFixed(1)}G` },
+    { key: t("内存"), value: `${stats.ramGb}`, unit: 'GB', sub: `权重 ${need.weights.toFixed(1)}G` },
     {
-      key: '整机功耗',
+      key: t("整机功耗"),
       value: `${stats.powerW}`,
       unit: 'W',
-      sub: stats.psu ? `电源 ${stats.psu.watt}W · 负载 ${Math.round((stats.powerW / stats.psu.watt) * 100)}%` : '还没选电源',
+      sub: stats.psu ? `电源 ${stats.psu.watt}W · 负载 ${Math.round((stats.powerW / stats.psu.watt) * 100)}%` : t("还没选电源"),
       danger: Boolean(stats.psu && stats.powerW > stats.psu.watt),
     },
-    { key: '整机价格', value: fmtNum(stats.priceCny), unit: '元', sub: '硬件一次性投入' },
-    { key: '月电费', value: fmtNum(stats.elecMonthlyCny), unit: '元', sub: '按每天 8 小时 · 0.6 元/度' },
+    { key: t("整机价格"), value: fmtNum(stats.priceCny), unit: t("元"), sub: t("硬件一次性投入") },
+    { key: t("月电费"), value: fmtNum(stats.elecMonthlyCny), unit: t("元"), sub: t("按每天 8 小时 · 0.6 元/度") },
   ];
 
   return (

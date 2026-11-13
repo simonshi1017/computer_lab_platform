@@ -2,6 +2,7 @@ import { useEffect, useMemo, useSyncExternalStore } from 'react';
 import type { Catalog, GpuSpec } from '@clab/engine';
 import { CATALOG } from '@clab/data';
 import { api } from '@/lib/api';
+import { t } from '@/i18n';
 
 /**
  * 运行时价格。
@@ -118,13 +119,13 @@ export function usePriceOf(): (gpuId: string) => PriceInfo | undefined {
 }
 
 const CHANNEL_LABEL: Record<string, string> = {
-  jd: '京东',
-  tmall: '天猫',
-  taobao: '淘宝',
-  offline: '线下',
-  quote: '报价单',
-  manual: '人工录入',
-  catalog: '目录估算',
+  jd: t("京东"),
+  tmall: t("天猫"),
+  taobao: t("淘宝"),
+  offline: t("线下"),
+  quote: t("报价单"),
+  manual: t("人工录入"),
+  catalog: t("目录估算"),
 };
 
 export function channelLabel(channel: string): string {
@@ -143,7 +144,7 @@ export function priceProvenance(info: PriceInfo | undefined): { text: string; st
   if (!info) return { text: '', stale: false };
 
   if (info.estimated) {
-    return { text: '目录估算价 · 无采集时间', stale: true };
+    return { text: t("目录估算价 · 无采集时间"), stale: true };
   }
 
   const channel = channelLabel(info.channel);

@@ -1,6 +1,7 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
+import { t } from '@/i18n';
 
 interface DialogProps {
   open: boolean;
@@ -93,7 +94,7 @@ export function Dialog({ open, onClose, labelledBy, children }: DialogProps) {
         tabIndex={-1}
         onClick={(event) => event.stopPropagation()}
       >
-        <button type="button" className="dialog-close" onClick={onClose} aria-label="关闭">
+        <button type="button" className="dialog-close" onClick={onClose} aria-label={t("关闭")}>
           <X size={15} />
         </button>
         {children}

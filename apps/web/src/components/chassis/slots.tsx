@@ -1,6 +1,7 @@
 import type { CoolingRecord, CpuRecord, GpuRecord, PsuRecord, RamRecord, StorageRecord } from '@clab/data';
 import { shortGpuName } from '@/lib/format';
 import { EmptyHint, Fan, HitArea, HW, RemoveButton, SlotGroup } from './primitives';
+import { t } from '@/i18n';
 
 /**
  * 八类槽位。
@@ -40,7 +41,7 @@ const groupProps = (filled: boolean, handlers: SlotHandlers) => ({
 /* ---------------- 顶部冷排 ---------------- */
 export function CoolerSlot({ part, ...handlers }: { part: CoolingRecord | null } & SlotHandlers) {
   return (
-    <SlotGroup {...groupProps(Boolean(part), handlers)} role="button" aria-label={part ? `散热 ${part.name}` : '空冷排位'}>
+    <SlotGroup {...groupProps(Boolean(part), handlers)} role="button" aria-label={part ? `散热 ${part.name}` : t("空冷排位")}>
       {part ? (
         <>
           <rect x={56} y={34} width={548} height={54} rx={8} fill="url(#hwRad)" stroke="#4A5470" strokeWidth={1.2} />
@@ -51,7 +52,7 @@ export function CoolerSlot({ part, ...handlers }: { part: CoolingRecord | null }
             {part.name}
           </text>
           <text x={596} y={67} textAnchor="end" fontSize={11} fill={HW.dim}>
-            {part.noiseDb}dB · 可压 {part.capacityW}W
+            {part.noiseDb}{t("dB · 可压")} {part.capacityW}W
           </text>
           <HitArea x={56} y={34} width={548} height={54} />
           <RemoveButton x={42} y={44} onRemove={handlers.onRemove} />
@@ -68,7 +69,7 @@ export function CoolerSlot({ part, ...handlers }: { part: CoolingRecord | null }
             stroke="#3B465C"
             strokeDasharray="7 5"
           />
-          <EmptyHint x={330} y={66} main="散热冷排 · 拖入或点击" />
+          <EmptyHint x={330} y={66} main={t("散热冷排 · 拖入或点击")} />
           <HitArea x={56} y={34} width={548} height={54} />
         </>
       )}
@@ -79,7 +80,7 @@ export function CoolerSlot({ part, ...handlers }: { part: CoolingRecord | null }
 /* ---------------- CPU ---------------- */
 export function CpuSlot({ part, ...handlers }: { part: CpuRecord | null } & SlotHandlers) {
   return (
-    <SlotGroup {...groupProps(Boolean(part), handlers)} role="button" aria-label={part ? `CPU ${part.name}` : '空 CPU 插槽'}>
+    <SlotGroup {...groupProps(Boolean(part), handlers)} role="button" aria-label={part ? `CPU ${part.name}` : t("空 CPU 插槽")}>
       {part ? (
         <>
           <rect x={86} y={120} width={80} height={80} rx={4} fill="#20283A" stroke="#4A5470" />
@@ -224,7 +225,7 @@ export function GpuSlot({ index, part, ...handlers }: { index: number; part: Gpu
 /* ---------------- 电源 ---------------- */
 export function PsuSlot({ part, ...handlers }: { part: PsuRecord | null } & SlotHandlers) {
   return (
-    <SlotGroup {...groupProps(Boolean(part), handlers)} role="button" aria-label={part ? `电源 ${part.name}` : '空电源仓'}>
+    <SlotGroup {...groupProps(Boolean(part), handlers)} role="button" aria-label={part ? `电源 ${part.name}` : t("空电源仓")}>
       {part ? (
         <>
           <rect x={60} y={522} width={204} height={56} rx={7} fill="url(#hwPsu)" stroke="#4A5470" strokeWidth={1.2} />
@@ -250,7 +251,7 @@ export function PsuSlot({ part, ...handlers }: { part: PsuRecord | null } & Slot
             stroke="#3B465C"
             strokeDasharray="6 5"
           />
-          <EmptyHint x={162} y={556} main="电源 · 拖入或点击" />
+          <EmptyHint x={162} y={556} main={t("电源 · 拖入或点击")} />
           <HitArea x={58} y={520} width={208} height={60} />
         </>
       )}

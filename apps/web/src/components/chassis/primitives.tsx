@@ -1,4 +1,5 @@
 import type { ReactNode, SVGProps } from 'react';
+import { t } from '@/i18n';
 
 /**
  * 机箱绘制基础件。
@@ -92,7 +93,7 @@ export function RemoveButton({ x, y, onRemove }: { x: number; y: number; onRemov
     <g
       className="rm"
       role="button"
-      aria-label="移除这个部件"
+      aria-label={t("移除这个部件")}
       onClick={(event) => {
         event.stopPropagation();
         onRemove();

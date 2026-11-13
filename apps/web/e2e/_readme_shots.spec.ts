@@ -11,7 +11,8 @@ import { test } from '@playwright/test';
  * 输出到仓库根 docs/screenshots/。视口固定 1440×960、强制浅色主题，
  * 保证两版 README 里的截图构图一致。
  */
-const OUT_DIR = join(process.cwd(), '../../docs/screenshots');
+const LANG_EN = process.env.SHOT_LANG === 'en';
+const OUT_DIR = join(process.cwd(), LANG_EN ? '../../docs/screenshots/en' : '../../docs/screenshots');
 
 const SHOTS = [
   { file: '01-home.png', path: '/' },
@@ -33,7 +34,7 @@ test('capture README screenshots', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
 
   for (const shot of SHOTS) {
-    await page.goto(shot.path, { waitUntil: 'domcontentloaded' });
+    await page.goto(LANG_EN ? `${shot.path}?lang=en` : shot.path, { waitUntil: 'domcontentloaded' });
     // 等字体、懒加载路由与入场动画稳定
     await page.waitForTimeout(1200);
     await page.screenshot({ path: join(OUT_DIR, shot.file) });

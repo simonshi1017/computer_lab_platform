@@ -5,6 +5,7 @@ import { DATASET } from '@clab/data';
 import type { PartKind } from '@/hooks/useBuild';
 import { DRAG_MIME, setPendingPayload, type DragPayload } from '@/components/chassis/Chassis';
 import { fmtPrice, shortGpuName } from '@/lib/format';
+import { t } from '@/i18n';
 
 interface PartPaletteProps {
   activeKind: PartKind;
@@ -24,13 +25,13 @@ interface PaletteItem {
 }
 
 const TABS: Array<{ kind: PartKind; label: string }> = [
-  { kind: 'gpu', label: '显卡' },
+  { kind: 'gpu', label: t("显卡") },
   { kind: 'cpu', label: 'CPU' },
-  { kind: 'mobo', label: '主板' },
-  { kind: 'ram', label: '内存' },
-  { kind: 'psu', label: '电源' },
-  { kind: 'storage', label: '硬盘' },
-  { kind: 'cooling', label: '散热' },
+  { kind: 'mobo', label: t("主板") },
+  { kind: 'ram', label: t("内存") },
+  { kind: 'psu', label: t("电源") },
+  { kind: 'storage', label: t("硬盘") },
+  { kind: 'cooling', label: t("散热") },
 ];
 
 /**
@@ -139,17 +140,17 @@ export function PartPalette({ activeKind, onKindChange, build, onPlace }: PartPa
         />
         <input
           className="input h-8 pl-7 text-[12px]"
-          placeholder="搜部件…"
+          placeholder={t("搜部件…")}
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          aria-label="搜索部件"
+          aria-label={t("搜索部件")}
         />
       </div>
 
       <div className="palette-body">
         {filtered.length === 0 ? (
           <div className="px-3 py-6 text-center text-[11.5px]" style={{ color: 'var(--text-3)' }}>
-            没有匹配的部件
+            {t("没有匹配的部件")}
           </div>
         ) : (
           filtered.map((item) => (
@@ -176,7 +177,7 @@ export function PartPalette({ activeKind, onKindChange, build, onPlace }: PartPa
               }}
               title={`${item.title} · ${fmtPrice(item.price)}`}
             >
-              {item.installed && <span className="tag">已装</span>}
+              {item.installed && <span className="tag">{t("已装")}</span>}
               <div className="t">{item.title}</div>
               <div className="s">
                 {item.meta} · {fmtPrice(item.price)}
@@ -188,13 +189,13 @@ export function PartPalette({ activeKind, onKindChange, build, onPlace }: PartPa
 
       <div className="palette-foot">
         {activeKind === 'gpu' && (
-          <span>显存决定装不装得下，带宽决定跑得快不快</span>
+          <span>{t("显存决定装不装得下，带宽决定跑得快不快")}</span>
         )}
-        {activeKind === 'psu' && <span>电源要 ≥ 整机功耗 × 1.3，不是刚好够</span>}
-        {activeKind === 'ram' && <span>内存建议 ≥ 权重的 1.5 倍</span>}
-        {activeKind === 'mobo' && <span>卡槽数量决定能不能上多卡</span>}
-        {activeKind === 'cooling' && <span>散热要看能压多少瓦，不只是看噪音</span>}
-        {(activeKind === 'cpu' || activeKind === 'storage') && <span>点击部件直接装上</span>}
+        {activeKind === 'psu' && <span>{t("电源要 ≥ 整机功耗 × 1.3，不是刚好够")}</span>}
+        {activeKind === 'ram' && <span>{t("内存建议 ≥ 权重的 1.5 倍")}</span>}
+        {activeKind === 'mobo' && <span>{t("卡槽数量决定能不能上多卡")}</span>}
+        {activeKind === 'cooling' && <span>{t("散热要看能压多少瓦，不只是看噪音")}</span>}
+        {(activeKind === 'cpu' || activeKind === 'storage') && <span>{t("点击部件直接装上")}</span>}
       </div>
     </div>
   );

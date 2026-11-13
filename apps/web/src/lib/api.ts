@@ -1,4 +1,5 @@
-/**
+
+import { t } from '@/i18n';/**
  * API 客户端。
  *
  * 三条规则，全站共用：
@@ -150,7 +151,7 @@ async function rawRequest(path: string, init: RequestInit): Promise<Response> {
     });
   } catch {
     // fetch 抛错只可能是网络层：DNS / 连接被拒 / 离线
-    throw new ApiError(0, 'network_error', '连不上服务端，请检查网络或稍后再试');
+    throw new ApiError(0, 'network_error', t("连不上服务端，请检查网络或稍后再试"));
   }
 }
 
@@ -258,7 +259,7 @@ export const authApi = {
   devLogin: async (email = 'dev@clab.local'): Promise<AuthTokens> => {
     const tokens = await api<AuthTokens>('/auth/dev-login', {
       method: 'POST',
-      body: { email, nickname: '开发者' },
+      body: { email, nickname: t("开发者") },
     });
     writeAuth(tokens);
     return tokens;

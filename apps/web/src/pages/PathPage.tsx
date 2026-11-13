@@ -3,6 +3,7 @@ import { ArrowRight, Check, CircleDashed, Play } from 'lucide-react';
 import { LESSONS_LIST } from '@clab/data';
 import { useProgress } from '@/hooks/useProgress';
 import { PAGE_BY_PATH } from '@/navigation';
+import { t } from '@/i18n';
 
 export function PathPage() {
   const meta = PAGE_BY_PATH['/path'];
@@ -12,14 +13,14 @@ export function PathPage() {
     <section className="page">
       <div className="page-head">
         <div>
-          <h1 className="page-title">{meta.title}</h1>
-          <p className="page-sub">{meta.subtitle}</p>
+          <h1 className="page-title">{t(meta.title)}</h1>
+          <p className="page-sub">{t(meta.subtitle)}</p>
         </div>
 
         <div className="card min-w-[220px] px-4 py-3">
           <div className="flex items-baseline justify-between">
             <span className="text-[11.5px]" style={{ color: 'var(--text-2)' }}>
-              学习进度
+              {t("学习进度")}
             </span>
             <span className="mono text-[15px] font-bold">
               {completed}/{total}
@@ -34,7 +35,7 @@ export function PathPage() {
             style={{ color: 'var(--text-3)' }}
             onClick={reset}
           >
-            重置进度
+            {t("重置进度")}
           </button>
         </div>
       </div>
@@ -73,12 +74,12 @@ export function PathPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <h2 className="text-[15px] font-semibold tracking-[-0.01em]">{lesson.title}</h2>
-                    {done && <span className="badge badge-good">已完成</span>}
-                    {current && <span className="badge badge-brand">进行中</span>}
+                    {done && <span className="badge badge-good">{t("已完成")}</span>}
+                    {current && <span className="badge badge-brand">{t("进行中")}</span>}
                     {!done && !current && (
                       <span className="badge badge-mute">
                         <CircleDashed size={10} />
-                        未开始
+                        {t("未开始")}
                       </span>
                     )}
                   </div>
@@ -89,9 +90,9 @@ export function PathPage() {
 
                   <ul className="mt-2.5 grid gap-1.5 sm:grid-cols-2">
                     {lesson.points.map((point) => (
-                      <li key={point} className="flex gap-1.5 text-[11.5px]" style={{ color: 'var(--text-2)' }}>
+                      <li key={t(point)} className="flex gap-1.5 text-[11.5px]" style={{ color: 'var(--text-2)' }}>
                         <span style={{ color: 'var(--accent)' }}>·</span>
-                        <span>{point}</span>
+                        <span>{t(point)}</span>
                       </li>
                     ))}
                   </ul>
@@ -100,7 +101,7 @@ export function PathPage() {
                     className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 border-t pt-2.5 text-[11px]"
                     style={{ borderColor: 'var(--border)' }}
                   >
-                    <span style={{ color: 'var(--text-3)' }}>本关输出物</span>
+                    <span style={{ color: 'var(--text-3)' }}>{t("本关输出物")}</span>
                     <span style={{ color: 'var(--text)' }}>{lesson.output}</span>
                   </div>
 
@@ -118,11 +119,11 @@ export function PathPage() {
                       onClick={() => toggle(lesson.id)}
                     >
                       {done ? (
-                        '标记为未完成'
+                        t("标记为未完成")
                       ) : (
                         <>
                           <Play size={12} />
-                          我学会了
+                          {t("我学会了")}
                         </>
                       )}
                     </button>
@@ -135,7 +136,7 @@ export function PathPage() {
       </div>
 
       <p className="mt-5 text-[11px] leading-relaxed" style={{ color: 'var(--text-3)' }}>
-        进度保存在本机浏览器，换设备不会同步（接账号后才会）。每关的「我学会了」是自评，不作为考核。
+        {t("进度保存在本机浏览器，换设备不会同步（接账号后才会）。每关的「我学会了」是自评，不作为考核。")}
       </p>
     </section>
   );

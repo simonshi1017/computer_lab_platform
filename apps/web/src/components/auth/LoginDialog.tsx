@@ -3,6 +3,7 @@ import { KeyRound, Loader2, Mail, MessageSquare, QrCode } from 'lucide-react';
 import { Dialog } from '@/components/ui/Dialog';
 import { ApiError, authApi, healthApi } from '@/lib/api';
 import { useAuth } from '@/hooks/useAuth';
+import { t } from '@/i18n';
 
 /**
  * 登录对话框。
@@ -43,14 +44,14 @@ export function LoginDialog({ open, onClose }: { open: boolean; onClose: () => v
         setWecomReason('');
       } catch (err) {
         setWecomUrl(null);
-        setWecomReason(err instanceof ApiError ? err.message : '企业微信登录暂不可用');
+        setWecomReason(err instanceof ApiError ? err.message : t("企业微信登录暂不可用"));
       }
     })();
   }, [open]);
 
   const submitEmail = async () => {
     if (!email.includes('@')) {
-      setError('请输入完整邮箱地址');
+      setError(t("请输入完整邮箱地址"));
       return;
     }
     setBusy(true);
@@ -61,7 +62,7 @@ export function LoginDialog({ open, onClose }: { open: boolean; onClose: () => v
       setDevCode(result.debugCode);
       setHint(result.hint ?? '');
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : '发送失败，请稍后再试');
+      setError(err instanceof ApiError ? err.message : t("发送失败，请稍后再试"));
     } finally {
       setBusy(false);
     }
@@ -74,7 +75,7 @@ export function LoginDialog({ open, onClose }: { open: boolean; onClose: () => v
       await login(email.trim(), code.trim());
       onClose();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : '登录失败，请稍后再试');
+      setError(err instanceof ApiError ? err.message : t("登录失败，请稍后再试"));
     } finally {
       setBusy(false);
     }
@@ -87,7 +88,7 @@ export function LoginDialog({ open, onClose }: { open: boolean; onClose: () => v
       await devLogin();
       onClose();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : '开发登录不可用');
+      setError(err instanceof ApiError ? err.message : t("开发登录不可用"));
     } finally {
       setBusy(false);
     }
@@ -101,10 +102,10 @@ export function LoginDialog({ open, onClose }: { open: boolean; onClose: () => v
         </div>
         <div>
           <h2 id="login-title" style={{ fontSize: 16, fontWeight: 700 }}>
-            登录后可以保存配置
+            {t("登录后可以保存配置")}
           </h2>
           <p style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 3 }}>
-            不登录也能用全部功能，配置存在本机浏览器里。
+            {t("不登录也能用全部功能，配置存在本机浏览器里。")}
           </p>
         </div>
       </div>
@@ -113,13 +114,13 @@ export function LoginDialog({ open, onClose }: { open: boolean; onClose: () => v
         {wecomUrl ? (
           <a className="btn btn-ghost w-full" href={wecomUrl}>
             <QrCode size={15} />
-            企业微信扫码登录
+            {t("企业微信扫码登录")}
           </a>
         ) : (
           <div style={{ fontSize: 11.5, color: 'var(--text-3)', lineHeight: 1.7 }} title={wecomReason}>
-            <b style={{ color: 'var(--text-2)' }}>企业微信扫码暂未开通</b>
+            <b style={{ color: 'var(--text-2)' }}>{t("企业微信扫码暂未开通")}</b>
             <br />
-            需要管理员配置企业微信应用后可用，当前请用邮箱验证码登录。
+            {t("需要管理员配置企业微信应用后可用，当前请用邮箱验证码登录。")}
           </div>
         )}
 
@@ -128,7 +129,7 @@ export function LoginDialog({ open, onClose }: { open: boolean; onClose: () => v
         {step === 'email' ? (
           <div style={{ display: 'grid', gap: 8 }}>
             <label className="field-label" htmlFor="login-email">
-              邮箱
+              {t("邮箱")}
             </label>
             <div style={{ display: 'flex', gap: 8 }}>
               <div style={{ position: 'relative', flex: 1 }}>
@@ -150,14 +151,14 @@ export function LoginDialog({ open, onClose }: { open: boolean; onClose: () => v
                 />
               </div>
               <button type="button" className="btn btn-primary" disabled={busy} onClick={() => void submitEmail()}>
-                {busy ? <Loader2 size={15} className="animate-spin" /> : '发送验证码'}
+                {busy ? <Loader2 size={15} className="animate-spin" /> : t("发送验证码")}
               </button>
             </div>
           </div>
         ) : (
           <div style={{ display: 'grid', gap: 8 }}>
             <label className="field-label" htmlFor="login-code">
-              验证码（已发送到 {email}）
+              {t("验证码（已发送到")} {email}）
             </label>
             <div style={{ display: 'flex', gap: 8 }}>
               <div style={{ position: 'relative', flex: 1 }}>
@@ -172,7 +173,7 @@ export function LoginDialog({ open, onClose }: { open: boolean; onClose: () => v
                   inputMode="numeric"
                   autoComplete="one-time-code"
                   maxLength={6}
-                  placeholder="6 位数字"
+                  placeholder={t("6 位数字")}
                   value={code}
                   onChange={(event) => setCode(event.target.value.replace(/\D/g, ''))}
                   onKeyDown={(event) => event.key === 'Enter' && void submitCode()}
@@ -184,7 +185,7 @@ export function LoginDialog({ open, onClose }: { open: boolean; onClose: () => v
                 disabled={busy || code.length < 4}
                 onClick={() => void submitCode()}
               >
-                {busy ? <Loader2 size={15} className="animate-spin" /> : '登录'}
+                {busy ? <Loader2 size={15} className="animate-spin" /> : t("登录")}
               </button>
             </div>
 
@@ -199,7 +200,7 @@ export function LoginDialog({ open, onClose }: { open: boolean; onClose: () => v
                   lineHeight: 1.6,
                 }}
               >
-                {hint || '开发环境未配置邮件服务'} · 本次验证码{' '}
+                {hint || t("开发环境未配置邮件服务")} {t("· 本次验证码")}{' '}
                 <b className="mono" style={{ letterSpacing: 2, color: 'var(--accent)' }}>
                   {devCode}
                 </b>
@@ -216,7 +217,7 @@ export function LoginDialog({ open, onClose }: { open: boolean; onClose: () => v
                 setDevCode(null);
               }}
             >
-              换个邮箱
+              {t("换个邮箱")}
             </button>
           </div>
         )}
@@ -229,7 +230,7 @@ export function LoginDialog({ open, onClose }: { open: boolean; onClose: () => v
 
         {devLoginEnabled && (
           <button type="button" className="btn btn-ghost btn-sm" disabled={busy} onClick={() => void doDevLogin()}>
-            开发模式一键登录（后端 dev 环境）
+            {t("开发模式一键登录（后端 dev 环境）")}
           </button>
         )}
       </div>

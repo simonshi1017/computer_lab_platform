@@ -2,6 +2,7 @@ import { vramNeed } from '@clab/engine';
 import type { ModelRecord } from '@clab/data';
 import { fmtCtx, fmtGb } from '@/lib/format';
 import { modelSizeLabel } from '@/lib/modelSize';
+import { t } from '@/i18n';
 
 interface ModelCardProps {
   model: ModelRecord;
@@ -54,10 +55,10 @@ export function ModelCard({ model, onOpen }: ModelCardProps) {
         style={{ borderColor: 'var(--border)', color: 'var(--text-3)' }}
       >
         <span className="mono">
-          {fmtCtx(model.ctxMax)} 上下文
+          {fmtCtx(model.ctxMax)} {t("上下文")}
         </span>
         <span className="mono">
-          INT4 需 <b style={{ color: 'var(--text)' }}>{fmtGb(need4.total)}G</b>
+          {t("INT4 需")} <b style={{ color: 'var(--text)' }}>{fmtGb(need4.total)}G</b>
         </span>
       </div>
     </button>

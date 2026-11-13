@@ -24,6 +24,25 @@
   </tr>
 </table>
 
+## 多语种
+
+界面支持**简体中文 / English**：顶栏右侧的语言按钮切换，URL 也可用 `?lang=en` 直接指定。选择会记在 localStorage，并同步 `<html lang>` 与 `hreflang` 标签。
+
+| 简体中文 | English |
+|---|---|
+| <img src="docs/screenshots/01-home.png" width="420" alt="中文首页"/> | <img src="docs/screenshots/en/01-home.png" width="420" alt="English home"/> |
+
+实现刻意做轻：`apps/web/src/i18n/` 的字典**以中文原文为 key**，`t()` 在中文态原样返回，省掉一份重复字典；`scripts/i18n-codemod.mjs` 负责批量外置与覆盖率检查：
+
+```bash
+node scripts/i18n-codemod.mjs check   # 列出未外置 / 未翻译的文案
+node scripts/i18n-codemod.mjs apply   # 把新增中文自动包成 t()（幂等）
+```
+
+当前 UI 文案 **514/514 已双语**。切换语言会整页重载，让导航元信息、预设、筛选标签这些模块级常量按新 locale 重新初始化（和参考站按 `lang` 参数切换一致）。
+
+> 边界：双语覆盖的是**界面文案**；模型、显卡、术语、关卡等**内容数据仍为中文**，属于下一批的双语化范围。
+
 - 产品设计：[prototype/](prototype/)（可交互原型，作为视觉与交互基线）
 - 设计规范：[DESIGN.md](DESIGN.md)
 - 技术选型：[TECH-STACK.md](TECH-STACK.md)
@@ -235,6 +254,10 @@ pnpm docker:down      # 停止并移除
 
 ```bash
 E2E_BASE_URL=http://localhost:8080 \
+  pnpm --filter @clab/web exec playwright test e2e/_readme_shots.spec.ts
+
+# 英文态配图（输出到 docs/screenshots/en/）
+E2E_BASE_URL=http://localhost:8080 SHOT_LANG=en \
   pnpm --filter @clab/web exec playwright test e2e/_readme_shots.spec.ts
 ```
 

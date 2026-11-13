@@ -15,6 +15,7 @@ import {
   writeAuth,
   type ApiUser,
 } from '@/lib/api';
+import { t } from '@/i18n';
 
 /**
  * 登录状态。
@@ -154,7 +155,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth(): AuthContextValue {
   const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth 必须在 AuthProvider 内使用');
+  if (!context) throw new Error(t("useAuth 必须在 AuthProvider 内使用"));
   return context;
 }
 

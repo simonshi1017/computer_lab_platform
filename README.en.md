@@ -24,6 +24,25 @@ Captured from a real deployment in the default light theme at a 1440×960 viewpo
   </tr>
 </table>
 
+## Languages
+
+The UI ships in **Simplified Chinese and English**. Use the language button in the top bar, or go straight to `?lang=en`. The choice persists in localStorage and keeps `<html lang>` and `hreflang` tags in sync.
+
+| 简体中文 | English |
+|---|---|
+| <img src="docs/screenshots/01-home.png" width="420" alt="Chinese home"/> | <img src="docs/screenshots/en/01-home.png" width="420" alt="English home"/> |
+
+The implementation is deliberately small: dictionaries in `apps/web/src/i18n/` use the **original Chinese string as the key**, and `t()` returns it unchanged in Chinese — no duplicate zh-CN dictionary to maintain. `scripts/i18n-codemod.mjs` handles bulk extraction and coverage checks:
+
+```bash
+node scripts/i18n-codemod.mjs check   # list unextracted / untranslated strings
+node scripts/i18n-codemod.mjs apply   # wrap new Chinese strings in t() (idempotent)
+```
+
+All **514 UI strings** are bilingual. Switching language reloads the page so module-level constants (route metadata, presets, filter labels) are re-evaluated under the new locale — the same `lang`-parameter behavior as the reference site.
+
+> Scope: this covers **UI copy**. Model, GPU, glossary and lesson **content data is still Chinese only** and is queued for the next batch.
+
 - Product design: [prototype/](prototype/) (interactive prototype; the visual and interaction baseline)
 - Design system: [DESIGN.md](DESIGN.md)
 - Tech stack: [TECH-STACK.md](TECH-STACK.md)
@@ -235,6 +254,10 @@ Screenshots come from [apps/web/e2e/_readme_shots.spec.ts](apps/web/e2e/_readme_
 
 ```bash
 E2E_BASE_URL=http://localhost:8080 \
+  pnpm --filter @clab/web exec playwright test e2e/_readme_shots.spec.ts
+
+# English screenshots (output to docs/screenshots/en/)
+E2E_BASE_URL=http://localhost:8080 SHOT_LANG=en \
   pnpm --filter @clab/web exec playwright test e2e/_readme_shots.spec.ts
 ```
 

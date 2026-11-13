@@ -8,14 +8,15 @@ import { PAGE_BY_PATH } from '@/navigation';
 import { fmtPrice } from '@/lib/format';
 import { usePrices } from '@/hooks/usePrices';
 import { track } from '@/lib/track';
+import { t } from '@/i18n';
 
 type ClassFilter = 'all' | GpuRecord['gpuClass'];
 
 const CLASS_OPTIONS: Array<{ value: ClassFilter; label: string }> = [
-  { value: 'all', label: '全部类别' },
-  { value: '消费级', label: '消费级' },
-  { value: '专业卡', label: '专业卡' },
-  { value: '数据中心', label: '数据中心' },
+  { value: 'all', label: t("全部类别") },
+  { value: '消费级', label: t("消费级") }, /* i18n-key */
+  { value: '专业卡', label: t("专业卡") }, /* i18n-key */
+  { value: '数据中心', label: t("数据中心") }, /* i18n-key */
 ];
 
 const VENDOR_OPTIONS = ['NVIDIA', 'AMD'] as const;
@@ -29,69 +30,69 @@ const VENDOR_OPTIONS = ['NVIDIA', 'AMD'] as const;
 const PART_GROUPS = [
   {
     key: 'cpus',
-    title: 'CPU 处理器',
+    title: t("CPU 处理器"),
     rows: DATASET.parts.cpus.map((item) => ({
       id: item.id,
       name: item.name,
       metric: `${item.cores} · ${item.tdpW}W`,
       price: item.priceCny,
     })),
-    risk: '太弱会让模型加载和数据处理拖后腿，但不影响生成速度',
+    risk: t("太弱会让模型加载和数据处理拖后腿，但不影响生成速度"),
   },
   {
     key: 'mobos',
-    title: '主板',
+    title: t("主板"),
     rows: DATASET.parts.mobos.map((item) => ({
       id: item.id,
       name: item.name,
       metric: `${item.chipset} · ${item.gpuSlots} 卡槽 · ${item.ramSlots} 内存槽`,
       price: item.priceCny,
     })),
-    risk: '卡槽不够就插不了第二张卡，这是多卡方案的硬门槛',
+    risk: t("卡槽不够就插不了第二张卡，这是多卡方案的硬门槛"),
   },
   {
     key: 'rams',
-    title: '内存',
+    title: t("内存"),
     rows: DATASET.parts.rams.map((item) => ({
       id: item.id,
       name: item.name,
       metric: `${item.capacityGb}GB · ${item.kind}`,
       price: item.priceCny,
     })),
-    risk: '小于模型权重的 1.5 倍时，加载会变慢甚至失败',
+    risk: t("小于模型权重的 1.5 倍时，加载会变慢甚至失败"),
   },
   {
     key: 'psus',
-    title: '电源',
+    title: t("电源"),
     rows: DATASET.parts.psus.map((item) => ({
       id: item.id,
       name: item.name,
       metric: `${item.watt}W · ${item.level}`,
       price: item.priceCny,
     })),
-    risk: '功率不足会在大负载时直接关机重启，不是降速能解决的',
+    risk: t("功率不足会在大负载时直接关机重启，不是降速能解决的"),
   },
   {
     key: 'storages',
-    title: '存储',
+    title: t("存储"),
     rows: DATASET.parts.storages.map((item) => ({
       id: item.id,
       name: item.name,
       metric: `${item.capacityTb}TB · ${item.kind}`,
       price: item.priceCny,
     })),
-    risk: '模型动辄几十 GB，硬盘不够就只能反复删模型',
+    risk: t("模型动辄几十 GB，硬盘不够就只能反复删模型"),
   },
   {
     key: 'coolings',
-    title: '散热',
+    title: t("散热"),
     rows: DATASET.parts.coolings.map((item) => ({
       id: item.id,
       name: item.name,
       metric: `可压 ${item.capacityW}W · ${item.noiseDb}dB`,
       price: item.priceCny,
     })),
-    risk: '压不住热量会降频，等于花钱买了张更慢的卡',
+    risk: t("压不住热量会降频，等于花钱买了张更慢的卡"),
   },
 ];
 
@@ -136,11 +137,11 @@ export function HardwarePage() {
     <section className="page">
       <div className="page-head">
         <div>
-          <h1 className="page-title">{meta.title}</h1>
-          <p className="page-sub">{meta.subtitle}</p>
+          <h1 className="page-title">{t(meta.title)}</h1>
+          <p className="page-sub">{t(meta.subtitle)}</p>
         </div>
         <div className="note note-info max-w-[300px] text-[11.5px]">
-          显存决定「装不装得下」，带宽决定「跑得快不快」。这两件事不要混。
+          {t("显存决定「装不装得下」，带宽决定「跑得快不快」。这两件事不要混。")}
         </div>
       </div>
 
@@ -152,7 +153,7 @@ export function HardwarePage() {
         ))}
         <span className="mx-1 h-4 w-px" style={{ background: 'var(--border)' }} />
         <Chip active={vendor === 'all'} onClick={() => setVendor('all')}>
-          全部品牌
+          {t("全部品牌")}
         </Chip>
         {VENDOR_OPTIONS.map((item) => (
           <Chip key={item} active={vendor === item} onClick={() => setVendor(item)}>
@@ -163,7 +164,7 @@ export function HardwarePage() {
 
       {list.length === 0 ? (
         <div className="card px-6 py-10 text-center text-[12.5px]" style={{ color: 'var(--text-2)' }}>
-          这个组合下没有显卡，换一个类别试试。
+          {t("这个组合下没有显卡，换一个类别试试。")}
         </div>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -174,8 +175,8 @@ export function HardwarePage() {
       )}
 
       <div className="mt-8">
-        <SectionTitle extra={<span className="text-[11px]" style={{ color: 'var(--text-3)' }}>显卡之外，这五类也决定成败</span>}>
-          其他部件
+        <SectionTitle extra={<span className="text-[11px]" style={{ color: 'var(--text-3)' }}>{t("显卡之外，这五类也决定成败")}</span>}>
+          {t("其他部件")}
         </SectionTitle>
 
         <div className="grid gap-3 lg:grid-cols-2">
@@ -185,7 +186,7 @@ export function HardwarePage() {
                 <div className="flex items-baseline justify-between gap-2">
                   <div className="text-[13px] font-semibold">{group.title}</div>
                   <div className="text-[10.5px]" style={{ color: 'var(--text-3)' }}>
-                    {group.rows.length} 款
+                    {group.rows.length} {t("款")}
                   </div>
                 </div>
                 <div className="mt-2.5 space-y-0.5">
@@ -204,7 +205,7 @@ export function HardwarePage() {
                   ))}
                 </div>
                 <div className="mt-2.5 text-[10.5px] leading-relaxed" style={{ color: 'var(--warn-ink)' }}>
-                  选错的后果：{group.risk}
+                  {t("选错的后果：")}{group.risk}
                 </div>
               </div>
             );
@@ -213,8 +214,7 @@ export function HardwarePage() {
       </div>
 
       <p className="mt-6 text-[11px] leading-relaxed" style={{ color: 'var(--text-3)' }}>
-        显卡规格来自厂商官网，价格为 2026 年国内市场估算值，会随行情变化。所有「能跑 / 临界」判断均按 INT4 ·
-        8K 上下文估算，实际以实测为准。数据更新时间：{DATASET.updatedAt}。
+        {t("显卡规格来自厂商官网，价格为 2026 年国内市场估算值，会随行情变化。所有「能跑 / 临界」判断均按 INT4 · 8K 上下文估算，实际以实测为准。数据更新时间：")}{DATASET.updatedAt}。
       </p>
 
       <GpuDialog gpu={activeGpu} onClose={closeGpu} />

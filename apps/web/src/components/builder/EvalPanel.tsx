@@ -4,6 +4,7 @@ import type { Evaluation, Grade, Suggestion } from '@clab/engine';
 import type { UseBuild } from '@/hooks/useBuild';
 import { Radar } from '@/components/ui/Radar';
 import { fmtGb, fmtPct, tpsToChars } from '@/lib/format';
+import { t } from '@/i18n';
 
 const GRADE_TONE: Record<Grade, { color: string; ring: string }> = {
   S: { color: 'var(--good-ink)', ring: '#16A34A' },
@@ -119,10 +120,10 @@ export function EvalPanel({ builder }: EvalPanelProps) {
                 className="mono text-[13px] font-bold"
                 style={{ color: GRADE_TONE[evaluation.grade].color }}
               >
-                {evaluation.grade} 级
+                {evaluation.grade} {t("级")}
               </span>
               <span className="text-[10.5px]" style={{ color: 'var(--text-3)' }}>
-                {evaluation.empty ? '待补齐核心部件' : '六维加权'}
+                {evaluation.empty ? t("待补齐核心部件") : t("六维加权")}
               </span>
             </div>
             <p className="mt-1 text-[12px] leading-[1.6]" style={{ color: 'var(--text-2)' }}>
@@ -135,15 +136,15 @@ export function EvalPanel({ builder }: EvalPanelProps) {
       {/* ---------- 六维雷达 ---------- */}
       <div className="eval-block">
         <div className="eval-title">
-          六维评估
+          {t("六维评估")}
           <span className="text-[10px] font-normal" style={{ color: 'var(--text-3)' }}>
-            {evaluation.empty ? '补齐后开始评分' : '加权总分'}
+            {evaluation.empty ? t("补齐后开始评分") : t("加权总分")}
           </span>
         </div>
 
         {evaluation.empty ? (
           <div className="note note-info">
-            还差核心部件，补齐后这里会出现六维雷达图和评分。可以先点下面的按钮载入一套现成配置。
+            {t("还差核心部件，补齐后这里会出现六维雷达图和评分。可以先点下面的按钮载入一套现成配置。")}
           </div>
         ) : (
           <>
@@ -172,9 +173,9 @@ export function EvalPanel({ builder }: EvalPanelProps) {
       {/* ---------- 风险 ---------- */}
       <div className="eval-block">
         <div className="eval-title">
-          风险提示
+          {t("风险提示")}
           <span className="text-[10px] font-normal" style={{ color: 'var(--text-3)' }}>
-            {evaluation.risks.length} 条
+            {evaluation.risks.length} {t("条")}
           </span>
         </div>
         <div className="space-y-1.5">
@@ -206,10 +207,10 @@ export function EvalPanel({ builder }: EvalPanelProps) {
         <div className="eval-title">
           <span className="flex items-center gap-1.5">
             <Lightbulb size={12} style={{ color: 'var(--warn-ink)' }} />
-            下一步建议
+            {t("下一步建议")}
           </span>
           <span className="text-[10px] font-normal" style={{ color: 'var(--text-3)' }}>
-            点一下就改
+            {t("点一下就改")}
           </span>
         </div>
         <div className="space-y-1.5">
@@ -234,10 +235,10 @@ export function EvalPanel({ builder }: EvalPanelProps) {
           onClick={() => navigate('/manual')}
           disabled={evaluation.empty}
         >
-          生成《我的第一台算力服务器说明书》
+          {t("生成《我的第一台算力服务器说明书》")}
         </button>
         <p className="mt-2 text-[10px] leading-relaxed" style={{ color: 'var(--text-3)' }}>
-          所有显存、速度、功耗、电费均为规则化估算值，用于教学与决策参考，实际以实测为准。
+          {t("所有显存、速度、功耗、电费均为规则化估算值，用于教学与决策参考，实际以实测为准。")}
         </p>
       </div>
     </div>
@@ -246,7 +247,7 @@ export function EvalPanel({ builder }: EvalPanelProps) {
 
 /** 一句话结论：先回答「能不能跑」，再给关键数字 */
 function conclusion(evaluation: Evaluation, modelName: string, paramsB: number): string {
-  if (evaluation.empty) return '还差核心部件，先把显卡、CPU、主板、电源凑齐。';
+  if (evaluation.empty) return t("还差核心部件，先把显卡、CPU、主板、电源凑齐。");
 
   const { headroom, tps, need, stats } = evaluation;
 

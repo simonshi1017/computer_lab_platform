@@ -1,4 +1,5 @@
-/**
+
+import { t } from '@/i18n';/**
  * 页面级加载骨架。
  *
  * 路由懒加载后，模块下载期间会短暂空白。用骨架占位而不是转圈：
@@ -14,7 +15,7 @@ export function PageLoading() {
         <div className="skeleton mt-2.5" style={{ width: '40%', height: 14 }} />
         <div className="skeleton mt-2.5" style={{ width: '48%', height: 14 }} />
       </div>
-      <span className="sr-only">页面加载中</span>
+      <span className="sr-only">{t("页面加载中")}</span>
     </section>
   );
 }

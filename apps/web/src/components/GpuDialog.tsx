@@ -7,6 +7,7 @@ import { FIT_CTX, VERDICT_COLOR, VERDICT_LABEL, modelsFitForGpu } from '@/lib/fi
 import { fmtCtx, fmtGb, fmtPrice } from '@/lib/format';
 import { modelSizeLabel } from '@/lib/modelSize';
 import { priceProvenance, usePrices } from '@/hooks/usePrices';
+import { t } from '@/i18n';
 
 interface GpuDialogProps {
   gpu: GpuRecord | null;
@@ -51,17 +52,17 @@ export function GpuDialog({ gpu, onClose }: GpuDialogProps) {
       <div className="dialog-body">
         <SpecGrid
           items={[
-            { k: '显存', v: `${gpu.vramGb} GB`, mono: true },
-            { k: '带宽', v: `${gpu.bandwidth} GB/s`, mono: true },
-            { k: '功耗', v: `${gpu.tdpW} W`, mono: true },
-            { k: '参考价', v: fmtPrice(info?.priceCny ?? gpu.priceCny), mono: true },
-            { k: '显存类型', v: gpu.memoryType },
-            { k: '位宽', v: `${gpu.busWidth} bit`, mono: true },
-            { k: '供电', v: gpu.powerConnector },
-            { k: '卡长', v: gpu.lengthMm > 0 ? `${gpu.lengthMm} mm` : '板载模组' },
+            { k: t("显存"), v: `${gpu.vramGb} GB`, mono: true },
+            { k: t("带宽"), v: `${gpu.bandwidth} GB/s`, mono: true },
+            { k: t("功耗"), v: `${gpu.tdpW} W`, mono: true },
+            { k: t("参考价"), v: fmtPrice(info?.priceCny ?? gpu.priceCny), mono: true },
+            { k: t("显存类型"), v: gpu.memoryType },
+            { k: t("位宽"), v: `${gpu.busWidth} bit`, mono: true },
+            { k: t("供电"), v: gpu.powerConnector },
+            { k: t("卡长"), v: gpu.lengthMm > 0 ? `${gpu.lengthMm} mm` : t("板载模组") },
             {
-              k: '货源',
-              v: gpu.condition === 'used' ? '二手' : gpu.condition === 'channel' ? '渠道 / 整机' : '全新零售',
+              k: t("货源"),
+              v: gpu.condition === 'used' ? t("二手") : gpu.condition === 'channel' ? t("渠道 / 整机") : t("全新零售"),
             },
           ]}
         />
@@ -69,35 +70,35 @@ export function GpuDialog({ gpu, onClose }: GpuDialogProps) {
         <div className="mt-3.5 grid gap-2.5 sm:grid-cols-2">
           <div className="note note-info">
             <div className="mb-1 font-semibold" style={{ color: 'var(--accent-ink)' }}>
-              适合什么场景
+              {t("适合什么场景")}
             </div>
             {gpu.scene}
           </div>
           <div className="note">
-            <div className="mb-1 font-semibold">一句话点评</div>
+            <div className="mb-1 font-semibold">{t("一句话点评")}</div>
             {gpu.note}
             <div className="mt-1.5 text-[11px]" style={{ color: provenance.stale ? 'var(--warn-ink)' : 'var(--text-3)' }}>
-              价格来源：{provenance.text || '未采集'}
-              {provenance.stale && ' · 建议下单前重新核对'}
+              {t("价格来源：")}{provenance.text || t("未采集")}
+              {provenance.stale && t("· 建议下单前重新核对")}
             </div>
             <div className="mt-1 text-[10.5px]" style={{ color: 'var(--text-3)' }}>
-              目录说明：{gpu.priceNote}
+              {t("目录说明：")}{gpu.priceNote}
             </div>
           </div>
         </div>
 
         <div className="mt-4">
           <div className="mb-2 flex items-baseline justify-between">
-            <div className="text-[12.5px] font-semibold">单卡能跑哪些模型</div>
+            <div className="text-[12.5px] font-semibold">{t("单卡能跑哪些模型")}</div>
             <span className="text-[10.5px]" style={{ color: 'var(--text-3)' }}>
-              按 INT4 · {fmtCtx(FIT_CTX)} 上下文估算
+              {t("按 INT4 ·")} {fmtCtx(FIT_CTX)} {t("上下文估算")}
             </span>
           </div>
 
           <div className="overflow-hidden rounded-[10px] border" style={{ borderColor: 'var(--border)' }}>
             {runnable.length === 0 && (
               <div className="p-3 text-[12px]" style={{ color: 'var(--text-2)' }}>
-                这张卡连最小的 7B INT4 都放不下，不建议用来跑模型。
+                {t("这张卡连最小的 7B INT4 都放不下，不建议用来跑模型。")}
               </div>
             )}
             {runnable.map((fit, index) => (
@@ -128,8 +129,8 @@ export function GpuDialog({ gpu, onClose }: GpuDialogProps) {
 
           {blocked.length > 0 && (
             <div className="mt-2 text-[11.5px]" style={{ color: 'var(--text-3)' }}>
-              放不下：{blocked.map((fit) => modelSizeLabel(fit.model)).join('、')}
-              —— 需要更大显存或多卡。
+              {t("放不下：")}{blocked.map((fit) => modelSizeLabel(fit.model)).join('、')}
+              {t("—— 需要更大显存或多卡。")}
             </div>
           )}
         </div>
@@ -143,7 +144,7 @@ export function GpuDialog({ gpu, onClose }: GpuDialogProps) {
           }}
         >
           <Cpu size={15} />
-          把这张卡放进机箱
+          {t("把这张卡放进机箱")}
         </button>
       </div>
     </Dialog>

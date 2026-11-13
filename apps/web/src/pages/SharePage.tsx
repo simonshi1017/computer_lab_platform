@@ -8,6 +8,7 @@ import { Radar } from '@/components/ui/Radar';
 import { downloadShareCard, type ShareCardData } from '@/lib/shareCard';
 import { track } from '@/lib/track';
 import { fmtGb, fmtPct, fmtPrice, tpsToChars } from '@/lib/format';
+import { t } from '@/i18n';
 
 /**
  * 分享落地页。
@@ -60,7 +61,7 @@ export function SharePage() {
         setError(
           err instanceof ApiError
             ? { code: err.code, message: err.message }
-            : { code: 'network_error', message: '连不上服务端，稍后再试' },
+            : { code: 'network_error', message: t("连不上服务端，稍后再试") },
         );
       }
     })();
@@ -81,7 +82,7 @@ export function SharePage() {
       list: T[],
       id: string | null,
     ): { name: string; price: number; missing: boolean } => {
-      if (!id) return { name: '未选', price: 0, missing: false };
+      if (!id) return { name: t("未选"), price: 0, missing: false };
       const found = list.find((item) => item.id === id);
       // 目录里删掉的型号：显示 id + 标记，而不是静默丢掉一行让总价对不上
       return found
@@ -97,7 +98,7 @@ export function SharePage() {
     ): PartRow | null => {
       if (ids.length === 0) return null;
       const found = ids.map((id) => catalog.find((item) => item.id === id));
-      const names = [...new Set(found.map((item) => item?.name ?? '已下架'))];
+      const names = [...new Set(found.map((item) => item?.name ?? t("已下架")))];
       return {
         label: ids.length > 1 ? `${label} × ${ids.length}` : label,
         name: names.length > 1 ? `${names[0]} 等 ${names.length} 种` : names[0],
@@ -107,16 +108,16 @@ export function SharePage() {
     };
 
     const list: PartRow[] = [];
-    const gpuRow = multi(build.gpuIds, CATALOG.gpus, '显卡');
+    const gpuRow = multi(build.gpuIds, CATALOG.gpus, t("显卡"));
     if (gpuRow) list.push(gpuRow);
     list.push({ label: 'CPU', ...pick(CATALOG.cpus, build.cpuId) });
-    list.push({ label: '主板', ...pick(CATALOG.mobos, build.moboId) });
-    const ramRow = multi(build.ramIds, CATALOG.rams, '内存');
+    list.push({ label: t("主板"), ...pick(CATALOG.mobos, build.moboId) });
+    const ramRow = multi(build.ramIds, CATALOG.rams, t("内存"));
     if (ramRow) list.push(ramRow);
-    const storageRow = multi(build.storageIds, CATALOG.storages, '硬盘');
+    const storageRow = multi(build.storageIds, CATALOG.storages, t("硬盘"));
     if (storageRow) list.push(storageRow);
-    list.push({ label: '电源', ...pick(CATALOG.psus, build.psuId) });
-    list.push({ label: '散热', ...pick(CATALOG.coolings, build.coolingId) });
+    list.push({ label: t("电源"), ...pick(CATALOG.psus, build.psuId) });
+    list.push({ label: t("散热"), ...pick(CATALOG.coolings, build.coolingId) });
     return list.filter((row) => row.name !== '未选');
   }, [data]);
 
@@ -126,12 +127,12 @@ export function SharePage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <AlertTriangle size={17} style={{ color: 'var(--warn-ink)' }} />
           <b style={{ fontSize: 15 }}>
-            {error.code === 'share_expired' ? '这个链接已过期' : '打不开这个分享'}
+            {error.code === 'share_expired' ? t("这个链接已过期") : t("打不开这个分享")}
           </b>
         </div>
         <p style={{ fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.8 }}>{error.message}</p>
         <Link className="btn btn-ghost btn-sm" to="/builder">
-          自己搭一套
+          {t("自己搭一套")}
         </Link>
       </div>
     );
@@ -173,14 +174,14 @@ export function SharePage() {
     tps: evaluation?.tps ?? 0,
     // 显卡行带数量后缀，卡片上「RTX 4090 ×2」和机箱里点亮两张卡才对得上
     gpus: rows
-      .filter((row) => row.label.startsWith('显卡'))
-      .map((row) => (row.label.includes('×') ? `${row.name} ${row.label.replace('显卡', '').trim()}` : row.name)),
+      .filter((row) => row.label.startsWith(t("显卡")))
+      .map((row) => (row.label.includes('×') ? `${row.name} ${row.label.replace(t("显卡"), '').trim()}` : row.name)),
     parts: rows
-      .filter((row) => !row.label.startsWith('显卡'))
+      .filter((row) => !row.label.startsWith(t("显卡")))
       .map((row) => `${row.label.replace(/ × .*/, '')} ${row.name}`),
     author: data.author,
     date: new Date(data.createdAt).toLocaleDateString('zh-CN'),
-    footer: '显存与速度均为估算值，下单前请自行核对；价格来自保存时的快照。',
+    footer: t("显存与速度均为估算值，下单前请自行核对；价格来自保存时的快照。"),
   };
 
   return (
@@ -188,9 +189,9 @@ export function SharePage() {
       <div className="card" style={{ padding: '18px 20px', display: 'grid', gap: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11.5, color: 'var(--text-3)' }}>
           <PackageOpen size={14} />
-          <span>分享的配置</span>
+          <span>{t("分享的配置")}</span>
           <span style={{ opacity: 0.5 }}>·</span>
-          <span>{data.author ?? '匿名用户'}</span>
+          <span>{data.author ?? t("匿名用户")}</span>
           <span style={{ opacity: 0.5 }}>·</span>
           <span>{new Date(data.createdAt).toLocaleDateString('zh-CN')}</span>
           <span style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
@@ -205,18 +206,18 @@ export function SharePage() {
               {build.name}
             </h1>
             <div style={{ fontSize: 12.5, color: 'var(--text-2)', marginTop: 6 }}>
-              目标模型 <b style={{ color: 'var(--text)' }}>{build.modelName}</b>
-              {evaluation && <> · 显存需求 {fmtGb(evaluation.need.total)}G</>}
-              {evaluation && <> · 约 {Math.round(evaluation.tps)} tok/s（{tpsToChars(evaluation.tps)} 字/秒）</>}
+              {t("目标模型")} <b style={{ color: 'var(--text)' }}>{build.modelName}</b>
+              {evaluation && <> {t("· 显存需求")} {fmtGb(evaluation.need.total)}G</>}
+              {evaluation && <> {t("· 约")} {Math.round(evaluation.tps)} tok/s（{tpsToChars(evaluation.tps)} {t("字/秒）")}</>}
             </div>
           </div>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 11, color: 'var(--text-3)' }}>整机参考价</div>
+            <div style={{ fontSize: 11, color: 'var(--text-3)' }}>{t("整机参考价")}</div>
             <div className="mono" style={{ fontSize: 26, fontWeight: 750, letterSpacing: '-0.02em' }}>
               {fmtPrice(price)}
             </div>
             <div style={{ fontSize: 11.5, color: GRADE_COLOR[grade], fontWeight: 600 }}>
-              评分 {build.score} · {grade} 级
+              {t("评分")} {build.score} · {grade} {t("级")}
             </div>
           </div>
         </div>
@@ -224,7 +225,7 @@ export function SharePage() {
 
       <div className="share-grid" style={{ display: 'grid', gap: 14, gridTemplateColumns: 'minmax(0, 1.15fr) minmax(0, 0.85fr)' }}>
         <div className="card" style={{ padding: 18 }}>
-          <div style={{ fontSize: 13, fontWeight: 650, marginBottom: 12 }}>配置清单</div>
+          <div style={{ fontSize: 13, fontWeight: 650, marginBottom: 12 }}>{t("配置清单")}</div>
           <div style={{ display: 'grid', gap: 1, background: 'var(--border)', borderRadius: 10, overflow: 'hidden' }}>
             {rows.map((row) => (
               <div
@@ -251,7 +252,7 @@ export function SharePage() {
 
           {risks.length > 0 && (
             <div style={{ marginTop: 16, display: 'grid', gap: 8 }}>
-              <div style={{ fontSize: 12.5, fontWeight: 650 }}>保存时的风险提示</div>
+              <div style={{ fontSize: 12.5, fontWeight: 650 }}>{t("保存时的风险提示")}</div>
               {risks.slice(0, 3).map((risk) => (
                 <div
                   key={risk.title}
@@ -291,40 +292,40 @@ export function SharePage() {
         </div>
 
         <div className="card" style={{ padding: 18, display: 'grid', gap: 12, alignContent: 'start' }}>
-          <div style={{ fontSize: 13, fontWeight: 650 }}>六维评估快照</div>
+          <div style={{ fontSize: 13, fontWeight: 650 }}>{t("六维评估快照")}</div>
           {dimensions.length >= 3 ? (
             <div className="grid place-items-center">
               <Radar data={dimensions.map((item) => ({ label: item.label, value: item.score }))} size={240} />
             </div>
           ) : (
-            <div style={{ fontSize: 12, color: 'var(--text-3)' }}>这套配置保存时没有评分数据。</div>
+            <div style={{ fontSize: 12, color: 'var(--text-3)' }}>{t("这套配置保存时没有评分数据。")}</div>
           )}
 
           {stats && (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 4 }}>
               <div>
-                <div style={{ fontSize: 10.5, color: 'var(--text-3)' }}>可用显存</div>
+                <div style={{ fontSize: 10.5, color: 'var(--text-3)' }}>{t("可用显存")}</div>
                 <div className="mono" style={{ fontSize: 14, fontWeight: 650 }}>{fmtGb(stats.vramGb)}G</div>
               </div>
               <div>
-                <div style={{ fontSize: 10.5, color: 'var(--text-3)' }}>整机功耗</div>
+                <div style={{ fontSize: 10.5, color: 'var(--text-3)' }}>{t("整机功耗")}</div>
                 <div className="mono" style={{ fontSize: 14, fontWeight: 650 }}>{Math.round(stats.powerW)}W</div>
               </div>
               <div>
-                <div style={{ fontSize: 10.5, color: 'var(--text-3)' }}>显存余量</div>
+                <div style={{ fontSize: 10.5, color: 'var(--text-3)' }}>{t("显存余量")}</div>
                 <div className="mono" style={{ fontSize: 14, fontWeight: 650 }}>
                   {evaluation ? fmtPct(evaluation.headroom) : '—'}
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: 10.5, color: 'var(--text-3)' }}>月电费</div>
+                <div style={{ fontSize: 10.5, color: 'var(--text-3)' }}>{t("月电费")}</div>
                 <div className="mono" style={{ fontSize: 14, fontWeight: 650 }}>{fmtPrice(stats.elecMonthlyCny)}</div>
               </div>
             </div>
           )}
 
           <Link className="btn btn-primary" to={`/builder?share=${data.token}`} style={{ marginTop: 4 }}>
-            在组装台打开这套配置
+            {t("在组装台打开这套配置")}
             <ArrowRight size={14} />
           </Link>
           <button
@@ -336,12 +337,12 @@ export function SharePage() {
               setCardError('');
               track('card_download', { buildId: build.id });
               void downloadShareCard(cardData)
-                .catch(() => setCardError('图片生成失败，可尝试用 Chrome 打开后再试'))
+                .catch(() => setCardError(t("图片生成失败，可尝试用 Chrome 打开后再试")))
                 .finally(() => setCardBusy(false));
             }}
           >
             {cardBusy ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
-            下载分享图（发群里用）
+            {t("下载分享图（发群里用）")}
           </button>
           {cardError && (
             <div role="alert" style={{ fontSize: 11.5, color: 'var(--danger-ink)' }}>
@@ -349,7 +350,7 @@ export function SharePage() {
             </div>
           )}
           <div style={{ fontSize: 11, color: 'var(--text-3)', lineHeight: 1.7 }}>
-            打开后可以改配置、换显卡、重新算一遍；改完是你自己的副本，不会影响分享者的存档。
+            {t("打开后可以改配置、换显卡、重新算一遍；改完是你自己的副本，不会影响分享者的存档。")}
           </div>
         </div>
       </div>

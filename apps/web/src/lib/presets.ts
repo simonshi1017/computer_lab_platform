@@ -1,5 +1,6 @@
 import type { Build, PresetKey, Quant } from '@clab/engine';
 import { DATASET, modelById } from '@clab/data';
+import { t } from '@/i18n';
 
 export interface Preset {
   key: PresetKey;
@@ -27,8 +28,8 @@ export interface Preset {
 export const PRESETS: Record<PresetKey, Preset> = {
   save: {
     key: 'save',
-    name: '省钱入门版',
-    desc: '先把模型跑起来，¥6,900',
+    name: t("省钱入门版"),
+    desc: t("先把模型跑起来，¥6,900"),
     modelId: 'qwen25-7b',
     quant: 'int4',
     ctx: 8192,
@@ -44,8 +45,8 @@ export const PRESETS: Record<PresetKey, Preset> = {
   },
   balance: {
     key: 'balance',
-    name: '均衡推荐版',
-    desc: '14B 全上下文，留得下余量',
+    name: t("均衡推荐版"),
+    desc: t("14B 全上下文，留得下余量"),
     modelId: 'qwen25-14b',
     quant: 'int4',
     ctx: 8192,
@@ -61,8 +62,8 @@ export const PRESETS: Record<PresetKey, Preset> = {
   },
   perf: {
     key: 'perf',
-    name: '性能进阶版',
-    desc: '32B 单卡全上下文，长期主力',
+    name: t("性能进阶版"),
+    desc: t("32B 单卡全上下文，长期主力"),
     modelId: 'qwen25-32b',
     quant: 'int4',
     ctx: 8192,

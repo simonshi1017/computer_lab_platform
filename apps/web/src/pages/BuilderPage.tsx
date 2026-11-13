@@ -14,6 +14,7 @@ import { EvalPanel } from '@/components/builder/EvalPanel';
 import { Chassis } from '@/components/chassis/Chassis';
 import { Segmented } from '@/components/ui/controls';
 import { fmtCtx, fmtPct, fmtPrice } from '@/lib/format';
+import { t } from '@/i18n';
 
 const QUANT_OPTIONS = [
   { value: 'fp16' as const, label: 'FP16' },
@@ -75,10 +76,10 @@ export function BuilderPage() {
         setNotice(
           ok
             ? `已载入「${detail.name}」· 可以继续改，改完是你自己的副本`
-            : '这套配置引用的模型已不在目录里，无法载入',
+            : t("这套配置引用的模型已不在目录里，无法载入"),
         );
       } catch {
-        if (alive) setNotice('载入失败：配置可能已被删除，或链接已过期');
+        if (alive) setNotice(t("载入失败：配置可能已被删除，或链接已过期"));
       }
     })();
 
@@ -95,7 +96,7 @@ export function BuilderPage() {
       <div className="builder-toolbar card">
         <div className="tb-field" style={{ minWidth: 190 }}>
           <label htmlFor="builder-model" className="field-label">
-            目标模型
+            {t("目标模型")}
           </label>
           <select
             id="builder-model"
@@ -103,7 +104,7 @@ export function BuilderPage() {
             value={customSpec ? 'custom' : model.id}
             onChange={(event) => builder.setModel(event.target.value)}
           >
-            {customSpec && <option value="custom">{customSpec.name}（来自推荐）</option>}
+            {customSpec && <option value="custom">{customSpec.name}{t("（来自推荐）")}</option>}
             {MODELS_LIST.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.cn} · {item.paramsB}B
@@ -113,13 +114,13 @@ export function BuilderPage() {
         </div>
 
         <div className="tb-field" style={{ flex: '0 0 auto' }}>
-          <span className="field-label">量化</span>
-          <Segmented value={quant} options={QUANT_OPTIONS} onChange={builder.setQuant} ariaLabel="量化方式" />
+          <span className="field-label">{t("量化")}</span>
+          <Segmented value={quant} options={QUANT_OPTIONS} onChange={builder.setQuant} ariaLabel={t("量化方式")} />
         </div>
 
         <div className="tb-field tb-ctx">
           <label htmlFor="builder-ctx" className="field-label">
-            上下文 {fmtCtx(ctx)}
+            {t("上下文")} {fmtCtx(ctx)}
           </label>
           <input
             id="builder-ctx"
@@ -135,7 +136,7 @@ export function BuilderPage() {
 
         <div className="tb-field" style={{ flex: '0 0 108px' }}>
           <label htmlFor="builder-budget" className="field-label">
-            预算
+            {t("预算")}
           </label>
           <input
             id="builder-budget"
@@ -160,7 +161,7 @@ export function BuilderPage() {
               <span className="n">{preset.name}</span>
             </button>
           ))}
-          <button type="button" className="icon-btn" onClick={builder.clear} title="清空机箱" aria-label="清空机箱">
+          <button type="button" className="icon-btn" onClick={builder.clear} title={t("清空机箱")} aria-label={t("清空机箱")}>
             <RotateCcw size={14} />
           </button>
           <button
@@ -168,10 +169,10 @@ export function BuilderPage() {
             className="btn btn-primary btn-sm"
             style={{ marginLeft: 6 }}
             onClick={() => setSaveOpen(true)}
-            title="保存到账号并生成分享链接"
+            title={t("保存到账号并生成分享链接")}
           >
             <Share2 size={13} />
-            保存 / 分享
+            {t("保存 / 分享")}
           </button>
         </div>
       </div>
@@ -194,7 +195,7 @@ export function BuilderPage() {
             type="button"
             className="icon-btn"
             onClick={() => setNotice('')}
-            aria-label="关闭提示"
+            aria-label={t("关闭提示")}
             style={{ width: 22, height: 22 }}
           >
             ×
@@ -221,17 +222,17 @@ export function BuilderPage() {
           />
           <MetricsBar stats={builder.stats} need={builder.need} modelName={`${model.paramsB.toFixed(0)}B ${quant.toUpperCase()}`} />
           <div className="board-hint">
-            目标 {modelName} · {quant.toUpperCase()} · {fmtCtx(ctx)} 上下文 · 需 {builder.need.total.toFixed(1)}G
+            {t("目标")} {modelName} · {quant.toUpperCase()} · {fmtCtx(ctx)} {t("上下文 · 需")} {builder.need.total.toFixed(1)}G
             {builder.stats.vramGb > 0 &&
               (overflow ? (
                 <span style={{ color: 'var(--danger-ink)' }}>
                   {' '}
-                  · 还差 {(builder.need.total - builder.stats.vramGb).toFixed(1)}G
+                  {t("· 还差")} {(builder.need.total - builder.stats.vramGb).toFixed(1)}G
                 </span>
               ) : (
-                <span style={{ color: 'var(--good-ink)' }}> · 余量 {fmtPct(builder.evaluation.headroom)}</span>
+                <span style={{ color: 'var(--good-ink)' }}> {t("· 余量")} {fmtPct(builder.evaluation.headroom)}</span>
               ))}
-            <span style={{ color: 'var(--text-3)' }}> · 整机 {fmtPrice(builder.stats.priceCny)}</span>
+            <span style={{ color: 'var(--text-3)' }}> {t("· 整机")} {fmtPrice(builder.stats.priceCny)}</span>
           </div>
         </div>
 
