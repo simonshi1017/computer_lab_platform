@@ -1,4 +1,4 @@
-import type { MoboRecord } from '@clab/data';
+import type { MoboRecord } from '@/data';
 import { EmptyHint, HitArea, HW, RemoveButton, SlotGroup } from './primitives';
 import { t } from '@/i18n';
 

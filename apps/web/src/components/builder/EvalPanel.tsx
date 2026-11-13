@@ -4,7 +4,7 @@ import type { Evaluation, Grade, Suggestion } from '@clab/engine';
 import type { UseBuild } from '@/hooks/useBuild';
 import { Radar } from '@/components/ui/Radar';
 import { fmtGb, fmtPct, tpsToChars } from '@/lib/format';
-import { t } from '@/i18n';
+import { t, tf } from '@/i18n';
 
 const GRADE_TONE: Record<Grade, { color: string; ring: string }> = {
   S: { color: 'var(--good-ink)', ring: '#16A34A' },
@@ -149,7 +149,7 @@ export function EvalPanel({ builder }: EvalPanelProps) {
         ) : (
           <>
             <div className="mx-auto max-w-[300px]">
-              <Radar data={evaluation.dimensions.map((dim) => ({ label: dim.label, value: dim.score }))} />
+              <Radar data={evaluation.dimensions.map((dim) => ({ label: t(dim.label), value: dim.score }))} />
             </div>
             <div className="mt-1 grid grid-cols-3 gap-1.5">
               {evaluation.dimensions.map((dim) => (
@@ -157,10 +157,10 @@ export function EvalPanel({ builder }: EvalPanelProps) {
                   key={dim.key}
                   className="rounded-lg px-2 py-1.5"
                   style={{ background: 'var(--surface-2)' }}
-                  title={dim.hint}
+                  title={t(dim.hint)}
                 >
                   <div className="text-[9.5px]" style={{ color: 'var(--text-3)' }}>
-                    {dim.label}
+                    {t(dim.label)}
                   </div>
                   <div className="mono text-[12.5px] font-semibold">{Math.round(dim.score)}</div>
                 </div>
@@ -190,10 +190,10 @@ export function EvalPanel({ builder }: EvalPanelProps) {
                 <Icon size={13} style={{ color: LEVEL_COLOR[risk.level], marginTop: 2, flexShrink: 0 }} />
                 <div className="min-w-0">
                   <div className="text-[11.5px] font-semibold" style={{ color: LEVEL_COLOR[risk.level] }}>
-                    {risk.title}
+                    {t(risk.title)}
                   </div>
                   <div className="mt-0.5 text-[11px] leading-[1.55]" style={{ color: 'var(--text-2)' }}>
-                    {risk.desc}
+                    {t(risk.desc)}
                   </div>
                 </div>
               </div>
@@ -221,7 +221,7 @@ export function EvalPanel({ builder }: EvalPanelProps) {
               className="suggest-btn"
               onClick={() => runAction(suggestion)}
             >
-              {suggestion.label}
+              {t(suggestion.label)}
             </button>
           ))}
         </div>
@@ -253,17 +253,17 @@ function conclusion(evaluation: Evaluation, modelName: string, paramsB: number):
 
   if (headroom < 0) {
     const short = need.total - stats.vramGb;
-    return `这套跑不动 ${modelName}：需要 ${fmtGb(need.total)}G，只有 ${stats.vramGb}G，差 ${fmtGb(short)}G。`;
+    return tf('这套跑不动 {m}：需要 {n}G，只有 {v}G，差 {d}G。', { m: modelName, n: fmtGb(need.total), v: stats.vramGb, d: fmtGb(short) });
   }
 
-  if (tps === 0) return `${modelName} 放得下，但当前配置跑不起来，检查一下电源与主板。`;
+  if (tps === 0) return tf('{m} 放得下，但当前配置跑不起来，检查一下电源与主板。', { m: modelName });
 
-  const speed = `约 ${tps} tokens/s（≈${tpsToChars(tps)} 字/秒）`;
+  const speed = tf('约 {t} tokens/s（≈{c} 字/秒）', { t: tps, c: tpsToChars(tps) });
   if (headroom < 0.1) {
-    return `能跑 ${modelName}，${speed}，但显存只剩 ${fmtPct(headroom)}，长对话容易中断。`;
+    return tf('能跑 {m}，{s}，但显存只剩 {h}，长对话容易中断。', { m: modelName, s: speed, h: fmtPct(headroom) });
   }
   if (headroom >= 0.3) {
-    return `很适合 ${modelName}：${speed}，显存还剩 ${fmtPct(headroom)}，${paramsB.toFixed(0)}B 这档留了足够余量。`;
+    return tf('很适合 {m}：{s}，显存还剩 {h}，{p}B 这档留了足够余量。', { m: modelName, s: speed, h: fmtPct(headroom), p: paramsB.toFixed(0) });
   }
-  return `可以跑 ${modelName}：${speed}，显存剩 ${fmtPct(headroom)}，属于正常范围。`;
+  return tf('可以跑 {m}：{s}，显存剩 {h}，属于正常范围。', { m: modelName, s: speed, h: fmtPct(headroom) });
 }

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search } from 'lucide-react';
-import { GLOSSARY_LIST, glossaryById, type GlossaryEntry } from '@clab/data';
+import { GLOSSARY_LIST, glossaryById, type GlossaryEntry } from '@/data';
 import { Dialog } from '@/components/ui/Dialog';
 import { Chip } from '@/components/ui/controls';
 import { PAGE_BY_PATH } from '@/navigation';
@@ -93,7 +93,7 @@ export function GlossaryPage() {
               </div>
               <p className="entry-desc clamp-3 mt-2">{entry.plain}</p>
               <div className="mt-2.5 flex items-center gap-2">
-                <span className="badge badge-mute">{entry.category}</span>
+                <span className="badge badge-mute">{t(entry.category)}</span>
                 {entry.alias?.slice(0, 2).map((alias) => (
                   <span key={alias} className="text-[10px]" style={{ color: 'var(--text-3)' }}>
                     {alias}
@@ -119,7 +119,7 @@ export function GlossaryPage() {
                   </span>
                 </div>
                 <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                  <span className="badge badge-mute">{active.category}</span>
+                  <span className="badge badge-mute">{t(active.category)}</span>
                   {active.alias?.map((alias) => (
                     <span key={alias} className="text-[10.5px]" style={{ color: 'var(--text-3)' }}>
                       {t("也叫")} {alias}

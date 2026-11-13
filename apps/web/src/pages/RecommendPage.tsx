@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AlertTriangle, Cloud, Gauge, Sparkles } from 'lucide-react';
 import { recommend, vramNeed, type ModelSpec, type Quant, type RecommendPref, type Tier } from '@clab/engine';
-import { MODELS_LIST, modelById } from '@clab/data';
+import { MODELS_LIST, modelById } from '@/data';
 import { useRuntimeCatalog } from '@/hooks/usePrices';
 import { track } from '@/lib/track';
 import { TierCard } from '@/components/recommend/TierCard';

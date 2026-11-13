@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Boxes, Check, Cpu, MonitorPlay, Route, Sparkles, Wrench } from 'lucide-react';
-import { LESSONS_LIST, MODELS_LIST } from '@clab/data';
+import { GPUS_LIST, LESSONS_LIST, MODELS_LIST } from '@/data';
 import { useProgress } from '@/hooks/useProgress';
-import { t } from '@/i18n';
+import { t, tf } from '@/i18n';
 
 const FEATURES = [
   {
@@ -14,7 +14,7 @@ const FEATURES = [
   {
     icon: Boxes,
     title: t("模型与硬件百科"),
-    desc: `${MODELS_LIST.length} 个模型、16 张显卡，含厂商、场景、擅长与短板。`,
+    desc: tf('{m} 个模型、{g} 张显卡，含厂商、场景、擅长与短板。', { m: MODELS_LIST.length, g: GPUS_LIST.length }),
     to: '/models',
   },
   {
@@ -235,7 +235,7 @@ export function HomePage() {
         </div>
         <div className="text-[12px]" style={{ color: 'var(--text-2)' }}>
           <span className="badge badge-good mr-2">{t("已上线")}</span>
-          {t("M6–M7 · 账号与分享、价格快照、埋点看板（后端 69 用例 · E2E 21 条）")}
+          {t("M6–M8 · 账号与分享、价格快照、埋点看板、全站中英双语（后端 69 用例 · E2E 23 条）")}
         </div>
       </div>
     </section>

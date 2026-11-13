@@ -1,4 +1,4 @@
-import type { GpuRecord } from '@clab/data';
+import type { GpuRecord } from '@/data';
 import { maxModelForGpu } from '@/lib/fit';
 import { fmtPrice } from '@/lib/format';
 import { modelSizeLabel } from '@/lib/modelSize';
@@ -34,7 +34,7 @@ export function GpuCard({ gpu, onOpen, onBuild }: GpuCardProps) {
               {gpu.name}
             </div>
             <div className="entry-sub truncate">
-              {gpu.vendor} · {gpu.arch} · {gpu.gpuClass}
+              {gpu.vendor} · {gpu.arch} · {t(gpu.gpuClass)}
             </div>
           </div>
           <span

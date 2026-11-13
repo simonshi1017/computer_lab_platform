@@ -1,5 +1,5 @@
 import type { Build, PresetKey, Quant } from '@clab/engine';
-import { DATASET, modelById } from '@clab/data';
+import { DATASET, modelById } from '@/data';
 import { t } from '@/i18n';
 
 export interface Preset {

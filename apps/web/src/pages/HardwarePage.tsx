@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { DATASET, GPUS_LIST, gpuById, type GpuRecord } from '@clab/data';
+import { DATASET, GPUS_LIST, gpuById, type GpuRecord } from '@/data';
 import { GpuCard } from '@/components/GpuCard';
 import { GpuDialog } from '@/components/GpuDialog';
 import { Chip, SectionTitle } from '@/components/ui/controls';
@@ -8,7 +8,7 @@ import { PAGE_BY_PATH } from '@/navigation';
 import { fmtPrice } from '@/lib/format';
 import { usePrices } from '@/hooks/usePrices';
 import { track } from '@/lib/track';
-import { t } from '@/i18n';
+import { t, tf } from '@/i18n';
 
 type ClassFilter = 'all' | GpuRecord['gpuClass'];
 
@@ -45,7 +45,7 @@ const PART_GROUPS = [
     rows: DATASET.parts.mobos.map((item) => ({
       id: item.id,
       name: item.name,
-      metric: `${item.chipset} · ${item.gpuSlots} 卡槽 · ${item.ramSlots} 内存槽`,
+      metric: tf('{c} · {s} 卡槽 · {r} 内存槽', { c: item.chipset, s: item.gpuSlots, r: item.ramSlots }),
       price: item.priceCny,
     })),
     risk: t("卡槽不够就插不了第二张卡，这是多卡方案的硬门槛"),
@@ -89,7 +89,7 @@ const PART_GROUPS = [
     rows: DATASET.parts.coolings.map((item) => ({
       id: item.id,
       name: item.name,
-      metric: `可压 ${item.capacityW}W · ${item.noiseDb}dB`,
+      metric: tf('可压 {w}W · {d}dB', { w: item.capacityW, d: item.noiseDb }),
       price: item.priceCny,
     })),
     risk: t("压不住热量会降频，等于花钱买了张更慢的卡"),

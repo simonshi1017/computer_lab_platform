@@ -1,8 +1,36 @@
 import { EN as EN_CORE } from './en';
 import { EN_GENERATED } from './en.generated';
+import { EN_DATA } from './en.data';
+import { EN_DYNAMIC } from './en.dynamic';
 
-/** 手工校对的核心字典优先于批量生成的字典 */
-const EN: Record<string, string> = { ...EN_GENERATED, ...EN_CORE };
+/**
+ * 合并优先级：手工校对 > 批量生成 > 内容数据。
+ * 内容数据（模型/显卡/术语/关卡）与 UI 文案共用同一套「中文原文当 key」机制，
+ * 重复短语只需翻一次，改中文文案时检查脚本也会一并报缺失。
+ */
+const EN: Record<string, string> = { ...EN_DATA, ...EN_GENERATED, ...EN_CORE };
+
+/**
+ * 动态文案的 key：把连续的非中文片段（数字、型号、插槽名、标点）压成 {n} 占位。
+ *
+ * 计算内核返回的是「已经拼好」的中文句子，例如
+ *   `占用 11.9 / 16GB，剩 26%，长对话很稳。`
+ * 数字每次都不同，无法按原文查字典。源码里的模板串是
+ *   `占用 ${need.total} / ${stats.vramGb}GB，剩 ${pct}%，长对话很稳。`
+ * 两边用同一个归一化函数，就能落到同一个 key 上。
+ *
+ * 注意：脚本 scripts/gen-content-dict.mjs 里有一份等价实现，改动必须同步。
+ */
+export function dynamicKey(text: string): { key: string; values: string[] } {
+  const values: string[] = [];
+  // 汉字 + CJK 标点 + 全角符号留在 key 里；只有数字、型号、插槽名、ASCII 标点
+  // 这类「每次都变或需要原样搬运」的片段才占位。中文标点因此不会漏进英文句子。
+  const key = text.replace(/[^\u3400-\u9fff\u3000-\u303f\uff00-\uffef]+/g, (chunk) => {
+    values.push(chunk);
+    return `{${values.length - 1}}`;
+  });
+  return { key, values };
+}
 
 /**
  * 轻量 i18n：字典的 key 就是中文原文。
@@ -54,10 +82,30 @@ export function getLocale(): Locale {
   return current;
 }
 
-/** 翻译一段 UI 文案；中文或字典缺失时原样返回。 */
+/**
+ * 翻译一段文案；中文态、字典缺失时原样返回。
+ * 精确匹配优先，命中不到再试动态模板（评估建议、说明书步骤这类带数字的句子）。
+ */
 export function t(text: string): string {
-  if (current !== 'en') return text;
-  return EN[text] ?? text;
+  if (current !== 'en' || !/[\u3400-\u9fff]/.test(text)) return text;
+  const exact = EN[text];
+  if (exact !== undefined) return exact;
+  const { key, values } = dynamicKey(text);
+  const tpl = EN_DYNAMIC[key];
+  if (tpl !== undefined) {
+    return tpl.replace(/\{(\d+)\}/g, (_match: string, i: string) => values[Number(i)] ?? '');
+  }
+  return text;
+}
+
+/**
+ * 翻译带命名占位符的模板，用于说明书里「句子中间插多个变量」的长文案。
+ * 中文态没有字典条目，直接用中文模板填值；英文态取英文模板再填值。
+ * 例：tf('按当前配置选 {q} 版本', { q: 'Q4 量化' })
+ */
+export function tf(template: string, vars: Record<string, string | number>): string {
+  const text = current === 'en' ? (EN[template] ?? template) : template;
+  return text.replace(/\{(\w+)\}/g, (_match: string, name: string) => String(vars[name] ?? ''));
 }
 
 /** 翻译数组型文案（场景、优势、风险清单等）。 */

@@ -1,5 +1,5 @@
 import { vramNeed } from '@clab/engine';
-import type { ModelRecord } from '@clab/data';
+import type { ModelRecord } from '@/data';
 import { fmtCtx, fmtGb } from '@/lib/format';
 import { modelSizeLabel } from '@/lib/modelSize';
 import { t } from '@/i18n';

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { AlertTriangle, ArrowRight, Download, Eye, Loader2, PackageOpen } from 'lucide-react';
-import { CATALOG } from '@clab/data';
+import { CATALOG } from '@/data';
 import type { BuildStats, Dimension, Evaluation, Grade, Risk } from '@clab/engine';
 import { ApiError, shareApi, type SharePayload } from '@/lib/api';
 import { Radar } from '@/components/ui/Radar';
@@ -283,7 +283,7 @@ export function SharePage() {
                     }}
                   />
                   <span>
-                    <b style={{ color: 'var(--text)' }}>{risk.title}</b> · {risk.desc}
+                    <b style={{ color: 'var(--text)' }}>{t(risk.title)}</b> · {t(risk.desc)}
                   </span>
                 </div>
               ))}

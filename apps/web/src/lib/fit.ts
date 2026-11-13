@@ -1,5 +1,5 @@
 import { vramNeed, type GpuSpec } from '@clab/engine';
-import { MODELS_LIST, type ModelRecord } from '@clab/data';
+import { MODELS_LIST, type ModelRecord } from '@/data';
 import { t } from '@/i18n';
 
 /** 判定用的上下文：8K 是多数本地对话的真实值，不拿满上下文去评判「能不能跑」 */

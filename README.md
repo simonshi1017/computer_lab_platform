@@ -32,16 +32,19 @@
 |---|---|
 | <img src="docs/screenshots/01-home.png" width="420" alt="中文首页"/> | <img src="docs/screenshots/en/01-home.png" width="420" alt="English home"/> |
 
-实现刻意做轻：`apps/web/src/i18n/` 的字典**以中文原文为 key**，`t()` 在中文态原样返回，省掉一份重复字典；`scripts/i18n-codemod.mjs` 负责批量外置与覆盖率检查：
+实现刻意做轻：`apps/web/src/i18n/` 的字典**以中文原文为 key**，`t()` 在中文态原样返回，省掉一份重复字典。两套检查脚本各管一层：
 
 ```bash
-node scripts/i18n-codemod.mjs check   # 列出未外置 / 未翻译的文案
+node scripts/i18n-codemod.mjs check   # UI 文案：外置与翻译覆盖率
 node scripts/i18n-codemod.mjs apply   # 把新增中文自动包成 t()（幂等）
+node scripts/gen-content-dict.mjs     # 内容文案：生成字典并报告缺失
 ```
 
-当前 UI 文案 **514/514 已双语**。切换语言会整页重载，让导航元信息、预设、筛选标签这些模块级常量按新 locale 重新初始化（和参考站按 `lang` 参数切换一致）。
+覆盖范围：**UI 514 条 + 内容数据 382 条静态 + 37 条动态模板**，全部双语。内容数据不改 `packages/data` 的 schema（会冲击 zod 校验与「文案数字对账」测试），改由 `apps/web/src/data/` 在模块加载时按 locale 一次性本地化；`gpuClass`、`category`、id 这类逻辑值保持原值，只在显示处翻译。计算内核返回的动态建议由 `dynamicKey()` 把数字与型号归一成占位符，说明书里的多变量长句用 `tf()` 命名占位模板。
 
-> 边界：双语覆盖的是**界面文案**；模型、显卡、术语、关卡等**内容数据仍为中文**，属于下一批的双语化范围。
+切换语言会整页重载，让导航元信息、预设、筛选标签这些模块级常量按新 locale 重新初始化（和参考站按 `lang` 参数切换一致）。
+
+> 验收：`e2e/i18n-content.spec.ts` 遍历 8 个主要页面，断言英文态 **0 处中文残留**（模型名、显卡点评、术语解释、关卡、评估建议、说明书都在内），中文态保持原文。
 
 - 产品设计：[prototype/](prototype/)（可交互原型，作为视觉与交互基线）
 - 设计规范：[DESIGN.md](DESIGN.md)
@@ -60,12 +63,13 @@ node scripts/i18n-codemod.mjs apply   # 把新增中文自动包成 t()（幂等
 | M5 打磨上线 | ✅ 已完成 |
 | M6 后端 P1 | ✅ 已完成 |
 | M7 数据自动化 | ✅ 已完成 |
+| M8 多语种与内容双语 | ✅ 已完成 |
 
 内容基线：9 个模型 · 16 张显卡 · 7 类部件（共 31 项）· 16 条术语 · 5 关学习路径。
 
 组装台能力：实体机箱 SVG（8 类槽位）· 拖拽/点击/键盘三通道 · 实时显存功耗价格 · 六维雷达与可执行建议 · 三套预设 · 本地存档 · 说明书生成与打印。
 
-打磨结果：首屏 97KB gzip（路由懒加载，组装台拆成独立 chunk）· 对比度全部达 AA · 键盘可完成装机 · 页面级错误边界 · 21 条 Playwright E2E · 全局免责页脚。
+打磨结果：首屏 97KB gzip（路由懒加载，组装台拆成独立 chunk）· 对比度全部达 AA · 键盘可完成装机 · 页面级错误边界 · 23 条 Playwright E2E · 全局免责页脚。
 
 数据自动化（M7）：价格经 CSV 导入后写入快照表并同步当前价，前端每张卡都能显示「京东 · 今天」或「目录估算价 · 无采集时间」；异常涨跌（>60%）与越界价在导入时就被拒绝。APScheduler 每日体检，陈旧即告警。分享卡片用 canvas 导出 1200×630 PNG，含显存占用条与保存时单价。埋点走 `sendBeacon` 上报，`/stats` 看板回答四个问题：多少人在用、学习走完没有、推荐是否被采纳、分享有没有传出去。
 
@@ -261,7 +265,7 @@ E2E_BASE_URL=http://localhost:8080 SHOT_LANG=en \
   pnpm --filter @clab/web exec playwright test e2e/_readme_shots.spec.ts
 ```
 
-输出到 `docs/screenshots/`。改了 UI 后重跑一次，两版 README 的配图就会同步更新。
+中文态输出到 `docs/screenshots/`，英文态输出到 `docs/screenshots/en/`。改了 UI 后重跑一次，两版 README 的配图就会同步更新。
 
 ## 约定
 

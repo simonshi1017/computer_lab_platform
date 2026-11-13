@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 import { Search } from 'lucide-react';
 import type { Build } from '@clab/engine';
-import { DATASET } from '@clab/data';
+import { DATASET } from '@/data';
 import type { PartKind } from '@/hooks/useBuild';
 import { DRAG_MIME, setPendingPayload, type DragPayload } from '@/components/chassis/Chassis';
 import { fmtPrice, shortGpuName } from '@/lib/format';
-import { t } from '@/i18n';
+import { t, tf } from '@/i18n';
 
 interface PartPaletteProps {
   activeKind: PartKind;
@@ -67,7 +67,7 @@ export function PartPalette({ activeKind, onKindChange, build, onPlace }: PartPa
         return parts.mobos.map((mobo) => ({
           id: mobo.id,
           title: mobo.name,
-          meta: `${mobo.gpuSlots} 卡槽 · ${mobo.ramSlots} 槽内存`,
+          meta: tf('{s} 卡槽 · {r} 槽内存', { s: mobo.gpuSlots, r: mobo.ramSlots }),
           price: mobo.priceCny,
           installed: build.moboId === mobo.id,
         }));
@@ -99,7 +99,7 @@ export function PartPalette({ activeKind, onKindChange, build, onPlace }: PartPa
         return parts.coolings.map((cooling) => ({
           id: cooling.id,
           title: cooling.name,
-          meta: `可压 ${cooling.capacityW}W · ${cooling.noiseDb}dB`,
+          meta: tf('可压 {w}W · {d}dB', { w: cooling.capacityW, d: cooling.noiseDb }),
           price: cooling.priceCny,
           installed: build.coolingId === cooling.id,
         }));

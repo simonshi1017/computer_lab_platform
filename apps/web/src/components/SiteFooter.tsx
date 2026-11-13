@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { DATA_UPDATED_AT } from '@clab/data';
+import { DATA_UPDATED_AT } from '@/data';
 import { t } from '@/i18n';
 
 /**

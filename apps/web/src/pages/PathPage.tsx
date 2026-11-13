@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Check, CircleDashed, Play } from 'lucide-react';
-import { LESSONS_LIST } from '@clab/data';
+import { LESSONS_LIST } from '@/data';
 import { useProgress } from '@/hooks/useProgress';
 import { PAGE_BY_PATH } from '@/navigation';
 import { t } from '@/i18n';

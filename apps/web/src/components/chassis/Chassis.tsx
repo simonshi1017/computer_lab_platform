@@ -9,7 +9,7 @@ import {
   type PsuRecord,
   type RamRecord,
   type StorageRecord,
-} from '@clab/data';
+} from '@/data';
 import type { PartKind } from '@/hooks/useBuild';
 import { CaseShell } from './CaseShell';
 import { Board } from './Board';

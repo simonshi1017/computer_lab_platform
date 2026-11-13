@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Cpu, Sparkles } from 'lucide-react';
 import { estimateTps, vramNeed, type Quant } from '@clab/engine';
-import { GPUS_LIST, type ModelRecord } from '@clab/data';
+import { GPUS_LIST, type ModelRecord } from '@/data';
 import { Dialog } from '@/components/ui/Dialog';
 import { Segmented, SpecGrid } from '@/components/ui/controls';
 import { fmtCtx, fmtGb, tpsToChars } from '@/lib/format';

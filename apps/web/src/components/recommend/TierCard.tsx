@@ -1,5 +1,5 @@
 import type { Tier } from '@clab/engine';
-import { gpuById } from '@clab/data';
+import { gpuById } from '@/data';
 import { ArrowRight, Volume2 } from 'lucide-react';
 import { fmtGb, fmtPct, fmtPrice, tpsToChars } from '@/lib/format';
 import { t } from '@/i18n';
@@ -40,8 +40,8 @@ export function TierCard({ tier, budget, onLoad }: TierCardProps) {
       {tier.picked && <span className="tier-flag">{t("推荐")}</span>}
 
       <div className="tier-head">
-        <div className="tier-name">{tier.name}</div>
-        <div className="tier-desc">{tier.desc}</div>
+        <div className="tier-name">{t(tier.name)}</div>
+        <div className="tier-desc">{t(tier.desc)}</div>
         <div className="tier-price">
           {fmtPrice(tier.priceCny)}
           <small>{t("整机")}</small>

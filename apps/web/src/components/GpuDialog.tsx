@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Cpu } from 'lucide-react';
-import type { GpuRecord } from '@clab/data';
+import type { GpuRecord } from '@/data';
 import { Dialog } from '@/components/ui/Dialog';
 import { SpecGrid } from '@/components/ui/controls';
 import { FIT_CTX, VERDICT_COLOR, VERDICT_LABEL, modelsFitForGpu } from '@/lib/fit';
@@ -41,7 +41,7 @@ export function GpuDialog({ gpu, onClose }: GpuDialogProps) {
             <h2 id="gpu-dialog-title" className="text-[17px] font-semibold tracking-[-0.02em]">
               {gpu.name}
             </h2>
-            <span className="badge badge-mute">{gpu.gpuClass}</span>
+            <span className="badge badge-mute">{t(gpu.gpuClass)}</span>
           </div>
           <div className="mt-1 text-[11.5px]" style={{ color: 'var(--text-3)' }}>
             {gpu.vendor} · {gpu.arch} · {gpu.memoryType} {gpu.busWidth}bit

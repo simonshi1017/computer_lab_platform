@@ -3,7 +3,7 @@ import { AlertTriangle, ArrowRight, CheckCircle2, Cpu, Printer } from 'lucide-re
 import { useBuild } from '@/hooks/useBuild';
 import { fmtCtx, fmtGb, fmtPct, fmtPrice, tpsToChars } from '@/lib/format';
 import { track } from '@/lib/track';
-import { t } from '@/i18n';
+import { t, tf } from '@/i18n';
 
 /** 云 API 参考价，用于成本对比。取国产中端模型的常见价位（元 / 百万 token） */
 const CLOUD_PER_MILLION = 4;
@@ -68,26 +68,26 @@ export function ManualPage() {
       role: t("显卡"),
       name: stats.gpus.map((gpu) => gpu.name).join(' + ') || t("未选"),
       price: stats.gpus.reduce((sum, gpu) => sum + gpu.priceCny, 0),
-      note: `合计 ${stats.vramGb}GB 显存`,
+      note: t(`合计 ${stats.vramGb}GB 显存`),
     },
     { role: 'CPU', name: stats.cpu?.name ?? t("未选"), price: stats.cpu?.priceCny ?? 0, note: stats.cpu?.cores ?? '—' },
     {
       role: t("主板"),
       name: stats.mobo?.name ?? t("未选"),
       price: stats.mobo?.priceCny ?? 0,
-      note: stats.mobo ? `${stats.mobo.gpuSlots} 卡槽 · ${stats.mobo.ramSlots} 内存槽` : '—',
+      note: stats.mobo ? t(`${stats.mobo.gpuSlots} 卡槽 · ${stats.mobo.ramSlots} 内存槽`) : '—',
     },
     {
       role: t("内存"),
       name: stats.rams.map((ram) => ram.name).join(' + ') || t("未选"),
       price: stats.rams.reduce((sum, ram) => sum + ram.priceCny, 0),
-      note: `合计 ${stats.ramGb}GB`,
+      note: t(`合计 ${stats.ramGb}GB`),
     },
     {
       role: t("电源"),
       name: stats.psu?.name ?? t("未选"),
       price: stats.psu?.priceCny ?? 0,
-      note: stats.psu ? `负载 ${Math.round((stats.powerW / stats.psu.watt) * 100)}%` : '—',
+      note: stats.psu ? t(`负载 ${Math.round((stats.powerW / stats.psu.watt) * 100)}%`) : '—',
     },
     {
       role: t("硬盘"),
@@ -99,7 +99,7 @@ export function ManualPage() {
       role: t("散热"),
       name: stats.cooling?.name ?? t("未选"),
       price: stats.cooling?.priceCny ?? 0,
-      note: stats.cooling ? `可压 ${stats.cooling.capacityW}W · ${stats.cooling.noiseDb}dB` : '—',
+      note: stats.cooling ? t(`可压 ${stats.cooling.capacityW}W · ${stats.cooling.noiseDb}dB`) : '—',
     },
   ];
 
@@ -111,7 +111,7 @@ export function ManualPage() {
     },
     {
       title: t("装显卡驱动"),
-      detail: `先确认系统认到了 ${stats.gpus.length} 张卡。驱动装错版本是最常见的坑，装完必须能看到显存。`,
+      detail: t(`先确认系统认到了 ${stats.gpus.length} 张卡。驱动装错版本是最常见的坑，装完必须能看到显存。`),
       code: t("sudo ubuntu-drivers install nvidia-smi # 应列出 GPU 型号与显存"),
     },
     {
@@ -121,19 +121,19 @@ export function ManualPage() {
     },
     {
       title: t("拉模型"),
-      detail: `按当前配置选 ${
-        quant === 'int4' ? t("Q4 量化") : quant === 'int8' ? t("Q8 量化") : t("FP16 全精度")
-      }版本，权重约 ${fmtGb(need.weights)}GB。${
-        headroom < 0
+      detail: tf('按当前配置选 {q} 版本，权重约 {w}GB。{tail}', {
+        q: quant === 'int4' ? t("Q4 量化") : quant === 'int8' ? t("Q8 量化") : t("FP16 全精度"),
+        w: fmtGb(need.weights),
+        tail: headroom < 0
           ? t("注意：当前配置放不下，先降量化或减上下文。")
-          : `显存需 ${fmtGb(need.total)}GB，余量 ${fmtPct(headroom)}。`
-      }`,
+          : tf('显存需 {v}GB，余量 {h}。', { v: fmtGb(need.total), h: fmtPct(headroom) }),
+      }),
       code: `ollama pull ${pullTarget}\nollama list${tagHint}`,
     },
     {
       title: t("跑通第一句话"),
-      detail: `目标是在 ${fmtCtx(ctx)} 上下文下稳定输出。先问一句短的，确认不出错再压长文本。`,
-      code: `ollama run ${pullTarget} "用一句话解释什么是显存"\n\n# 也可以用 API 测\ncurl http://localhost:11434/api/generate -d '{\n  "model": "${pullTarget}",\n  "prompt": "你好",\n  "stream": false\n}'`,
+      detail: t(`目标是在 ${fmtCtx(ctx)} 上下文下稳定输出。先问一句短的，确认不出错再压长文本。`),
+      code: `ollama run ${pullTarget} "${t("用一句话解释什么是显存")}"\n\n# ${t("也可以用 API 测")}\ncurl http://localhost:11434/api/generate -d '{\n  "model": "${pullTarget}",\n  "prompt": "${t("你好")}",\n  "stream": false\n}'`,
     },
   ];
 
@@ -166,7 +166,7 @@ export function ManualPage() {
         <header className="manual-head">
           <div className="manual-eyebrow">{t("我的第一台本地算力服务器说明书")}</div>
           <h1 className="manual-title">
-            {t("跑")} {modelName} {t("的")}{stats.gpus.length > 1 ? `${stats.gpus.length} 卡` : t("单卡")}{t("方案")}
+            {t("跑")} {modelName} {t("的")}{stats.gpus.length > 1 ? t(`${stats.gpus.length} 卡`) : t("单卡")}{t("方案")}
           </h1>
           <div className="manual-meta">
             <span>{t("生成时间")} {generatedAt}</span>
@@ -192,7 +192,7 @@ export function ManualPage() {
               { k: t("上下文长度"), v: fmtCtx(ctx), mono: true },
               { k: t("显存需求"), v: `${fmtGb(need.total)} GB`, mono: true },
               { k: t("预估速度"), v: tps > 0 ? `${tps} tokens/s` : t("— 跑不动"), mono: true },
-              { k: t("折合字数"), v: tps > 0 ? `约 ${tpsToChars(tps)} 字/秒` : '—', mono: true },
+              { k: t("折合字数"), v: tps > 0 ? t(`约 ${tpsToChars(tps)} 字/秒`) : '—', mono: true },
               { k: t("显存配置"), v: `${stats.vramGb} GB`, mono: true },
             ].map((item) => (
               <div className="spec-cell" key={item.k}>
@@ -203,10 +203,17 @@ export function ManualPage() {
           </div>
           <p className="manual-note">
             {headroom < 0
-              ? `注意：这套配置放不下目标模型，还差 ${fmtGb(need.total - stats.vramGb)}GB。按这份清单采购会导致模型加载失败，请先调整量化或上下文。`
-              : `显存占用 ${fmtGb(need.total)} / ${stats.vramGb}GB，余量 ${fmtPct(headroom)}。${
-                  headroom < 0.1 ? t("余量偏少，长对话可能不稳定，建议降一档量化。") : t("留足了余量，长对话和批处理都比较稳。")
-                }`}
+              ? tf('注意：这套配置放不下目标模型，还差 {v}GB。按这份清单采购会导致模型加载失败，请先调整量化或上下文。', {
+                  v: fmtGb(need.total - stats.vramGb),
+                })
+              : tf('显存占用 {a} / {b}GB，余量 {h}。{tail}', {
+                  a: fmtGb(need.total),
+                  b: stats.vramGb,
+                  h: fmtPct(headroom),
+                  tail: headroom < 0.1
+                    ? t("余量偏少，长对话可能不稳定，建议降一档量化。")
+                    : t("留足了余量，长对话和批处理都比较稳。"),
+                })}
           </p>
         </section>
 
@@ -267,7 +274,7 @@ export function ManualPage() {
             <div>
               <div className="k">{t("显存余量")}</div>
               <div className="v mono">
-                {headroom >= 0 ? fmtPct(headroom) : `缺 ${fmtGb(need.total - stats.vramGb)}G`}
+                {headroom >= 0 ? fmtPct(headroom) : t(`缺 ${fmtGb(need.total - stats.vramGb)}G`)}
               </div>
             </div>
             <div>
@@ -282,9 +289,9 @@ export function ManualPage() {
           <p className="manual-note">
             {t("生成速度按「带宽 ÷ 权重体积 × 效率系数」估算，受上下文长度影响。")}
             {tps > 0 && tps < 8
-              ? `${tps} tokens/s 偏慢，读起来会一顿一顿，长文生成会比较煎熬。`
+              ? t(`${tps} tokens/s 偏慢，读起来会一顿一顿，长文生成会比较煎熬。`)
               : tps >= 20
-                ? `${tps} tokens/s 比人阅读速度快，交互体验接近在线服务。`
+                ? t(`${tps} tokens/s 比人阅读速度快，交互体验接近在线服务。`)
                 : ''}
           </p>
         </section>
@@ -347,8 +354,8 @@ export function ManualPage() {
                 <div key={`${risk.level}-${risk.title}`} className="manual-risk">
                   <Icon size={13} style={{ color, marginTop: 2, flexShrink: 0 }} />
                   <div>
-                    <b style={{ color }}>{risk.title}</b>
-                    <span style={{ color: 'var(--text-2)' }}> — {risk.desc}</span>
+                    <b style={{ color }}>{t(risk.title)}</b>
+                    <span style={{ color: 'var(--text-2)' }}> — {t(risk.desc)}</span>
                   </div>
                 </div>
               );

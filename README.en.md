@@ -32,16 +32,19 @@ The UI ships in **Simplified Chinese and English**. Use the language button in t
 |---|---|
 | <img src="docs/screenshots/01-home.png" width="420" alt="Chinese home"/> | <img src="docs/screenshots/en/01-home.png" width="420" alt="English home"/> |
 
-The implementation is deliberately small: dictionaries in `apps/web/src/i18n/` use the **original Chinese string as the key**, and `t()` returns it unchanged in Chinese — no duplicate zh-CN dictionary to maintain. `scripts/i18n-codemod.mjs` handles bulk extraction and coverage checks:
+The implementation is deliberately small: dictionaries in `apps/web/src/i18n/` use the **original Chinese string as the key**, and `t()` returns it unchanged in Chinese — no duplicate zh-CN dictionary to maintain. Two scripts cover the two layers:
 
 ```bash
-node scripts/i18n-codemod.mjs check   # list unextracted / untranslated strings
+node scripts/i18n-codemod.mjs check   # UI copy: extraction and translation coverage
 node scripts/i18n-codemod.mjs apply   # wrap new Chinese strings in t() (idempotent)
+node scripts/gen-content-dict.mjs     # content copy: generate dictionaries, report gaps
 ```
 
-All **514 UI strings** are bilingual. Switching language reloads the page so module-level constants (route metadata, presets, filter labels) are re-evaluated under the new locale — the same `lang`-parameter behavior as the reference site.
+Coverage: **514 UI strings + 382 static content strings + 37 dynamic templates**, all bilingual. Content data does not touch the `packages/data` schema (that would break zod validation and the copy-versus-numbers consistency tests). Instead `apps/web/src/data/` localizes the dataset once at module load; logic values such as `gpuClass`, `category`, and ids keep their original values and are translated only where displayed. Dynamic advice returned by the compute engine uses `dynamicKey()` to normalize numbers and model names into placeholders, while long multi-variable sentences in the manual use named-placeholder `tf()` templates.
 
-> Scope: this covers **UI copy**. Model, GPU, glossary and lesson **content data is still Chinese only** and is queued for the next batch.
+Switching language reloads the page so module-level constants (route metadata, presets, filter labels) are re-evaluated under the new locale — the same `lang`-parameter behavior as the reference site.
+
+> Acceptance: `e2e/i18n-content.spec.ts` walks 8 main pages and asserts **zero Chinese characters** in English mode (model names, GPU notes, glossary entries, lessons, evaluation advice, and the manual all included), while Chinese mode keeps the original text.
 
 - Product design: [prototype/](prototype/) (interactive prototype; the visual and interaction baseline)
 - Design system: [DESIGN.md](DESIGN.md)
@@ -60,12 +63,13 @@ All **514 UI strings** are bilingual. Switching language reloads the page so mod
 | M5 Polish & launch | ✅ Done |
 | M6 Backend P1 | ✅ Done |
 | M7 Data automation | ✅ Done |
+| M8 Languages & bilingual content | ✅ Done |
 
 Content baseline: 9 models · 16 GPUs · 31 parts across 7 categories · 16 glossary terms · 5 learning levels.
 
 Builder: a physical-chassis SVG with 8 slot types · drag / click / keyboard input · live VRAM, power and price · six-axis radar with actionable suggestions · three presets · local autosave · printable manual.
 
-Polish: 97 KB gzipped first load (lazy routes, builder in its own chunk) · all contrast ratios meet AA · a build can be completed by keyboard alone · page-level error boundaries · 21 Playwright E2E checks · a global disclaimer footer.
+Polish: 97 KB gzipped first load (lazy routes, builder in its own chunk) · all contrast ratios meet AA · a build can be completed by keyboard alone · page-level error boundaries · 23 Playwright E2E checks · a global disclaimer footer.
 
 Data automation (M7): prices imported from CSV are written to a snapshot table and synced to the current price, so every GPU card can say "JD.com · today" or "catalog estimate · no capture date". Out-of-range jumps (>60%) and absurd prices are rejected at import time. An APScheduler job runs a daily freshness check and raises alerts. Share cards are exported as 1200×630 PNGs via canvas, including a VRAM usage bar and the unit prices at save time. Analytics are sent with `sendBeacon`; the `/stats` dashboard answers four questions: how many people use it, do they finish learning, are recommendations adopted, and do shares travel.
 
@@ -261,7 +265,7 @@ E2E_BASE_URL=http://localhost:8080 SHOT_LANG=en \
   pnpm --filter @clab/web exec playwright test e2e/_readme_shots.spec.ts
 ```
 
-Output goes to `docs/screenshots/`. Re-run it after UI changes to keep both READMEs in sync.
+Chinese shots go to `docs/screenshots/`, English shots to `docs/screenshots/en/`. Re-run it after UI changes to keep both READMEs in sync.
 
 ## Conventions
 

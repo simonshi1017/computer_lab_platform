@@ -55,11 +55,13 @@ export function evaluate(input: EvaluateInput): Evaluation {
 
   const hasCore = stats.gpus.length > 0 && Boolean(stats.cpu) && Boolean(stats.psu) && Boolean(stats.mobo);
   if (!hasCore) {
+    // 部件名用通用英文缩写：这句话会被拼进 desc 后再交给前端按整句翻译，
+    // 插入中文词会破坏动态模板的占位符结构。缩写本身在中英文界面都读得懂。
     const missing: string[] = [];
-    if (stats.gpus.length === 0) missing.push('显卡');
+    if (stats.gpus.length === 0) missing.push('GPU');
     if (!stats.cpu) missing.push('CPU');
-    if (!stats.mobo) missing.push('主板');
-    if (!stats.psu) missing.push('电源');
+    if (!stats.mobo) missing.push('Motherboard');
+    if (!stats.psu) missing.push('PSU');
 
     return {
       empty: true,
@@ -70,7 +72,7 @@ export function evaluate(input: EvaluateInput): Evaluation {
         {
           level: 'info',
           title: '还差几个核心部件',
-          desc: `缺少：${missing.join('、')}。补齐后就能开始评估。`,
+          desc: `缺少：${missing.join(', ')}。补齐后就能开始评估。`,
         },
       ],
       suggestions: [

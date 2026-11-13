@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BookOpen, Boxes, Cpu, type LucideIcon } from 'lucide-react';
-import { GLOSSARY_LIST, GPUS_LIST, MODELS_LIST } from '@clab/data';
+import { GLOSSARY_LIST, GPUS_LIST, MODELS_LIST } from '@/data';
 import { PAGE_META } from '@/navigation';
 import { t } from '@/i18n';
 
@@ -55,7 +55,7 @@ function buildIndex(): Item[] {
     group: '显卡' /* i18n-key */,
     to: `/hardware?gpu=${gpu.id}`,
     icon: Cpu,
-    keywords: [gpu.arch, gpu.gpuClass, gpu.vendor].join(' '),
+    keywords: [gpu.arch, t(gpu.gpuClass), gpu.vendor].join(' '),
   }));
 
   const terms: Item[] = GLOSSARY_LIST.map((entry) => ({

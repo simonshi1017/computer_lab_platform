@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { CheckCircle2, RotateCcw, Share2 } from 'lucide-react';
-import { MODELS_LIST } from '@clab/data';
+import { MODELS_LIST } from '@/data';
 import { buildApi, shareApi } from '@/lib/api';
 import { SaveBuildDialog } from '@/components/auth/SaveBuildDialog';
 import { LoginDialog } from '@/components/auth/LoginDialog';

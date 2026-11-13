@@ -121,4 +121,7 @@ export const EN: Record<string, string> = {
   '功耗': 'Power',
   '扩展': 'Expandability',
   '匹配': 'Fit',
+  '全站中英双语 · 已完成': 'Full bilingual rollout · done',
+  'M6–M8 · 账号与分享、价格快照、埋点看板、全站中英双语（后端 69 用例 · E2E 23 条）':
+    'M6–M8 · accounts & sharing, price snapshots, analytics dashboard, full Chinese/English support (69 backend tests · 23 E2E checks)',
 };

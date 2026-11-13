@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { buildStats, evaluate, EMPTY_BUILD, vramNeed, withAutoPsu, withAutoRam } from '@clab/engine';
 import type { Build, ModelSpec, PresetKey, Quant } from '@clab/engine';
-import { DATASET, MODELS_LIST, modelById } from '@clab/data';
+import { DATASET, MODELS_LIST, modelById } from '@/data';
 import { PRESETS } from '@/lib/presets';
 import { useRuntimeCatalog } from '@/hooks/usePrices';
 import { BUILDER_STORAGE_KEY, type StoredBuilderState } from '@/lib/builderStorage';

@@ -1,7 +1,7 @@
-import type { CoolingRecord, CpuRecord, GpuRecord, PsuRecord, RamRecord, StorageRecord } from '@clab/data';
+import type { CoolingRecord, CpuRecord, GpuRecord, PsuRecord, RamRecord, StorageRecord } from '@/data';
 import { shortGpuName } from '@/lib/format';
 import { EmptyHint, Fan, HitArea, HW, RemoveButton, SlotGroup } from './primitives';
-import { t } from '@/i18n';
+import { t, tf } from '@/i18n';
 
 /**
  * 八类槽位。
@@ -214,7 +214,7 @@ export function GpuSlot({ index, part, ...handlers }: { index: number; part: Gpu
             stroke="#3B465C"
             strokeDasharray="6 5"
           />
-          <EmptyHint x={284} y={y + 24} main={`PCIe ${index + 1} · 空槽`} />
+          <EmptyHint x={284} y={y + 24} main={tf('PCIe {n} · 空槽', { n: index + 1 })} />
           <HitArea x={62} y={y - 4} width={344} height={46} />
         </>
       )}

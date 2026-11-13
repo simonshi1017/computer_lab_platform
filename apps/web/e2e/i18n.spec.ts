@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 /**
  * 多语种回归：切换器、URL 参数、<html lang> 与关键 UI 文案。
- * 内容数据（模型描述等）仍为中文，是下一批要双语化的部分，所以不断言「全页无中文」。
+ * 内容数据与「全页无中文」的断言在 i18n-content.spec.ts。
  */
 test('language switch keeps locale across reload', async ({ page }) => {
   await page.goto('/');

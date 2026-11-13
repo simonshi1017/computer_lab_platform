@@ -19,7 +19,13 @@ import ts from 'typescript';
 
 const ROOT = process.cwd();
 const SRC = join(ROOT, 'apps/web/src');
-const EN_FILES = [join(SRC, 'i18n/en.ts'), join(SRC, 'i18n/en.generated.ts')];
+// en.data.ts 由 gen-content-dict.mjs 生成，tf() 模板与内容片段都在里面；
+// UI 检查必须一并认，否则会把已翻译的模板误报成缺失。
+const EN_FILES = [
+  join(SRC, 'i18n/en.ts'),
+  join(SRC, 'i18n/en.generated.ts'),
+  join(SRC, 'i18n/en.data.ts'),
+];
 const MODE = process.argv[2] ?? 'check';
 const HAS_CN = /[\u3400-\u9fff]/;
 // navigation.ts 的 group/label 同时是筛选逻辑的键，只能在消费处翻译，整文件手工维护

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { LESSONS_LIST } from '@clab/data';
+import { LESSONS_LIST } from '@/data';
 
 const STORAGE_KEY = 'clab.progress';
 

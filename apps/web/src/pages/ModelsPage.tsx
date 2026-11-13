@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search } from 'lucide-react';
-import { MODELS_LIST, modelById } from '@clab/data';
+import { MODELS_LIST, modelById } from '@/data';
 import { ModelCard } from '@/components/ModelCard';
 import { ModelDialog } from '@/components/ModelDialog';
 import { Chip } from '@/components/ui/controls';

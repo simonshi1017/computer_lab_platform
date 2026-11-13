@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useSyncExternalStore } from 'react';
 import type { Catalog, GpuSpec } from '@clab/engine';
-import { CATALOG } from '@clab/data';
+import { CATALOG } from '@/data';
 import { api } from '@/lib/api';
-import { t } from '@/i18n';
+import { t, tf } from '@/i18n';
 
 /**
  * 运行时价格。
@@ -149,10 +149,10 @@ export function priceProvenance(info: PriceInfo | undefined): { text: string; st
 
   const channel = channelLabel(info.channel);
   if (info.ageDays === null) {
-    return { text: `${channel} · 时间未知`, stale: true };
+    return { text: `${channel} ${t('· 时间未知')}`, stale: true };
   }
   if (info.ageDays < 1) {
-    return { text: `${channel} · 今天`, stale: info.stale };
+    return { text: `${channel} ${t('· 今天')}`, stale: info.stale };
   }
-  return { text: `${channel} · ${Math.round(info.ageDays)} 天前`, stale: info.stale };
+  return { text: `${channel} ${tf('· {d} 天前', { d: Math.round(info.ageDays) })}`, stale: info.stale };
 }
