@@ -1,14 +1,13 @@
 import { expect, test } from '@playwright/test';
 
 /**
- * 内容数据双语回归（M8-P1）。
+ * 内容数据双语回归（M8-P1 建立，M9 扩充到场景实验室）。
  *
- * 上一批只做了 UI 文案，模型/显卡/术语/关卡仍是中文；这一批把数据层
- * 也接进同一套字典，并收干净了计算内核输出与说明书模板串。
- * 这条用例的价值就是「英文态不许再漏中文」——新增页面或新文案一旦
- * 忘了翻译，会在这里直接失败，而不是等用户截图反馈。
+ * UI 文案、数据层内容、计算内核输出与说明书模板串都收进同一套字典。
+ * 这条用例的价值就是「英文态不许再漏中文」——新增页面（如 /scenarios）
+ * 或新文案一旦忘了翻译，会在这里直接失败，而不是等用户截图反馈。
  */
-const PATHS = ['/', '/path', '/glossary', '/models', '/hardware', '/recommend', '/builder', '/manual'];
+const PATHS = ['/', '/path', '/glossary', '/models', '/hardware', '/recommend', '/scenarios', '/builder', '/manual'];
 
 test('English mode has no Chinese text anywhere', async ({ page }) => {
   for (const path of PATHS) {

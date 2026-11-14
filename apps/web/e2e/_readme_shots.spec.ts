@@ -21,6 +21,9 @@ const SHOTS = [
   { file: '04-recommend.png', path: '/recommend' },
   { file: '05-builder.png', path: '/builder' },
   { file: '06-manual.png', path: '/manual' },
+  // 英文文案更长、卡片标题会换行，视口要再高一些才能收进底部说明条
+  { file: '07-scenarios.png', path: '/scenarios', height: LANG_EN ? 1400 : 1200 },
+  { file: '08-lab.png', path: '/builder?scenario=rag-kb' },
 ];
 
 test('capture README screenshots', async ({ page }) => {
@@ -34,7 +37,11 @@ test('capture README screenshots', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
 
   for (const shot of SHOTS) {
-    await page.goto(LANG_EN ? `${shot.path}?lang=en` : shot.path, { waitUntil: 'domcontentloaded' });
+    // 路径本身可能带 query（例如 /builder?scenario=…），不能无脑拼 ?
+    const sep = shot.path.includes('?') ? '&' : '?';
+    // 场景库是两行卡片，960 高度会截掉第二行的按钮，单独给它更高视口
+    await page.setViewportSize({ width: 1440, height: shot.height ?? 960 });
+    await page.goto(LANG_EN ? `${shot.path}${sep}lang=en` : shot.path, { waitUntil: 'domcontentloaded' });
     // 等字体、懒加载路由与入场动画稳定
     await page.waitForTimeout(1200);
     await page.screenshot({ path: join(OUT_DIR, shot.file) });

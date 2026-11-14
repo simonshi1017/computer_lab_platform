@@ -26,7 +26,9 @@ export type EventName =
   | 'share_create'
   | 'share_open'
   | 'card_download'
-  | 'manual_print';
+  | 'manual_print'
+  | 'scenario_start'
+  | 'scenario_complete';
 
 interface QueuedEvent {
   name: EventName;

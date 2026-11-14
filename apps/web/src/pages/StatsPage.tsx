@@ -257,7 +257,20 @@ export function StatsPage() {
                   const max = data.topEvents[0]?.count || 1;
                   return (
                     <div key={event.name} style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-                      <span style={{ width: 96, fontSize: 11.5, color: 'var(--text-2)', flex: 'none' }}>{event.label}</span>
+                      <span
+                        title={t(event.label)}
+                        style={{
+                          width: 150,
+                          fontSize: 11.5,
+                          color: 'var(--text-2)',
+                          flex: 'none',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {t(event.label)}
+                      </span>
                       <div style={{ flex: 1, height: 6, borderRadius: 999, background: 'var(--surface-3)', overflow: 'hidden' }}>
                         <div
                           style={{

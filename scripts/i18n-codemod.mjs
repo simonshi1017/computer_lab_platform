@@ -120,7 +120,7 @@ function analyze(file) {
       p.name === node
     ) return true;
     if (ts.isLiteralTypeNode(p)) return true;
-    if (ts.isCallExpression(p) && ts.isIdentifier(p.expression) && ['t', 'tList', 'track'].includes(p.expression.text)) return true;
+    if (ts.isCallExpression(p) && ts.isIdentifier(p.expression) && ['t', 'tList', 'tf', 'track'].includes(p.expression.text)) return true;
     if (ts.isJsxAttribute(p) && p.name === node) return true;
     if (ts.isCallExpression(p) && ts.isImportKeyword(p.expression)) return true;
     return false;
@@ -136,8 +136,12 @@ function analyze(file) {
         const key = normalize(value);
         // 已经是 t('…') 的参数：收集 key，但不再包一层
         const p = node.parent;
+        // tf() 的第一个参数也是「中文原文当 key」的模板，必须计入覆盖率，
+        // 且不能被 apply 再包一层 t()（否则变成 tf(t('…'))）
         const alreadyWrapped =
-          ts.isCallExpression(p) && ts.isIdentifier(p.expression) && p.expression.text === 't';
+          ts.isCallExpression(p) &&
+          ts.isIdentifier(p.expression) &&
+          ['t', 'tf'].includes(p.expression.text);
         if (alreadyWrapped || skip(node)) {
           if (alreadyWrapped) insideKeys.add(key);
           else if (depth === 0) moduleLevel.add(key);

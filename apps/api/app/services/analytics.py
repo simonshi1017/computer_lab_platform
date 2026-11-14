@@ -45,6 +45,8 @@ EVENT_NAMES: dict[str, str] = {
     "share_open": "打开分享链接",
     "card_download": "下载分享卡片",
     "manual_print": "打印说明书",
+    "scenario_start": "开始场景实验",
+    "scenario_complete": "完成场景实验",
 }
 
 MAX_PROPS_KEYS = 20

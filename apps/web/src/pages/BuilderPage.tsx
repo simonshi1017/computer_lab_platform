@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { CheckCircle2, RotateCcw, Share2 } from 'lucide-react';
 import { MODELS_LIST } from '@/data';
@@ -11,10 +11,12 @@ import { PRESET_LIST } from '@/lib/presets';
 import { PartPalette } from '@/components/builder/PartPalette';
 import { MetricsBar } from '@/components/builder/MetricsBar';
 import { EvalPanel } from '@/components/builder/EvalPanel';
+import { LabCard } from '@/components/builder/LabCard';
 import { Chassis } from '@/components/chassis/Chassis';
 import { Segmented } from '@/components/ui/controls';
 import { fmtCtx, fmtPct, fmtPrice } from '@/lib/format';
-import { t } from '@/i18n';
+import { scenarioById, type LabContext } from '@/lib/scenarios';
+import { t, tf } from '@/i18n';
 
 const QUANT_OPTIONS = [
   { value: 'fp16' as const, label: 'FP16' },
@@ -29,7 +31,7 @@ const QUANT_OPTIONS = [
  * 用户改一个件，最想知道的就是分数和风险怎么变，不能让它滚出视野。
  */
 export function BuilderPage() {
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
   // 只在首次渲染取 URL 参数：之后用户自己的调整不能被它反复覆盖
   const override = useMemo(
     () => ({ modelId: params.get('model') ?? undefined, gpuId: params.get('gpu') ?? undefined }),
@@ -45,6 +47,11 @@ export function BuilderPage() {
   // 这一步多余的点击足够让人以为「保存没成功」。
   const [resumeSave, setResumeSave] = useState(false);
   const [notice, setNotice] = useState('');
+  // 场景实验室：?scenario= 首次取，之后用户退出实验或自己改 URL 都不再回灌配置
+  const scenarioId = useMemo(() => params.get('scenario'), []); // eslint-disable-line react-hooks/exhaustive-deps
+  const scenario = scenarioById(scenarioId);
+  const [labVisible, setLabVisible] = useState(Boolean(scenario));
+  const scenarioApplied = useRef(false);
   const { model, modelName, customSpec, quant, ctx, budget } = builder;
   const overflow = builder.need.total > builder.stats.vramGb && builder.stats.vramGb > 0;
 
@@ -75,7 +82,7 @@ export function BuilderPage() {
         if (ok) track('build_load', { buildId: detail.id, via: urlTarget.build ? 'mine' : 'share' });
         setNotice(
           ok
-            ? `已载入「${detail.name}」· 可以继续改，改完是你自己的副本`
+            ? tf('已载入「{n}」· 可以继续改，改完是你自己的副本', { n: detail.name })
             : t("这套配置引用的模型已不在目录里，无法载入"),
         );
       } catch {
@@ -89,6 +96,37 @@ export function BuilderPage() {
     // 只依赖稳定的 loadState 与 buildLoaded：把整个 builder 放进依赖会让
     // 每次拖拽都重新拉一次远端配置
   }, [buildLoaded, urlTarget, loadState]);
+
+  // 场景实验室：一键把目标模型、量化、上下文、预算与整机配置灌进来。
+  // 远端配置（?build / ?share）优先级更高——用户点开的是别人的方案，不该被实验覆盖。
+  // scenarioApplied 锁住首次执行：之后每次拖拽改配置都不能被 URL 再拉回去。
+  useEffect(() => {
+    if (!scenario || !buildLoaded || scenarioApplied.current) return;
+    if (urlTarget.build || urlTarget.share) return;
+    scenarioApplied.current = true;
+    loadState({
+      build: structuredClone(scenario.build),
+      modelId: scenario.modelId,
+      customSpec: null,
+      quant: scenario.quant,
+      ctx: scenario.ctx,
+      budget: scenario.budget,
+    });
+    setNotice(tf('已载入「{n}」实验配置 · 跟着下方任务卡把步骤走完', { n: scenario.name }));
+    track('scenario_start', { scenario: scenario.id });
+  }, [scenario, buildLoaded, urlTarget, loadState]);
+
+  // 任务卡的打勾直接读实时评估，不缓存：拆掉一张卡、勾会立刻消失
+  const labContext: LabContext = {
+    modelId: builder.modelId,
+    customSpec: builder.customSpec,
+    quant: builder.quant,
+    ctx: builder.ctx,
+    budget: builder.budget,
+    stats: builder.stats,
+    headroom: builder.evaluation.headroom,
+    score: builder.evaluation.score,
+  };
 
   return (
     <div className="builder-page">
@@ -176,6 +214,19 @@ export function BuilderPage() {
           </button>
         </div>
       </div>
+
+      {scenario && labVisible && (
+        <LabCard
+          scenario={scenario}
+          context={labContext}
+          onExit={() => {
+            setLabVisible(false);
+            const next = new URLSearchParams(params);
+            next.delete('scenario');
+            setParams(next, { replace: true });
+          }}
+        />
+      )}
 
       {notice && (
         <div

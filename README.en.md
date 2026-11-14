@@ -8,7 +8,7 @@ An interactive learning platform that takes "running a large language model" apa
 
 ## Screenshots
 
-Captured from a real deployment in the default light theme at a 1440×960 viewport. Regenerating them is a one-liner (see the end of this file).
+Captured from a real deployment in the default light theme at 1440px width (960px tall, 1200px for the two-row scenario library). Regenerating them is a one-liner (see the end of this file).
 
 <table>
   <tr>
@@ -40,16 +40,30 @@ node scripts/i18n-codemod.mjs apply   # wrap new Chinese strings in t() (idempot
 node scripts/gen-content-dict.mjs     # content copy: generate dictionaries, report gaps
 ```
 
-Coverage: **514 UI strings + 382 static content strings + 37 dynamic templates**, all bilingual. Content data does not touch the `packages/data` schema (that would break zod validation and the copy-versus-numbers consistency tests). Instead `apps/web/src/data/` localizes the dataset once at module load; logic values such as `gpuClass`, `category`, and ids keep their original values and are translated only where displayed. Dynamic advice returned by the compute engine uses `dynamicKey()` to normalize numbers and model names into placeholders, while long multi-variable sentences in the manual use named-placeholder `tf()` templates.
+Coverage: **654 UI strings + 382 static content strings + 37 dynamic templates**, all bilingual. Content data does not touch the `packages/data` schema (that would break zod validation and the copy-versus-numbers consistency tests). Instead `apps/web/src/data/` localizes the dataset once at module load; logic values such as `gpuClass`, `category`, and ids keep their original values and are translated only where displayed. Dynamic advice returned by the compute engine uses `dynamicKey()` to normalize numbers and model names into placeholders, while long multi-variable sentences in the manual use named-placeholder `tf()` templates.
 
 Switching language reloads the page so module-level constants (route metadata, presets, filter labels) are re-evaluated under the new locale — the same `lang`-parameter behavior as the reference site.
 
-> Acceptance: `e2e/i18n-content.spec.ts` walks 8 main pages and asserts **zero Chinese characters** in English mode (model names, GPU notes, glossary entries, lessons, evaluation advice, and the manual all included), while Chinese mode keeps the original text.
+> Acceptance: `e2e/i18n-content.spec.ts` walks 9 main pages and asserts **zero Chinese characters** in English mode (model names, GPU notes, glossary entries, lessons, evaluation advice, and the manual all included), while Chinese mode keeps the original text.
 
 - Product design: [prototype/](prototype/) (interactive prototype; the visual and interaction baseline)
 - Design system: [DESIGN.md](DESIGN.md)
 - Tech stack: [TECH-STACK.md](TECH-STACK.md)
 - Development plan: [DEV-PLAN.md](DEV-PLAN.md)
+
+## Scenario Labs
+
+Modelled on the reference site's "experiment library + lab guide": pick a real-world scenario, load its target model, quantization, context, budget and full build in one click, then let the in-builder task card take over.
+
+![Scenario library: six labs grouped by difficulty](docs/screenshots/07-scenarios.png)
+
+Six labs in learning order: Local Chat Assistant, Long-Document Knowledge Base, Local Coding Assistant, Small-Team API Service, LoRA Fine-Tuning Lab, and Extreme Budget Challenge. Each card leads with the goal and its cost (model size, context, budget, step count), previews the first two steps, and can be filtered by difficulty.
+
+![Builder task card: all five steps auto-checked](docs/screenshots/08-lab.png)
+
+Checks are **never clicked by hand and never persisted**. Every step is a serializable condition interpreted by `isStepDone()` against `useBuild`'s live evaluation: target model, context length, GPU count, VRAM headroom, PSU margin, cooling capacity, six-axis score, and total price. Remove a GPU or dial the context back down and the check disappears immediately — the card is a validator, not a self-congratulatory checklist. Reaching 100% fires `scenario_complete` once, paired with `scenario_start` as a dashboard funnel.
+
+Scenario data lives in `apps/web/src/lib/scenarios.ts` (application-level orchestration, so `packages/data`'s schema and the backend seed stay untouched). `apps/web/src/lib/scenarios.test.ts` runs all six presets through the real compute engine to lock in the regression that every step must be reachable after a one-click load.
 
 ## Status
 
@@ -64,12 +78,13 @@ Switching language reloads the page so module-level constants (route metadata, p
 | M6 Backend P1 | ✅ Done |
 | M7 Data automation | ✅ Done |
 | M8 Languages & bilingual content | ✅ Done |
+| M9 Scenario Labs & guided steps | ✅ Done |
 
 Content baseline: 9 models · 16 GPUs · 31 parts across 7 categories · 16 glossary terms · 5 learning levels.
 
-Builder: a physical-chassis SVG with 8 slot types · drag / click / keyboard input · live VRAM, power and price · six-axis radar with actionable suggestions · three presets · local autosave · printable manual.
+Builder: a physical-chassis SVG with 8 slot types · drag / click / keyboard input · live VRAM, power and price · six-axis radar with actionable suggestions · three presets · six guided scenario labs with auto-checked task cards · local autosave · printable manual.
 
-Polish: 97 KB gzipped first load (lazy routes, builder in its own chunk) · all contrast ratios meet AA · a build can be completed by keyboard alone · page-level error boundaries · 23 Playwright E2E checks · a global disclaimer footer.
+Polish: 97 KB gzipped first load (lazy routes, builder in its own chunk) · all contrast ratios meet AA · a build can be completed by keyboard alone · page-level error boundaries · 28 Playwright E2E checks · a global disclaimer footer.
 
 Data automation (M7): prices imported from CSV are written to a snapshot table and synced to the current price, so every GPU card can say "JD.com · today" or "catalog estimate · no capture date". Out-of-range jumps (>60%) and absurd prices are rejected at import time. An APScheduler job runs a daily freshness check and raises alerts. Share cards are exported as 1200×630 PNGs via canvas, including a VRAM usage bar and the unit prices at save time. Analytics are sent with `sendBeacon`; the `/stats` dashboard answers four questions: how many people use it, do they finish learning, are recommendations adopted, and do shares travel.
 
@@ -254,7 +269,7 @@ pnpm docker:down      # stop and remove
 
 ## Regenerating Screenshots
 
-Screenshots come from [apps/web/e2e/_readme_shots.spec.ts](apps/web/e2e/_readme_shots.spec.ts), captured from a live deployment at a fixed 1440×960 viewport with the light theme forced:
+Screenshots come from [apps/web/e2e/_readme_shots.spec.ts](apps/web/e2e/_readme_shots.spec.ts), captured from a live deployment at a fixed 1440px width (the two-row scenario library uses a taller 1200px viewport) with the light theme forced:
 
 ```bash
 E2E_BASE_URL=http://localhost:8080 \

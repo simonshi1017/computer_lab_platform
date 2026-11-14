@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Boxes, Check, Cpu, MonitorPlay, Route, Sparkles, Wrench } from 'lucide-react';
+import { ArrowRight, Boxes, Check, Cpu, FlaskConical, MonitorPlay, Route, Sparkles, Wrench } from 'lucide-react';
 import { GPUS_LIST, LESSONS_LIST, MODELS_LIST } from '@/data';
 import { useProgress } from '@/hooks/useProgress';
 import { t, tf } from '@/i18n';
@@ -22,6 +22,12 @@ const FEATURES = [
     title: t("DIY 组装台"),
     desc: t("在实体机箱里装一台机器，实时看到显存、功耗、六维评分与改进建议。"),
     to: '/builder',
+  },
+  {
+    icon: FlaskConical,
+    title: t("场景实验室"),
+    desc: t("选一个真实场景，一键载入配置，跟着任务卡把实验做完。"),
+    to: '/scenarios',
   },
 ];
 
@@ -235,7 +241,7 @@ export function HomePage() {
         </div>
         <div className="text-[12px]" style={{ color: 'var(--text-2)' }}>
           <span className="badge badge-good mr-2">{t("已上线")}</span>
-          {t("M6–M8 · 账号与分享、价格快照、埋点看板、全站中英双语（后端 69 用例 · E2E 23 条）")}
+          {t("M6–M9 · 账号与分享、价格快照、埋点看板、全站中英双语、场景实验室（后端 69 用例 · E2E 28 条）")}
         </div>
       </div>
     </section>

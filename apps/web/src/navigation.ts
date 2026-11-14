@@ -1,4 +1,4 @@
-import { BookOpen, Boxes, Cpu, FileText, FolderOpen, Map, Route, Sparkles, Wrench } from 'lucide-react';
+import { BookOpen, Boxes, Cpu, FileText, FlaskConical, FolderOpen, Map, Route, Sparkles, Wrench } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 export interface PageMeta {
@@ -64,6 +64,16 @@ export const PAGE_META: PageMeta[] = [
     title: '硬件百科',
     subtitle: '显卡是「能装多大」，带宽是「说得多快」。',
     points: ['显卡数据库与筛选', '单卡可跑模型清单', '其他五大部件说明'],
+  },
+  {
+    path: '/scenarios',
+    label: '场景实验室',
+    group: '实战',
+    icon: FlaskConical,
+    milestone: 'M9',
+    title: '场景实验室',
+    subtitle: '选一个真实使用场景，一键载入推荐配置，跟着任务卡把实验做完。',
+    points: ['6 个典型场景', '一键载入推荐配置', '步骤自动校验打勾'],
   },
   {
     path: '/recommend',

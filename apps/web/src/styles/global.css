@@ -1790,3 +1790,175 @@
   outline: 2px solid var(--accent);
   outline-offset: 1px;
 }
+
+/* =========================================================
+   M9 · 场景实验室（场景库卡片 + 组装台任务卡）
+   浅色优先，颜色全部走设计令牌，暗色主题自动跟随
+   ========================================================= */
+@layer components {
+  .scenario-intro {
+    @apply flex items-center gap-3;
+    padding: 12px 16px;
+    min-width: 218px;
+  }
+
+  .scenario-grid {
+    @apply grid gap-3.5;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .scenario-card {
+    @apply flex flex-col;
+    padding: 15px 15px 13px;
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  }
+  .scenario-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .scenario-icon {
+    @apply grid shrink-0 place-items-center;
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    background: var(--grad-primary);
+    color: #fff;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 8px 18px -10px var(--accent);
+  }
+
+  .scenario-specs {
+    @apply grid gap-px overflow-hidden;
+    grid-template-columns: 1.35fr 1fr 1fr;
+    margin-top: 11px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--border);
+  }
+  .scenario-specs > div {
+    @apply flex min-w-0 flex-col gap-0.5;
+    padding: 7px 8px;
+    background: var(--surface);
+  }
+  .scenario-specs .k {
+    font-size: 10px;
+    color: var(--text-3);
+    white-space: nowrap;
+  }
+  .scenario-specs .v {
+    font-size: 11.5px;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .scenario-steps {
+    @apply grid gap-1.5;
+    margin-top: 10px;
+    padding: 8px 10px;
+    border-radius: 9px;
+    background: var(--surface-2);
+  }
+
+  .scenario-foot {
+    @apply mt-auto flex items-center justify-between gap-2;
+    padding-top: 11px;
+  }
+
+  .scenario-hint {
+    @apply mt-4 flex flex-wrap items-baseline gap-2.5;
+    padding: 12px 16px;
+  }
+
+  /* ---- 组装台任务卡 ---- */
+  .lab-card {
+    padding: 13px 16px 14px;
+    border-color: color-mix(in srgb, var(--accent) 28%, var(--border));
+    background: linear-gradient(120deg, var(--accent-soft), var(--surface) 42%);
+  }
+  .lab-head {
+    @apply flex flex-wrap items-start gap-3;
+  }
+  .lab-icon {
+    @apply grid shrink-0 place-items-center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: var(--grad-primary);
+    color: #fff;
+  }
+  .lab-title {
+    @apply min-w-0 flex-1;
+  }
+  .lab-title b {
+    @apply block;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+  }
+  .lab-title p {
+    margin-top: 2px;
+    font-size: 11.5px;
+    color: var(--text-2);
+  }
+  .lab-progress {
+    @apply flex shrink-0 flex-col items-end gap-1.5;
+    min-width: 152px;
+  }
+  .lab-progress .count {
+    @apply mono;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .lab-actions {
+    @apply flex items-center gap-1.5;
+    margin-top: 2px;
+  }
+  .lab-steps {
+    @apply grid gap-2;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 12px;
+  }
+  .lab-step {
+    @apply flex items-start gap-2.5;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--surface);
+  }
+  .lab-step[data-done='true'] {
+    border-color: color-mix(in srgb, var(--good) 28%, var(--border));
+    background: color-mix(in srgb, var(--good) 6%, var(--surface));
+  }
+  .lab-step .mark {
+    @apply shrink-0;
+    margin-top: 1px;
+    color: var(--text-3);
+  }
+  .lab-step[data-done='true'] .mark {
+    color: var(--good-ink);
+  }
+  .lab-step b {
+    @apply block;
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+  .lab-step small {
+    @apply block;
+    margin-top: 1px;
+    font-size: 10.5px;
+    line-height: 1.45;
+    color: var(--text-3);
+  }
+}
+
+@media (max-width: 1240px) {
+  .scenario-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lab-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  .scenario-grid { grid-template-columns: 1fr; }
+  .scenario-specs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lab-steps { grid-template-columns: 1fr; }
+  .lab-progress { align-items: flex-start; min-width: 0; }
+}
