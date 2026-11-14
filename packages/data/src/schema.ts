@@ -27,7 +27,9 @@ export const modelSchema = z.object({
   country: z.string().min(2),
   arch: z.enum(['dense', 'moe']),
   archLabel: z.string().min(2),
-  paramsB: z.number().positive().max(2000),
+  paramsB: z.number().positive().max(3000),
+  /** MoE 的激活参数；必须小于总参数，否则速度估算会失真 */
+  activeParamsB: z.number().positive().max(3000).optional(),
   layers: z.number().int().positive().max(200),
   hiddenDim: z.number().int().positive().max(32768),
   ctxMax: z
@@ -51,6 +53,9 @@ export const modelSchema = z.object({
   weaknesses: z.array(z.string().min(6)).min(1).max(4),
   source: sourceField,
   updatedAt: updatedAtField,
+}).refine((m) => m.activeParamsB === undefined || m.activeParamsB <= m.paramsB, {
+  message: 'activeParamsB 不能大于 paramsB（激活参数是总参数的一部分）',
+  path: ['activeParamsB'],
 });
 
 export const gpuSchema = z.object({

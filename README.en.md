@@ -13,7 +13,7 @@ Captured from a real deployment in the default light theme at 1440px width (960p
 <table>
   <tr>
     <td width="50%" align="center"><img src="docs/screenshots/01-home.png" width="420" alt="Knowledge map"/><br/><b>Knowledge Map</b><br/>A five-level learning path, daily picks, and resume-where-you-left-off</td>
-    <td width="50%" align="center"><img src="docs/screenshots/02-models.png" width="420" alt="Model catalog"/><br/><b>Model Catalog</b><br/>9 models with vendor, use cases, strengths, limits, and VRAM estimates</td>
+    <td width="50%" align="center"><img src="docs/screenshots/02-models.png" width="420" alt="Model catalog"/><br/><b>Model Catalog</b><br/>12 current 2026 models with vendor, use cases, strengths, limits, and VRAM estimates</td>
   </tr>
   <tr>
     <td width="50%" align="center"><img src="docs/screenshots/03-hardware.png" width="420" alt="Hardware catalog"/><br/><b>Hardware Catalog</b><br/>16 GPUs and five component families, with price source and capture date</td>
@@ -79,8 +79,28 @@ Scenario data lives in `apps/web/src/lib/scenarios.ts` (application-level orches
 | M7 Data automation | ✅ Done |
 | M8 Languages & bilingual content | ✅ Done |
 | M9 Scenario Labs & guided steps | ✅ Done |
+| M10 Model catalog refresh (2026 mainstream + MoE active params) | ✅ Done |
 
-Content baseline: 9 models · 16 GPUs · 31 parts across 7 categories · 16 glossary terms · 5 learning levels.
+Content baseline: 12 models (released Feb–Aug 2026) · 16 GPUs · 31 parts across 7 categories · 16 glossary terms · 5 learning levels.
+
+Model catalog (refreshed 2026-11, all open weights):
+
+| Model | Vendor | Total / active | Context | License | VRAM at INT4 · 8K | In one line |
+|---|---|---|---|---|---|---|
+| Qwen3.5-9B | Alibaba | 9B / 9B | 262K | Apache-2.0 | 7.1GB | This generation's entry line; runs on 12GB |
+| Qwen3.5-35B-A3B | Alibaba | 35B / 3B | 262K | Apache-2.0 | 22.8GB | Only 3B active, 200 tokens/s on one card |
+| Qwen3.8-27B | Alibaba | 27B / 27B | 262K | Apache-2.0 | 20.5GB | Natively multimodal dense; single-card sweet spot |
+| Qwen3.8-Max | Alibaba | 2.4T / 95B | 262K | Qwen3.8-Max | 1510GB | First open Max-tier model; 8× MI300X |
+| DeepSeek-V4-Flash | DeepSeek | 285B / 13B | 1M | MIT | 180.3GB | Million-token context, starts at 3× H100 |
+| DeepSeek-V4.1-Flash | DeepSeek | 552B / 12B | 1M | MIT | 347.3GB | Asymmetric encoder-decoder plus vision |
+| GLM-5.2 | Zhipu AI | 744B / 40B | 1M | MIT | 470.9GB | Long-horizon work, most permissive flagship |
+| GLM-5.3 | Zhipu AI | 744B / 40B | 1M | GLM-5.3 | 470.9GB | Same base, long-horizon coding and vuln hunting |
+| GLM-5.3-Flash | Zhipu AI | 320B / 18B | 1M | MIT | 202.3GB | Native multimodality, barrier down to 3× H100 |
+| Hy4 preview | Tencent Hunyuan | 770B / 49B | 1M | Apache-2.0 | 487.2GB | Productivity-first, a 770B under Apache-2.0 |
+| Kimi K2.7 Code | Moonshot AI | 1T / 32B | 256K | Modified MIT | 630.7GB | Coding specialist, thinking-only |
+| Kimi K3 | Moonshot AI | 2.78T / 104B | 1M | Kimi K3 | 1747.2GB | First open 3T-class model |
+
+> Two supporting changes: MoE **decode speed is computed from active parameters** (`ModelSpec.activeParamsB`) while VRAM still uses total parameters — otherwise GLM-5.2 would read as 2 tokens/s. The model detail page now shows total and active side by side.
 
 Builder: a physical-chassis SVG with 8 slot types · drag / click / keyboard input · live VRAM, power and price · six-axis radar with actionable suggestions · three presets · six guided scenario labs with auto-checked task cards · local autosave · printable manual.
 
@@ -90,7 +110,7 @@ Data automation (M7): prices imported from CSV are written to a snapshot table a
 
 Backend (M6): WeCom QR / email code / dev login · saved builds (JSONB state + score snapshot) · random-token share links (read-only, no login) · synced learning progress · `/admin` data console · read-only catalog endpoints with ETag conditional caching.
 
-Recommender: 9 built-in models plus a custom parameter count · four inputs (quantization / context / budget / preference) · three BOM tiers with CPU-to-socket and PSU hard checks and used-market flags · explicit fallbacks for "fewer than three tiers" and "no feasible build" · one-click load into the builder, custom models included.
+Recommender: 12 built-in models plus a custom parameter count · four inputs (quantization / context / budget / preference) · three BOM tiers with CPU-to-socket and PSU hard checks and used-market flags · explicit fallbacks for "fewer than three tiers" and "no feasible build" · one-click load into the builder, custom models included.
 
 ## Quick Start
 

@@ -60,7 +60,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     category: '显存',
     plain: '模型边聊边记的小抄。聊得越久、记得越多，小抄就越厚，占的地方也越大。',
     pro: '自回归生成时缓存历史 token 的 Key/Value 张量，避免重复计算。大小 ≈ 2 × 层数 × KV 维度 × 上下文长度 × batch × 字节数；GQA 架构下 KV 维度约为隐藏维度的 1/4 到 1/8。',
-    mistake: '估显存只算权重。14B 模型 INT4 权重只有 6.8GB，但 32K 上下文的 KV Cache 要 8.1GB——这部分不算，就会买到「能加载、一对话就崩」的卡。',
+    mistake: '估显存只算权重。27B 模型 INT4 权重只有 12.6GB，但 32K 上下文的 KV Cache 要 10.7GB——这部分不算，就会买到「能加载、一对话就崩」的卡。',
     related: ['ctx', 'gqa', 'vram'],
   },
   {

@@ -132,6 +132,9 @@ export function stepProgress(results: StepResult[]): { done: number; total: numb
  * 顺序即推荐学习顺序：先「能跑起来」，再「跑长文本 / 跑并发」，最后
  * 是微调与成本极限。每套配置的显存、供电、散热与预算都经过内核校准，
  * 一键载入后所有步骤都能达成（见 scenarios.test.ts 的回归断言）。
+ *
+ * 2026-11 这一版跟着模型目录一起换代：最小档从 7B 换成 Qwen3.5-9B，
+ * 中间档用 MoE（速度换吞吐），大模型档用 Qwen3.8-27B 稠密（质量换速度）。
  * ------------------------------------------------------------------ */
 
 export const SCENARIO_LIST: Scenario[] = [
@@ -139,12 +142,12 @@ export const SCENARIO_LIST: Scenario[] = [
     id: 'local-chat',
     icon: MessageCircle,
     name: t("本地聊天助手"),
-    tagline: t("让 7B 模型在自己电脑上开口说话"),
+    tagline: t("让 9B 模型在自己电脑上开口说话"),
     summary: t("从零搭一台最便宜的本地推理机：选一张入门卡、配好内存与电源，把第一句话跑出来。重点理解量化为什么能让小显存装下模型。"),
     level: 'starter',
     tags: [t("入门"), t("单卡"), t("低预算")],
     goal: t("用最低成本配出一台能流畅对话的本地服务器"),
-    modelId: 'qwen25-7b',
+    modelId: 'qwen35-9b',
     quant: 'int4',
     ctx: 8192,
     budget: 9000,
@@ -161,8 +164,8 @@ export const SCENARIO_LIST: Scenario[] = [
       {
         id: 'model',
         title: t("选对目标模型"),
-        hint: t("目标设为 Qwen2.5 7B，在顶部下拉框里选它"),
-        check: { kind: 'model', modelId: 'qwen25-7b' },
+        hint: t("目标设为 Qwen3.5-9B，在顶部下拉框里选它"),
+        check: { kind: 'model', modelId: 'qwen35-9b' },
       },
       {
         id: 'gpu',
@@ -194,17 +197,17 @@ export const SCENARIO_LIST: Scenario[] = [
     id: 'rag-kb',
     icon: BookOpen,
     name: t("长文档知识库"),
-    tagline: t("32K 上下文，把整份文档一次读完"),
-    summary: t("RAG 的瓶颈不是权重而是 KV Cache。把上下文拉到 32K，看显存怎么被吃掉，再用双卡把余量补回来。"),
+    tagline: t("64K 上下文，把整份文档一次读完"),
+    summary: t("长上下文的瓶颈不是权重而是 KV Cache。把上下文拉到 64K，看显存怎么被吃掉，再用两张 3090 把余量补回来。"),
     level: 'intermediate',
     tags: [t("进阶"), t("长上下文"), t("双卡")],
-    goal: t("在 32K 上下文下为 14B 模型留出可用显存"),
-    modelId: 'qwen25-14b',
+    goal: t("在 64K 上下文下为 35B-A3B 留出可用显存"),
+    modelId: 'qwen35-35b-a3b',
     quant: 'int4',
-    ctx: 32768,
-    budget: 26000,
+    ctx: 65536,
+    budget: 28000,
     build: {
-      gpuIds: ['rtx4070tis', 'rtx4070tis'],
+      gpuIds: ['rtx3090', 'rtx3090'],
       cpuId: 'r7-7700',
       moboId: 'x670e',
       ramIds: ['ram64', 'ram64'],
@@ -215,15 +218,15 @@ export const SCENARIO_LIST: Scenario[] = [
     steps: [
       {
         id: 'model',
-        title: t("锁定 14B 级模型"),
-        hint: t("知识库要读懂长文，7B 的语义容量不够"),
-        check: { kind: 'model', modelId: 'qwen25-14b' },
+        title: t("锁定 MoE 长文模型"),
+        hint: t("35B-A3B 只激活 3B，长文档处理又快又省"),
+        check: { kind: 'model', modelId: 'qwen35-35b-a3b' },
       },
       {
         id: 'ctx',
-        title: t("把上下文拉到 32K"),
+        title: t("把上下文拉到 64K"),
         hint: t("拖动顶部滑块，观察 KV Cache 的增长"),
-        check: { kind: 'ctx', min: 32768 },
+        check: { kind: 'ctx', min: 65536 },
       },
       {
         id: 'gpu',
@@ -250,29 +253,29 @@ export const SCENARIO_LIST: Scenario[] = [
     icon: Code2,
     name: t("本地代码助手"),
     tagline: t("补全要快，16K 上下文够看整个文件"),
-    summary: t("代码补全对延迟最敏感：带宽决定每秒吐多少 token。用一张高带宽卡换速度，同时用大内存保证模型加载不卡。"),
+    summary: t("代码补全对延迟最敏感：MoE 只激活 3B，带宽不用堆就能吐出几百 token/s。这是「总参数大但跑得快」最直观的一课。"),
     level: 'intermediate',
     tags: [t("进阶"), t("低延迟"), t("大内存")],
     goal: t("在预算内拿到能实时补全的吞吐与足够内存"),
-    modelId: 'qwen25-14b',
+    modelId: 'qwen35-35b-a3b',
     quant: 'int4',
     ctx: 16384,
-    budget: 30000,
+    budget: 38000,
     build: {
-      gpuIds: ['rtx4090'],
-      cpuId: 'r7-7700',
+      gpuIds: ['rtx5090'],
+      cpuId: 'r9-7950x',
       moboId: 'x670e',
       ramIds: ['ram64', 'ram64'],
-      psuId: 'psu1000',
+      psuId: 'psu1600',
       storageIds: ['ssd2t'],
-      coolingId: 'aio360',
+      coolingId: 'turbine',
     },
     steps: [
       {
         id: 'model',
         title: t("选一个代码能力够用的模型"),
-        hint: t("14B 是本地代码助手的性价比拐点"),
-        check: { kind: 'model', modelId: 'qwen25-14b' },
+        hint: t("35B-A3B 是本地代码助手的性价比拐点"),
+        check: { kind: 'model', modelId: 'qwen35-35b-a3b' },
       },
       {
         id: 'ctx',
@@ -304,12 +307,12 @@ export const SCENARIO_LIST: Scenario[] = [
     id: 'team-api',
     icon: Server,
     name: t("小团队 API 服务"),
-    tagline: t("32B 模型，多人并发也不掉速"),
-    summary: t("给三五个人共用的推理服务：模型要大、显存要足、供电和散热要能扛长跑。学会看整机功耗与持续负载。"),
+    tagline: t("27B 稠密模型，多人并发也不掉质量"),
+    summary: t("给三五个人共用的推理服务：要质量就上稠密模型，显存、供电、散热都得扛长跑。学会看整机功耗与持续负载。"),
     level: 'advanced',
     tags: [t("挑战"), t("大模型"), t("长跑")],
     goal: t("配出一台能 7×24 稳定服务多人的推理机"),
-    modelId: 'qwen25-32b',
+    modelId: 'qwen38-27b',
     quant: 'int4',
     ctx: 16384,
     budget: 50000,
@@ -325,9 +328,9 @@ export const SCENARIO_LIST: Scenario[] = [
     steps: [
       {
         id: 'model',
-        title: t("上 32B 级模型"),
-        hint: t("多人共用时，模型能力要留余量"),
-        check: { kind: 'model', modelId: 'qwen25-32b' },
+        title: t("上 27B 稠密模型"),
+        hint: t("多人共用时，输出质量比吞吐更重要"),
+        check: { kind: 'model', modelId: 'qwen38-27b' },
       },
       {
         id: 'headroom',
@@ -364,7 +367,7 @@ export const SCENARIO_LIST: Scenario[] = [
     level: 'advanced',
     tags: [t("挑战"), t("FP16"), t("专业卡")],
     goal: t("用全精度权重跑通一次轻量微调的显存规划"),
-    modelId: 'qwen25-7b',
+    modelId: 'qwen35-9b',
     quant: 'fp16',
     ctx: 8192,
     budget: 55000,
@@ -372,7 +375,7 @@ export const SCENARIO_LIST: Scenario[] = [
       gpuIds: ['a6000'],
       cpuId: 'r9-7950x',
       moboId: 'x670e',
-      ramIds: ['ram128', 'ram128'],
+      ramIds: ['ram256'],
       psuId: 'psu1300',
       storageIds: ['ssd4t'],
       coolingId: 'turbine',
@@ -399,7 +402,7 @@ export const SCENARIO_LIST: Scenario[] = [
       {
         id: 'gpu',
         title: t("用 24G 以上的卡"),
-        hint: t("全精度 7B 光权重就要 14G 以上"),
+        hint: t("全精度 9B 光权重就要 17G 以上"),
         check: { kind: 'gpuCount', min: 1 },
       },
       {
@@ -418,8 +421,8 @@ export const SCENARIO_LIST: Scenario[] = [
     summary: t("给定最紧的预算，用最短上下文和最低量化，把一台能跑的机器压出来。理解「砍配置」的顺序：先砍上下文，再砍量化，显卡最后动。"),
     level: 'starter',
     tags: [t("入门"), t("成本"), t("取舍")],
-    goal: t("在 9,000 元内配出一台能跑 7B 的完整机器"),
-    modelId: 'qwen25-7b',
+    goal: t("在 9,000 元内配出一台能跑 9B 的完整机器"),
+    modelId: 'qwen35-9b',
     quant: 'int4',
     ctx: 4096,
     budget: 9000,

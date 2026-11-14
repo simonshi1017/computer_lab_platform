@@ -30,8 +30,15 @@ export function tpsToChars(tps: number): number {
   return Math.round(tps * 0.9);
 }
 
-/** 上下文长度显示：8192 → 8K，131072 → 128K */
+/**
+ * 上下文长度显示：8192 → 8K，131072 → 128K，1048576 → 1M。
+ * 百万上下文写成「1024K」没人会读成一百万，所以到 M 就换单位。
+ */
 export function fmtCtx(tokens: number): string {
+  if (tokens >= 1024 * 1024) {
+    const millions = tokens / (1024 * 1024);
+    return `${Number.isInteger(millions) ? millions : millions.toFixed(1)}M`;
+  }
   return `${Math.round(tokens / 1024)}K`;
 }
 

@@ -18,7 +18,7 @@ test('选预设后能得到完整评估', async ({ page }) => {
 
   // 指标条有显存 / 内存 / 功耗 / 价格 / 电费
   await expect(page.locator('.metric')).toHaveCount(5);
-  await expect(page.locator('.metric').first()).toContainText('16');
+  await expect(page.locator('.metric').first()).toContainText('32');
 
   // 机箱里该有：显卡 1 + CPU 1 + 主板 1 + 内存 2 + 电源 1 + 硬盘 1 + 散热 1 = 8 件
   await expect(page.locator('.slot.filled')).toHaveCount(8);
@@ -27,7 +27,7 @@ test('选预设后能得到完整评估', async ({ page }) => {
 test('换成跑不动的模型会出现红线错误与补救建议', async ({ page }) => {
   await page.goto('/builder');
   await page.locator('.preset-btn').filter({ hasText: '均衡推荐版' }).click();
-  await page.selectOption('#builder-model', 'qwen25-72b');
+  await page.selectOption('#builder-model', 'qwen38-max');
 
   await expect(page.locator('.eval-head')).toContainText('跑不动');
   await expect(page.locator('.eval-block').nth(1)).toContainText('显存放不下');

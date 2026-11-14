@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { estimateTps } from '../src/tps.js';
+import type { ModelSpec } from '../src/types.js';
 import { CATALOG, MODELS } from './fixtures.js';
 
 const gpu = (id: string) => {
@@ -44,5 +45,22 @@ describe('生成速度估算', () => {
     const fast = estimateTps(MODELS.qwen7b, [gpu('h100-80'), gpu('h100-80')], 'int4', 2048);
     expect(fast).toBeLessThanOrEqual(220);
     expect(fast).toBeGreaterThanOrEqual(1);
+  });
+
+  it('MoE 按激活参数算速度，不按总参数', () => {
+    // 35B 总参数 / 3B 激活：显存按 35B 算，解码只搬那 3B 的权重
+    const moe: ModelSpec = { ...MODELS.qwen32b, id: 'moe-35b-a3b', paramsB: 35, activeParamsB: 3 };
+    const fast = estimateTps(moe, [gpu('rtx3060')], 'int4', 8192);
+    const asIfDense = estimateTps({ ...moe, activeParamsB: undefined }, [gpu('rtx3060')], 'int4', 8192);
+
+    expect(fast).toBeGreaterThan(asIfDense * 5);
+    // 3B 激活 ≈ 1.4GB 权重，3060 的 360GB/s 撑到 120 tokens/s 以上
+    expect(fast).toBe(122);
+  });
+
+  it('没填 activeParamsB 时退回总参数（稠密模型行为不变）', () => {
+    const dense: ModelSpec = { ...MODELS.qwen14b };
+    expect(dense.activeParamsB).toBeUndefined();
+    expect(estimateTps(dense, [gpu('rtx4070tis')], 'int4', 8192)).toBe(46);
   });
 });

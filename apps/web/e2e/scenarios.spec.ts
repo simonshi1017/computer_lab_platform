@@ -31,8 +31,8 @@ test('starting a lab loads its preset and checks every step automatically', asyn
   await expect(card).toContainText('实验完成');
   await expect(card.locator('.lab-step[data-done="true"]')).toHaveCount(5);
 
-  // 预置配置确实被灌进了组装台：32K 上下文 + 双卡
-  await expect(page.locator('#builder-ctx')).toHaveValue('32768');
+  // 预置配置确实被灌进了组装台：64K 上下文 + 双卡
+  await expect(page.locator('#builder-ctx')).toHaveValue('65536');
 });
 
 test('breaking the build unchecks the matching steps', async ({ page }) => {

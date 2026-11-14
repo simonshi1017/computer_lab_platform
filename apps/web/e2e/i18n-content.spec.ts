@@ -20,7 +20,7 @@ test('English mode has no Chinese text anywhere', async ({ page }) => {
 
 test('content records are localized, not just the chrome', async ({ page }) => {
   await page.goto('/models?lang=en', { waitUntil: 'networkidle' });
-  await expect(page.getByText('Qwen2.5 · 7B').first()).toBeVisible();
+  await expect(page.getByText('Qwen3.5 · 9B').first()).toBeVisible();
   await expect(page.locator('body')).not.toContainText('通义千问');
 
   await page.goto('/glossary?lang=en', { waitUntil: 'networkidle' });
@@ -33,7 +33,7 @@ test('content records are localized, not just the chrome', async ({ page }) => {
 
 test('Chinese mode keeps original content untouched', async ({ page }) => {
   await page.goto('/models', { waitUntil: 'networkidle' });
-  await expect(page.getByText('通义千问 2.5 · 7B').first()).toBeVisible();
+  await expect(page.getByText('通义千问 3.5 · 9B').first()).toBeVisible();
   await page.goto('/glossary', { waitUntil: 'networkidle' });
   await expect(page.getByText('上下文窗口').first()).toBeVisible();
 });

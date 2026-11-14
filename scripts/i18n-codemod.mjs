@@ -38,6 +38,8 @@ function walk(dir, out = []) {
       if (full.endsWith('/i18n')) continue;
       walk(full, out);
     } else if (['.ts', '.tsx'].includes(extname(entry.name))) {
+      // 测试文件里的中文是「用例名」，不会渲染到页面上，不进字典
+      if (/\.test\.tsx?$/.test(entry.name)) continue;
       out.push(full);
     }
   }

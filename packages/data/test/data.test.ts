@@ -35,9 +35,21 @@ describe('数据集自洽性', () => {
   });
 
   it('id 查询稳定且大小写敏感（id 会进 URL）', () => {
-    expect(modelById('qwen25-14b')?.paramsB).toBe(14.7);
-    expect(modelById('Qwen25-14B')).toBeUndefined();
+    expect(modelById('qwen38-27b')?.paramsB).toBe(27);
+    expect(modelById('Qwen38-27B')).toBeUndefined();
     expect(gpuById('rtx3090')?.vramGb).toBe(24);
+  });
+
+  it('目录跟着时代走：至少一半模型是 2026 年发布的', () => {
+    const fresh = MODELS_LIST.filter((model) => model.releasedAt >= '2026-01');
+    expect(fresh.length).toBeGreaterThanOrEqual(MODELS_LIST.length / 2);
+  });
+
+  it('MoE 必须填激活参数，且小于总参数（否则速度会被算慢一个数量级）', () => {
+    for (const model of MODELS_LIST.filter((item) => item.arch === 'moe')) {
+      expect(model.activeParamsB, `${model.id} 是 MoE 但没填 activeParamsB`).toBeDefined();
+      expect(model.activeParamsB!).toBeLessThan(model.paramsB);
+    }
   });
 
   it('覆盖多个厂商，不是单一生态', () => {
@@ -153,27 +165,43 @@ describe('schema 结构完整性', () => {
 
 describe('显卡文案里的数字必须由内核算得出来', () => {
   // 这几条是「会直接影响购买决策」的说法，绑成断言防止后续改公式后文案失真
-  const seventyB = () => modelById('llama33-70b')!;
+  const smallMoe = () => modelById('qwen35-35b-a3b')!;
+  const entry = () => modelById('qwen35-9b')!;
 
-  it('70B INT4 8K 需要 51.4G —— 所以 48G 卡装不下', () => {
-    const need = vramNeed(seventyB(), 'int4', 8192).total;
-    expect(need).toBeCloseTo(51.4, 1);
+  it('35B-A3B INT4 8K 需要 22.8G —— 所以 16G 卡装不下', () => {
+    const need = vramNeed(smallMoe(), 'int4', 8192).total;
+    expect(need).toBeCloseTo(22.8, 1);
+    expect(need).toBeGreaterThan(gpuById('rtx4060ti16')!.vramGb);
+  });
+
+  it('35B-A3B INT4 8K 一张 32G 的 5090 就够', () => {
+    const need = vramNeed(smallMoe(), 'int4', 8192).total;
+    expect(need).toBeLessThan(gpuById('rtx5090')!.vramGb * 0.85);
+  });
+
+  it('35B-A3B FP16 8K 需要 88.6G —— 48G 专业卡也不够', () => {
+    const need = vramNeed(smallMoe(), 'fp16', 8192).total;
+    expect(need).toBeCloseTo(88.6, 0);
     expect(need).toBeGreaterThan(gpuById('a6000')!.vramGb);
   });
 
-  it('70B FP16 8K 需要 184G —— 所以 141G 也不够', () => {
-    const need = vramNeed(seventyB(), 'fp16', 8192).total;
-    expect(need).toBeCloseTo(184, 0);
-    expect(need).toBeGreaterThan(gpuById('h200-141')!.vramGb);
-  });
-
-  it('H200 141G 能跑 70B INT4 的 64K 上下文', () => {
-    const need = vramNeed(seventyB(), 'int4', 65536).total;
+  it('H200 141G 装得下 35B-A3B 的 256K 满上下文', () => {
+    const need = vramNeed(smallMoe(), 'int4', smallMoe().ctxMax).total;
     expect(need).toBeLessThan(gpuById('h200-141')!.vramGb);
   });
 
-  it('H100 跑 70B INT4 8K 约 50 tokens/s', () => {
-    expect(estimateTps(seventyB(), [gpuById('h100-80')!], 'int4', 8192)).toBe(50);
+  it('9B 是这一代的入门线：INT4 7.1G，12G 的 3060 也能跑', () => {
+    const need = vramNeed(entry(), 'int4', 8192).total;
+    expect(need).toBeCloseTo(7.1, 1);
+    expect(need).toBeLessThan(gpuById('rtx3060')!.vramGb * 0.85);
+  });
+
+  it('MoE 的速度按激活参数算，不按总参数算', () => {
+    const gpus = [gpuById('rtx3060')!];
+    const moe = estimateTps(smallMoe(), gpus, 'int4', 8192);
+    const asIfDense = estimateTps({ ...smallMoe(), activeParamsB: undefined }, gpus, 'int4', 8192);
+    // 3B 激活 vs 35B 总参数：同一个模型，两种估算差一个数量级
+    expect(moe).toBeGreaterThan(asIfDense * 5);
   });
 
   it('A100 带宽约为消费级旗舰的两倍（不是三倍）', () => {
@@ -187,7 +215,7 @@ describe('显卡文案里的数字必须由内核算得出来', () => {
       const fits = MODELS_LIST.filter(
         (model) => vramNeed(model, 'int4', 8192).total <= gpu.vramGb * 0.85,
       );
-      expect(fits.length, `${gpu.name} 连 7B 都跑不动`).toBeGreaterThan(0);
+      expect(fits.length, `${gpu.name} 连 9B 都跑不动`).toBeGreaterThan(0);
     }
   });
 });
@@ -220,7 +248,7 @@ describe('模型文案里的显存数字与内核一致', () => {
   });
 
   it('术语表 KV Cache 误区里的数字与内核一致', () => {
-    const model = modelById('qwen25-14b')!;
+    const model = modelById('qwen38-27b')!;
     const at32k = vramNeed(model, 'int4', 32768);
     const entry = GLOSSARY_LIST.find((item) => item.id === 'kv-cache')!;
 

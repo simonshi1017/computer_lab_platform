@@ -19,8 +19,15 @@ export interface ModelSpec {
   vendor: string;
   /** 架构描述，例如「Dense 稠密」「MoE 混合专家」 */
   arch: string;
-  /** 参数量，单位 B（十亿） */
+  /** 参数量，单位 B（十亿）。MoE 模型这里是总参数 */
   paramsB: number;
+  /**
+   * 每个 token 实际激活的参数量，单位 B（十亿）。
+   * 只有 MoE 才需要填：显存按总参数算（权重全都要放进显存），
+   * 解码速度按激活参数算（每生成一个 token 只读激活专家的权重）。
+   * 不填时退回 paramsB，稠密模型的行为完全不变。
+   */
+  activeParamsB?: number;
   /** 网络层数 */
   layers: number;
   /** 隐藏维度 */

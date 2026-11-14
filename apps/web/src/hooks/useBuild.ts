@@ -11,7 +11,7 @@ export const MAX_GPU = 4;
 export const MAX_RAM = 4;
 export const MAX_STORAGE = 2;
 
-const DEFAULT_BUDGET = 20000;
+const DEFAULT_BUDGET = 40000;
 const DEFAULT_CTX = 8192;
 
 export type PartKind = 'cpu' | 'mobo' | 'psu' | 'cooling' | 'storage' | 'gpu' | 'ram';

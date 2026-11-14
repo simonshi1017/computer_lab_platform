@@ -187,7 +187,7 @@ export function ManualPage() {
           <div className="spec-grid">
             {[
               { k: t("目标模型"), v: modelName },
-              { k: t("参数量"), v: `${model.paramsB}B`, mono: true },
+              { k: t("参数量"), v: model.activeParamsB ? `${model.paramsB}B / ${t("激活")} ${model.activeParamsB}B` : `${model.paramsB}B`, mono: true },
               { k: t("量化方式"), v: quant.toUpperCase() },
               { k: t("上下文长度"), v: fmtCtx(ctx), mono: true },
               { k: t("显存需求"), v: `${fmtGb(need.total)} GB`, mono: true },

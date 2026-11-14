@@ -17,7 +17,7 @@ test('说明书包含配置清单与可执行的部署命令', async ({ page }) 
   await expect(page.locator('.step-code').first()).toContainText('lsb_release');
 
   // 拉模型那一步必须是该模型真实的 Ollama tag
-  await expect(page.locator('.step-code').nth(3)).toContainText('qwen2.5:14b-instruct-q4_K_M');
+  await expect(page.locator('.step-code').nth(3)).toContainText('qwen3.5:35b-a3b');
 
   // 成本对比表要有三档用量
   await expect(page.locator('.manual-table').nth(1).locator('tbody tr')).toHaveCount(3);

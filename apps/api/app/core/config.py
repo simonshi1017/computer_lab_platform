@@ -92,6 +92,9 @@ class Settings(BaseSettings):
     # packages/data 构建时导出的目录快照。多个候选路径按顺序探测，
     # 兼容「本地 pnpm build 后跑」和「容器里只拷了 dist」两种形态。
     catalog_path: str = ""
+    # 目录换代时清理库里已下线的模型/显卡行。默认开：
+    # 这份表只是 catalog.json 的可查询副本，留着旧行会让接口返回两代产品。
+    catalog_prune: bool = True
     # 关卡总数。真正的定义在 packages/data/src/lessons.ts，M6 只做进度，
     # 所以留一个可覆盖的常量而不是把 lessons 也搬进数据库。
     lesson_total: int = 5

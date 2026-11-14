@@ -47,8 +47,8 @@ async def test_parts_grouped_by_kind(client: httpx.AsyncClient) -> None:
 
 
 async def test_filters(client: httpx.AsyncClient) -> None:
-    small = (await client.get("/api/v1/catalog/models", params={"size": 8})).json()
-    assert small and all(item["paramsB"] <= 8 for item in small)
+    small = (await client.get("/api/v1/catalog/models", params={"size": 10})).json()
+    assert small and all(item["paramsB"] <= 10 for item in small)
 
     big_vram = (await client.get("/api/v1/catalog/gpus", params={"min_vram": 48})).json()
     assert big_vram and all(item["vramGb"] >= 48 for item in big_vram)

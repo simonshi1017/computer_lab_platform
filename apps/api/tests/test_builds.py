@@ -19,7 +19,7 @@ def sample_state(**overrides: Any) -> dict[str, Any]:
             "storageIds": ["ssd1t"],
             "coolingId": "aio240",
         },
-        "modelId": "qwen25-14b",
+        "modelId": "qwen38-27b",
         "quant": "int4",
         "ctx": 8192,
         "budget": 30000,
@@ -53,7 +53,7 @@ async def test_create_and_list(client: httpx.AsyncClient, auth: dict[str, str]) 
     assert body["score"] == 82
     assert body["grade"] == "A"
     assert body["priceCny"] == 26800
-    assert body["modelId"] == "qwen25-14b"
+    assert body["modelId"] == "qwen38-27b"
     assert body["state"]["build"]["gpuIds"] == ["rtx4090", "rtx4090"]
 
     listed = await client.get("/api/v1/builds", headers=auth)
@@ -64,14 +64,14 @@ async def test_create_and_list(client: httpx.AsyncClient, auth: dict[str, str]) 
 
 async def test_default_name_when_omitted(client: httpx.AsyncClient, auth: dict[str, str]) -> None:
     created = await client.post(
-        "/api/v1/builds", headers=auth, json={"state": sample_state(modelId="qwen25-7b")}
+        "/api/v1/builds", headers=auth, json={"state": sample_state(modelId="qwen35-9b")}
     )
     assert created.status_code == 201
     body = created.json()
     # 前端不传名字时也要有个能认出来的名字，不能是空串或 "未命名"
     assert "通义千问" in body["name"]
     # 列表和分享页显示的是中文名，不是 qwen25-7b 这种内部 id
-    assert body["modelName"] == "通义千问 2.5 · 7B"
+    assert body["modelName"] == "通义千问 3.5 · 9B"
 
 
 async def test_detail_patch_delete(client: httpx.AsyncClient, auth: dict[str, str]) -> None:
@@ -92,10 +92,10 @@ async def test_detail_patch_delete(client: httpx.AsyncClient, auth: dict[str, st
     patched2 = await client.patch(
         f"/api/v1/builds/{build_id}",
         headers=auth,
-        json={"state": sample_state(modelId="qwen25-7b"), "evaluation": sample_evaluation(55)},
+        json={"state": sample_state(modelId="qwen35-9b"), "evaluation": sample_evaluation(55)},
     )
     assert patched2.json()["score"] == 55
-    assert patched2.json()["modelId"] == "qwen25-7b"
+    assert patched2.json()["modelId"] == "qwen35-9b"
 
     deleted = await client.delete(f"/api/v1/builds/{build_id}", headers=auth)
     assert deleted.status_code == 204

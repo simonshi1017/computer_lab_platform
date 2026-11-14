@@ -16,7 +16,8 @@ const OUT_DIR = join(process.cwd(), LANG_EN ? '../../docs/screenshots/en' : '../
 
 const SHOTS = [
   { file: '01-home.png', path: '/' },
-  { file: '02-models.png', path: '/models' },
+  // 12 个模型排四行，960 会截掉最后一行
+  { file: '02-models.png', path: '/models', height: LANG_EN ? 1420 : 1200 },
   { file: '03-hardware.png', path: '/hardware' },
   { file: '04-recommend.png', path: '/recommend' },
   { file: '05-builder.png', path: '/builder' },

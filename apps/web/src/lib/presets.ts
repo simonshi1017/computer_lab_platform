@@ -20,17 +20,17 @@ export interface Preset {
  * engine 只认 action 类型（`apply-preset`），由应用决定「省钱版」到底长什么样，
  * 这样换一批硬件数据时不用动内核。
  *
- * 三档的设计意图：
- * - 省钱：先把模型点起来，能跑就行，¥6,900
- * - 均衡：14B + 16G 显存留 26% 余量，性价比拐点
- * - 性能：32B 全上下文，单卡 32G，长期主力
+ * 三档的设计意图（2026-11 换代后）：
+ * - 省钱：9B + 12G 卡，把模型先点起来，留 40% 余量
+ * - 均衡：35B-A3B（MoE 只激活 3B）+ 32G 卡，速度换吞吐
+ * - 性能：27B 稠密 + 32G 卡，质量优先，速度让位
  */
 export const PRESETS: Record<PresetKey, Preset> = {
   save: {
     key: 'save',
     name: t("省钱入门版"),
-    desc: t("先把模型跑起来，¥6,900"),
-    modelId: 'qwen25-7b',
+    desc: t("9B 模型 + 12G 卡，先把模型跑起来"),
+    modelId: 'qwen35-9b',
     quant: 'int4',
     ctx: 8192,
     build: {
@@ -46,25 +46,25 @@ export const PRESETS: Record<PresetKey, Preset> = {
   balance: {
     key: 'balance',
     name: t("均衡推荐版"),
-    desc: t("14B 全上下文，留得下余量"),
-    modelId: 'qwen25-14b',
+    desc: t("35B-A3B 单卡跑，只激活 3B 所以快"),
+    modelId: 'qwen35-35b-a3b',
     quant: 'int4',
     ctx: 8192,
     build: {
-      gpuIds: ['rtx4070tis'],
+      gpuIds: ['rtx5090'],
       cpuId: 'r7-7700',
       moboId: 'x670e',
       ramIds: ['ram64', 'ram64'],
-      psuId: 'psu850',
+      psuId: 'psu1000',
       storageIds: ['ssd2t'],
-      coolingId: 'aio360',
+      coolingId: 'turbine',
     },
   },
   perf: {
     key: 'perf',
     name: t("性能进阶版"),
-    desc: t("32B 单卡全上下文，长期主力"),
-    modelId: 'qwen25-32b',
+    desc: t("27B 稠密模型，质量优先于吞吐"),
+    modelId: 'qwen38-27b',
     quant: 'int4',
     ctx: 8192,
     build: {
@@ -74,7 +74,7 @@ export const PRESETS: Record<PresetKey, Preset> = {
       ramIds: ['ram128', 'ram128'],
       psuId: 'psu1300',
       storageIds: ['ssd2t'],
-      coolingId: 'aio360',
+      coolingId: 'turbine',
     },
   },
 };

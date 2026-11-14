@@ -4,12 +4,12 @@ import { expect, test } from '@playwright/test';
  * 主链路二：模型详情 → 配置推荐。
  */
 test('从模型详情能直接跳到推荐并拿到三档方案', async ({ page }) => {
-  await page.goto('/models?model=qwen25-14b');
+  await page.goto('/models?model=qwen38-27b');
 
   await expect(page.locator('#model-dialog-title')).toContainText('通义千问');
   await page.getByRole('button', { name: /看要买什么硬件/ }).click();
 
-  await expect(page).toHaveURL(/\/recommend\?model=qwen25-14b/);
+  await expect(page).toHaveURL(/\/recommend\?model=qwen38-27b/);
   await expect(page.locator('.tier-card')).toHaveCount(3);
 
   // 每档都有价格、显卡、载入按钮

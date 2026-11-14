@@ -87,8 +87,8 @@ describe('isStepDone', () => {
   const base = contextOf(SCENARIO_LIST[0]);
 
   it('rejects a mismatched model / quantization / context', () => {
-    expect(isStepDone({ kind: 'model', modelId: 'qwen25-7b' }, base)).toBe(true);
-    expect(isStepDone({ kind: 'model', modelId: 'qwen25-72b' }, base)).toBe(false);
+    expect(isStepDone({ kind: 'model', modelId: 'qwen35-9b' }, base)).toBe(true);
+    expect(isStepDone({ kind: 'model', modelId: 'qwen38-max' }, base)).toBe(false);
     expect(isStepDone({ kind: 'quant', quant: 'int4' }, base)).toBe(true);
     expect(isStepDone({ kind: 'quant', quant: 'fp16' }, base)).toBe(false);
     expect(isStepDone({ kind: 'ctx', min: 8192 }, base)).toBe(true);
@@ -115,7 +115,7 @@ describe('isStepDone', () => {
 
   it('a custom model never satisfies a built-in model step', () => {
     expect(
-      isStepDone({ kind: 'model', modelId: 'qwen25-7b' }, { ...base, customSpec: { ...modelById('qwen25-7b')! } }),
+      isStepDone({ kind: 'model', modelId: 'qwen35-9b' }, { ...base, customSpec: { ...modelById('qwen35-9b')! } }),
     ).toBe(false);
   });
 });
@@ -133,7 +133,7 @@ describe('stepProgress', () => {
 
 describe('vram math behind the scenarios', () => {
   it('long context grows KV Cache much faster than weights', () => {
-    const model = modelById('qwen25-14b')!;
+    const model = modelById('qwen38-27b')!;
     const short = vramNeed(model, 'int4', 8192);
     const long = vramNeed(model, 'int4', 32768);
     expect(long.kvCache).toBeGreaterThan(short.kvCache * 3);

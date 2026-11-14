@@ -60,7 +60,7 @@ export function RecommendPage() {
 
   const [modelId, setModelId] = useState(() => {
     const fromUrl = params.get('model');
-    return fromUrl && modelById(fromUrl) ? fromUrl : 'qwen25-14b';
+    return fromUrl && modelById(fromUrl) ? fromUrl : 'qwen38-27b';
   });
   const [customParams, setCustomParams] = useState(27);
   const [quant, setQuant] = useState<Quant>('int4');
@@ -288,12 +288,12 @@ export function RecommendPage() {
                   type="button"
                   className="btn btn-ghost btn-sm"
                   onClick={() => {
-                    setModelId('qwen25-32b');
+                    setModelId('qwen35-35b-a3b');
                     setQuant('int4');
                     setCtx(8192);
                   }}
                 >
-                  {t("换成 32B 试试")}
+                  {t("换成 35B-A3B 试试")}
                 </button>
               </div>
               <div className="note note-info mt-3">

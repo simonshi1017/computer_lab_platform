@@ -86,7 +86,7 @@ export function ModelDialog({ model, onClose }: ModelDialogProps) {
         <div className="mt-3.5">
           <SpecGrid
             items={[
-              { k: t("参数量"), v: `${model.paramsB}B`, mono: true },
+              { k: t("参数量"), v: model.activeParamsB ? `${model.paramsB}B / ${t("激活")} ${model.activeParamsB}B` : `${model.paramsB}B`, mono: true },
               { k: t("层数"), v: model.layers, mono: true },
               { k: t("隐藏维度"), v: model.hiddenDim, mono: true },
               { k: t("最大上下文"), v: fmtCtx(model.ctxMax), mono: true },

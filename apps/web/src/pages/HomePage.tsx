@@ -40,9 +40,9 @@ const TODAY = [
   },
   {
     icon: MonitorPlay,
-    title: t("为什么 70B 模型两张 24G 卡也跑不动？"),
+    title: t("为什么 2.4T 模型要一整个机柜？"),
     desc: t("看一遍权重 + KV Cache + 余量的完整拆解"),
-    to: '/models?model=qwen25-72b',
+    to: '/models?model=qwen38-max',
   },
   {
     icon: Cpu,

@@ -6,8 +6,13 @@
 而且漂移方向没人能察觉（前端改了参数量，后端还发着旧值）。
 
 所以：JSON 是唯一事实来源，DB 只是它的可查询副本。
-启动时 upsert，不做删除——管理后台可能手工加过条目，扫库删数据
-是比「多一条旧记录」严重得多的错误。
+启动时先 upsert，再清理「已经不在目录里」的模型 —— 目录换代时
+（例如 2026-11 把 Qwen2.5 一代换成 Qwen3.5/3.8），旧行如果留着，
+接口会返回 21 条模型、后台下拉框里混着两代产品，用户看到的是
+一份不存在于任何商店的清单。配置（builds）自己存了 model_id 与
+model_name 快照，不依赖这张表，所以删目录行不会破坏用户数据。
+清理范围仅限 models / gpus，部件表保持只增不减。
+可用 CATALOG_PRUNE=false 关掉（管理后台手工加过条目时用）。
 """
 
 from __future__ import annotations
@@ -36,6 +41,7 @@ class SeedStats:
     gpus: int = 0
     parts: dict[str, int] = field(default_factory=dict)
     prices: int = 0
+    pruned: int = 0
     skipped: bool = False
     source: str = ""
 
@@ -45,6 +51,7 @@ class SeedStats:
             "gpus": self.gpus,
             "parts": self.parts,
             "prices": self.prices,
+            "pruned": self.pruned,
             "skipped": self.skipped,
             "source": self.source,
         }
@@ -118,6 +125,22 @@ async def _upsert(session: AsyncSession, model: type, rows: list[Any]) -> int:
     return len(rows)
 
 
+async def _prune(session: AsyncSession, model: type, keep: set[str]) -> int:
+    """删掉目录里已经不存在的行。返回删除条数。
+
+    只删「目录镜像表」，不碰用户数据：builds / progress / events 都不引用这些主键。
+    """
+    existing = (await session.execute(select(model.id))).scalars().all()
+    stale = [item for item in existing if item not in keep]
+    for item in stale:
+        row = await session.get(model, item)
+        if row is not None:
+            await session.delete(row)
+    if stale:
+        log.info("目录换代：清理 %s 条已下线的 %s 记录（%s）", len(stale), model.__name__, ", ".join(sorted(stale)[:6]))
+    return len(stale)
+
+
 async def seed_catalog(session: AsyncSession, *, force: bool = False) -> SeedStats:
     """导入目录数据。
 
@@ -141,6 +164,10 @@ async def seed_catalog(session: AsyncSession, *, force: bool = False) -> SeedSta
     gpus = [_gpu_row(item) for item in data.get("gpus", [])]
     stats.models = await _upsert(session, ModelSpec, models)
     stats.gpus = await _upsert(session, GpuSpec, gpus)
+
+    if settings.catalog_prune:
+        stats.pruned = await _prune(session, ModelSpec, {row.id for row in models})
+        stats.pruned += await _prune(session, GpuSpec, {row.id for row in gpus})
 
     for kind in PART_KINDS:
         records = data.get("parts", {}).get(kind, [])

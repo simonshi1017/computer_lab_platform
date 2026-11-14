@@ -47,7 +47,7 @@ test.describe('M7 数据自动化', () => {
             storageIds: ['ssd1t'],
             coolingId: 'aio240',
           },
-          modelId: 'qwen25-14b',
+          modelId: 'qwen38-27b',
           quant: 'int4',
           ctx: 8192,
           budget: 30000,
