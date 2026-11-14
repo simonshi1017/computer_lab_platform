@@ -88,13 +88,13 @@ export function AppShell() {
             <div className="flex items-baseline justify-between">
               <span style={{ fontSize: 11.5, color: 'var(--text-2)' }}>{t('项目进度')}</span>
               <span className="mono" style={{ fontSize: 17, fontWeight: 700 }}>
-                M10
+                M11
               </span>
             </div>
             <div className="progress-track">
               <div className="progress-fill" style={{ width: '100%' }} />
             </div>
-            <div style={{ fontSize: 10.5, color: 'var(--text-3)' }}>{t('模型库换代 · 已完成')}</div>
+            <div style={{ fontSize: 10.5, color: 'var(--text-3)' }}>{t('硬件拓扑与时序 · 已完成')}</div>
           </div>
         </div>
       </aside>

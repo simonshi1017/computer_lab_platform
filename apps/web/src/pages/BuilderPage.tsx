@@ -13,10 +13,14 @@ import { MetricsBar } from '@/components/builder/MetricsBar';
 import { EvalPanel } from '@/components/builder/EvalPanel';
 import { LabCard } from '@/components/builder/LabCard';
 import { Chassis } from '@/components/chassis/Chassis';
+import { TopologyView } from '@/components/builder/TopologyView';
+import { TimelineView } from '@/components/builder/TimelineView';
 import { Segmented } from '@/components/ui/controls';
 import { fmtCtx, fmtPct, fmtPrice } from '@/lib/format';
 import { scenarioById, type LabContext } from '@/lib/scenarios';
 import { t, tf } from '@/i18n';
+
+type BoardView = 'case' | 'topo' | 'timeline';
 
 const QUANT_OPTIONS = [
   { value: 'fp16' as const, label: 'FP16' },
@@ -41,6 +45,9 @@ export function BuilderPage() {
 
   const builder = useBuild(override);
   const [activeKind, setActiveKind] = useState<PartKind>('gpu');
+  // 中间区三个视图共用一块地方：机箱看「件装在哪」，拓扑看「数据怎么走」，
+  // 时序看「时间与显存怎么花」。切换不改变配置，所以不需要写进 URL。
+  const [view, setView] = useState<BoardView>('case');
   const [saveOpen, setSaveOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   // 登录成功后自动回到保存框：用户点「保存」→ 被要求登录 → 登录完还要再点一次，
@@ -264,13 +271,38 @@ export function BuilderPage() {
         />
 
         <div className="board-col card">
-          <Chassis
-            build={builder.build}
-            activeKind={activeKind}
-            onPlace={builder.placePart}
-            onRemove={builder.removeSlot}
-            onFocusKind={setActiveKind}
-          />
+          <div className="board-viewbar">
+            <Segmented
+              value={view}
+              onChange={setView}
+              ariaLabel={t('组装台视图')}
+              options={[
+                { value: 'case', label: t('实体机箱') },
+                { value: 'topo', label: t('硬件拓扑') },
+                { value: 'timeline', label: t('推理时序') },
+              ]}
+            />
+            <span className="board-viewhint">
+              {view === 'case'
+                ? t('拖拽或点击放件')
+                : view === 'topo'
+                  ? t('带宽链路与瓶颈')
+                  : t('首字延迟与显存增长')}
+            </span>
+          </div>
+          {view === 'case' && (
+            <Chassis
+              build={builder.build}
+              activeKind={activeKind}
+              onPlace={builder.placePart}
+              onRemove={builder.removeSlot}
+              onFocusKind={setActiveKind}
+            />
+          )}
+          {view === 'topo' && (
+            <TopologyView stats={builder.stats} model={customSpec ?? model} quant={quant} ctx={ctx} />
+          )}
+          {view === 'timeline' && <TimelineView stats={builder.stats} model={customSpec ?? model} quant={quant} ctx={ctx} />}
           <MetricsBar stats={builder.stats} need={builder.need} modelName={`${model.paramsB.toFixed(0)}B ${quant.toUpperCase()}`} />
           <div className="board-hint">
             {t("目标")} {modelName} · {quant.toUpperCase()} · {fmtCtx(ctx)} {t("上下文 · 需")} {builder.need.total.toFixed(1)}G

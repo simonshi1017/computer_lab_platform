@@ -51,6 +51,8 @@ export interface GpuRecord extends GpuSpec {
   memoryType: string;
   /** 位宽，单位 bit */
   busWidth: number;
+  /** PCIe 代数（4 / 5），拓扑图算链路带宽要用 */
+  pcieGen: 4 | 5;
   /** 供电接口 */
   powerConnector: string;
   /** 卡长，单位 mm，用于判断装不装得下 */

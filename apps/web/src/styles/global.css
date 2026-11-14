@@ -921,6 +921,162 @@
     font-size: 10.5px;
     color: var(--text-3);
   }
+  /* ---------- 中间区视图切换 ---------- */
+  .board-viewbar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px 0;
+  }
+  .board-viewhint {
+    margin-left: auto;
+    font-size: 10.5px;
+    color: var(--text-3);
+    white-space: nowrap;
+  }
+
+  /* ---------- 硬件拓扑 ---------- */
+  .topo-wrap {
+    flex: 0 0 auto;
+    margin: 8px 8px 0;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface-2);
+    overflow: hidden;
+  }
+  .topo-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .topo-node rect {
+    fill: var(--surface);
+    stroke: var(--border-strong);
+    stroke-width: 1;
+  }
+  .topo-node.tone-missing rect {
+    fill: var(--surface-2);
+    stroke-dasharray: 4 3;
+    opacity: 0.75;
+  }
+  .topo-node.tone-hot rect {
+    stroke: var(--danger);
+    stroke-width: 1.5;
+  }
+  .topo-title {
+    font-size: 11px;
+    font-weight: 600;
+    fill: var(--text);
+  }
+  .topo-metric {
+    font-size: 10.5px;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    fill: var(--accent);
+  }
+  .topo-detail {
+    font-size: 9.5px;
+    fill: var(--text-3);
+  }
+  .topo-link-label {
+    font-size: 9px;
+    font-family: var(--font-mono, ui-monospace, monospace);
+  }
+  .topo-tape {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 6px 12px 8px;
+    font-size: 10.5px;
+    color: var(--text-3);
+    border-top: 1px dashed var(--border);
+  }
+  .topo-tape-item b {
+    color: var(--text);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-weight: 600;
+  }
+  .topo-tape-item.is-hot b {
+    color: var(--danger-ink);
+  }
+  .topo-tape-vs {
+    opacity: 0.6;
+    font-style: italic;
+  }
+  .topo-tape-ratio {
+    margin-left: auto;
+    color: var(--text-2);
+  }
+
+  .topo-foot {
+    padding: 8px 12px 10px;
+    border-top: 1px dashed var(--border);
+  }
+  .topo-verdict {
+    margin: 0;
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--text-2);
+  }
+  .topo-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 7px;
+  }
+  .topo-chip,
+  .timeline-chip {
+    font-size: 10.5px;
+    color: var(--text-3);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 2px 8px;
+  }
+  .topo-chip b,
+  .timeline-chip b {
+    color: var(--text);
+    font-family: var(--font-mono, ui-monospace, monospace);
+  }
+  .timeline-chip b.is-hot,
+  .timeline-chip.is-hot {
+    color: var(--danger-ink);
+  }
+
+  /* ---------- 推理时序 ---------- */
+  .timeline-wrap {
+    flex: 0 0 auto;
+    margin: 8px 8px 0;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface-2);
+    overflow: hidden;
+  }
+  .timeline-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .timeline-zone {
+    font-size: 9.5px;
+    fill: var(--text-3);
+    letter-spacing: 0.02em;
+  }
+  .timeline-tick,
+  .timeline-ref {
+    font-size: 9.5px;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    fill: var(--text-3);
+  }
+  .timeline-foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 12px 10px;
+    border-top: 1px dashed var(--border);
+  }
+
   .board-hint {
     flex: 0 0 auto;
     border-top: 1px solid var(--border);

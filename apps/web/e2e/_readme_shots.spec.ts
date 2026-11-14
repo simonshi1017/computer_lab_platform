@@ -14,7 +14,23 @@ import { test } from '@playwright/test';
 const LANG_EN = process.env.SHOT_LANG === 'en';
 const OUT_DIR = join(process.cwd(), LANG_EN ? '../../docs/screenshots/en' : '../../docs/screenshots');
 
-const SHOTS = [
+/** 有些页要先切到某个视图再截：按钮文案随语言变化，这里集中映射 */
+const VIEW_LABEL = {
+  topo: { zh: '硬件拓扑', en: 'Topology' },
+  timeline: { zh: '推理时序', en: 'Inference timeline' },
+} as const;
+
+interface Shot {
+  file: string;
+  path: string;
+  height?: number;
+  /** 截图前要点的分段控件 */
+  view?: keyof typeof VIEW_LABEL;
+  /** 截图前先套一套预设，避免空机箱 */
+  preset?: string;
+}
+
+const SHOTS: Shot[] = [
   { file: '01-home.png', path: '/' },
   // 12 个模型排四行，960 会截掉最后一行
   { file: '02-models.png', path: '/models', height: LANG_EN ? 1420 : 1200 },
@@ -25,6 +41,8 @@ const SHOTS = [
   // 英文文案更长、卡片标题会换行，视口要再高一些才能收进底部说明条
   { file: '07-scenarios.png', path: '/scenarios', height: LANG_EN ? 1400 : 1200 },
   { file: '08-lab.png', path: '/builder?scenario=rag-kb' },
+  { file: '09-topology.png', path: '/builder', preset: '均衡推荐版', view: 'topo' },
+  { file: '10-timeline.png', path: '/builder', preset: '均衡推荐版', view: 'timeline' },
 ];
 
 test('capture README screenshots', async ({ page }) => {
@@ -45,6 +63,14 @@ test('capture README screenshots', async ({ page }) => {
     await page.goto(LANG_EN ? `${shot.path}${sep}lang=en` : shot.path, { waitUntil: 'domcontentloaded' });
     // 等字体、懒加载路由与入场动画稳定
     await page.waitForTimeout(1200);
+    if (shot.preset) {
+      await page.locator('.preset-btn').filter({ hasText: LANG_EN ? 'Balanced recommendation' : shot.preset }).first().click();
+      await page.waitForTimeout(500);
+    }
+    if (shot.view) {
+      await page.getByRole('button', { name: LANG_EN ? VIEW_LABEL[shot.view].en : VIEW_LABEL[shot.view].zh }).click();
+      await page.waitForTimeout(400);
+    }
     await page.screenshot({ path: join(OUT_DIR, shot.file) });
   }
 });

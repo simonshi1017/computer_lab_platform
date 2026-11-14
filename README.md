@@ -20,6 +20,10 @@
     <td width="50%" align="center"><img src="docs/screenshots/04-recommend.png" width="420" alt="配置推荐"/><br/><b>配置推荐</b><br/>省钱 / 均衡 / 性能三档 BOM，含电源与插槽硬校验</td>
   </tr>
   <tr>
+    <td width="50%" align="center"><img src="docs/screenshots/09-topology.png" width="420" alt="硬件拓扑"/><br/><b>硬件拓扑</b><br/>GPU–PCIe–CPU–内存–硬盘的链路与带宽对照，多卡时直接标出瓶颈</td>
+    <td width="50%" align="center"><img src="docs/screenshots/10-timeline.png" width="420" alt="推理时序"/><br/><b>推理时序</b><br/>预填充 / 解码两段时间与显存增长，看清首字延迟花在哪</td>
+  </tr>
+  <tr>
     <td colspan="2" align="center"><img src="docs/screenshots/06-manual.png" width="620" alt="我的说明书"/><br/><b>我的说明书</b><br/>把配置整理成能照着做的部署清单：目标、成本合计、性能预估、风险提示，可打印导出</td>
   </tr>
 </table>
@@ -40,7 +44,7 @@ node scripts/i18n-codemod.mjs apply   # 把新增中文自动包成 t()（幂等
 node scripts/gen-content-dict.mjs     # 内容文案：生成字典并报告缺失
 ```
 
-覆盖范围：**UI 654 条 + 内容数据 382 条静态 + 37 条动态模板**，全部双语。内容数据不改 `packages/data` 的 schema（会冲击 zod 校验与「文案数字对账」测试），改由 `apps/web/src/data/` 在模块加载时按 locale 一次性本地化；`gpuClass`、`category`、id 这类逻辑值保持原值，只在显示处翻译。计算内核返回的动态建议由 `dynamicKey()` 把数字与型号归一成占位符，说明书里的多变量长句用 `tf()` 命名占位模板。
+覆盖范围：**UI 696 条 + 内容数据 434 条静态 + 37 条动态模板**，全部双语。内容数据不改 `packages/data` 的 schema（会冲击 zod 校验与「文案数字对账」测试），改由 `apps/web/src/data/` 在模块加载时按 locale 一次性本地化；`gpuClass`、`category`、id 这类逻辑值保持原值，只在显示处翻译。计算内核返回的动态建议由 `dynamicKey()` 把数字与型号归一成占位符，说明书里的多变量长句用 `tf()` 命名占位模板。
 
 切换语言会整页重载，让导航元信息、预设、筛选标签这些模块级常量按新 locale 重新初始化（和参考站按 `lang` 参数切换一致）。
 
@@ -80,6 +84,7 @@ node scripts/gen-content-dict.mjs     # 内容文案：生成字典并报告缺�
 | M8 多语种与内容双语 | ✅ 已完成 |
 | M9 场景实验室与步骤引导 | ✅ 已完成 |
 | M10 模型库换代（2026 主流 + MoE 激活参数） | ✅ 已完成 |
+| M11 硬件拓扑图 + 推理时序曲线 | ✅ 已完成 |
 
 内容基线：12 个模型（2026-02 至 2026-08 发布）· 16 张显卡 · 7 类部件（共 31 项）· 16 条术语 · 5 关学习路径。
 
@@ -102,7 +107,9 @@ node scripts/gen-content-dict.mjs     # 内容文案：生成字典并报告缺�
 
 > 两条配套改动：MoE 的**解码速度按激活参数算**（`ModelSpec.activeParamsB`），显存仍按总参数算——否则 GLM-5.2 会被估成 2 tokens/s；模型详情页同时展示「总参 / 激活」。
 
-组装台能力：实体机箱 SVG（8 类槽位）· 拖拽/点击/键盘三通道 · 实时显存功耗价格 · 六维雷达与可执行建议 · 三套预设 · 六个场景实验（任务卡自动校验）· 本地存档 · 说明书生成与打印。
+组装台能力：实体机箱 SVG（8 类槽位）· 拖拽/点击/键盘三通道 · 实时显存功耗价格 · 六维雷达与可执行建议 · 三套预设 · 六个场景实验（任务卡自动校验）· **硬件拓扑与推理时序双视图** · 本地存档 · 说明书生成与打印。
+
+拓扑与时序都建在 `packages/engine` 的纯函数上，不是画在组件里的图：`describeTopology()` 用显卡的 PCIe 代数和主板插槽数算出「单卡 ×16、双卡拆 ×8」的真实链路带宽，和显存带宽并排比；`describeTimeline()` 按「预填充是算力瓶颈、解码是访存瓶颈」拆成两段，输出显存随 token 增长的曲线。结论用枚举返回、由 UI 组句，所以两套语言都不会漏翻。
 
 打磨结果：首屏 97KB gzip（路由懒加载，组装台拆成独立 chunk）· 对比度全部达 AA · 键盘可完成装机 · 页面级错误边界 · 28 条 Playwright E2E · 全局免责页脚。
 

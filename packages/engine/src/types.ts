@@ -50,6 +50,12 @@ export interface GpuSpec {
   vramGb: number;
   /** 显存带宽，单位 GB/s */
   bandwidth: number;
+  /**
+   * PCIe 代数（4 / 5）。拓扑图用它算「卡到 CPU」的链路带宽，
+   * 和显存带宽差 20–60 倍，是「模型加载慢、多卡掉速」的主因。
+   * 缺省按 4 代算（目前绝大多数消费级平台）。
+   */
+  pcieGen?: 4 | 5;
   /** 热设计功耗，单位 W */
   tdpW: number;
   /** 参考价，单位元 */

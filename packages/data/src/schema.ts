@@ -67,6 +67,7 @@ export const gpuSchema = z.object({
   vramGb: z.number().int().min(8).max(1024),
   memoryType: z.string().min(3),
   busWidth: z.number().int().positive(),
+  pcieGen: z.union([z.literal(4), z.literal(5)]),
   bandwidth: z.number().positive().max(20000),
   tdpW: z.number().int().positive().max(2000),
   powerConnector: z.string().min(2),

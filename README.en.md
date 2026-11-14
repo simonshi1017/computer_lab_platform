@@ -20,6 +20,10 @@ Captured from a real deployment in the default light theme at 1440px width (960p
     <td width="50%" align="center"><img src="docs/screenshots/04-recommend.png" width="420" alt="Configuration recommender"/><br/><b>Configuration Recommender</b><br/>Three budget tiers with hard PSU and socket compatibility checks</td>
   </tr>
   <tr>
+    <td width="50%" align="center"><img src="docs/screenshots/en/09-topology.png" width="420" alt="Hardware topology"/><br/><b>Hardware Topology</b><br/>GPU–PCIe–CPU–memory–storage links with bandwidth side by side; multi-GPU bottlenecks flagged</td>
+    <td width="50%" align="center"><img src="docs/screenshots/en/10-timeline.png" width="420" alt="Inference timeline"/><br/><b>Inference Timeline</b><br/>Prefill and decode time plus VRAM growth, so first-token latency has a source</td>
+  </tr>
+  <tr>
     <td colspan="2" align="center"><img src="docs/screenshots/06-manual.png" width="620" alt="Deployment manual"/><br/><b>My Deployment Manual</b><br/>Turn a build into an actionable checklist: target, itemized cost, performance estimate, risk notes — printable and exportable</td>
   </tr>
 </table>
@@ -40,7 +44,7 @@ node scripts/i18n-codemod.mjs apply   # wrap new Chinese strings in t() (idempot
 node scripts/gen-content-dict.mjs     # content copy: generate dictionaries, report gaps
 ```
 
-Coverage: **654 UI strings + 382 static content strings + 37 dynamic templates**, all bilingual. Content data does not touch the `packages/data` schema (that would break zod validation and the copy-versus-numbers consistency tests). Instead `apps/web/src/data/` localizes the dataset once at module load; logic values such as `gpuClass`, `category`, and ids keep their original values and are translated only where displayed. Dynamic advice returned by the compute engine uses `dynamicKey()` to normalize numbers and model names into placeholders, while long multi-variable sentences in the manual use named-placeholder `tf()` templates.
+Coverage: **696 UI strings + 434 static content strings + 37 dynamic templates**, all bilingual. Content data does not touch the `packages/data` schema (that would break zod validation and the copy-versus-numbers consistency tests). Instead `apps/web/src/data/` localizes the dataset once at module load; logic values such as `gpuClass`, `category`, and ids keep their original values and are translated only where displayed. Dynamic advice returned by the compute engine uses `dynamicKey()` to normalize numbers and model names into placeholders, while long multi-variable sentences in the manual use named-placeholder `tf()` templates.
 
 Switching language reloads the page so module-level constants (route metadata, presets, filter labels) are re-evaluated under the new locale — the same `lang`-parameter behavior as the reference site.
 
@@ -80,6 +84,7 @@ Scenario data lives in `apps/web/src/lib/scenarios.ts` (application-level orches
 | M8 Languages & bilingual content | ✅ Done |
 | M9 Scenario Labs & guided steps | ✅ Done |
 | M10 Model catalog refresh (2026 mainstream + MoE active params) | ✅ Done |
+| M11 Hardware topology and inference timeline | ✅ Done |
 
 Content baseline: 12 models (released Feb–Aug 2026) · 16 GPUs · 31 parts across 7 categories · 16 glossary terms · 5 learning levels.
 
@@ -102,7 +107,9 @@ Model catalog (refreshed 2026-11, all open weights):
 
 > Two supporting changes: MoE **decode speed is computed from active parameters** (`ModelSpec.activeParamsB`) while VRAM still uses total parameters — otherwise GLM-5.2 would read as 2 tokens/s. The model detail page now shows total and active side by side.
 
-Builder: a physical-chassis SVG with 8 slot types · drag / click / keyboard input · live VRAM, power and price · six-axis radar with actionable suggestions · three presets · six guided scenario labs with auto-checked task cards · local autosave · printable manual.
+Builder: a physical-chassis SVG with 8 slot types · **hardware-topology and inference-timeline views** · drag / click / keyboard input · live VRAM, power and price · six-axis radar with actionable suggestions · three presets · six guided scenario labs with auto-checked task cards · local autosave · printable manual.
+
+Both new views are pure functions in `packages/engine`, not drawings inside a component: `describeTopology()` derives the real link bandwidth from each card's PCIe generation and the motherboard slot count (×16 for one card, ×8 each for two) and sets it against VRAM bandwidth; `describeTimeline()` splits a request into "prefill is compute-bound, decode is memory-bound" and emits the VRAM growth curve over tokens. Verdicts come back as enums that the UI turns into sentences, so neither language can silently fall back to Chinese.
 
 Polish: 97 KB gzipped first load (lazy routes, builder in its own chunk) · all contrast ratios meet AA · a build can be completed by keyboard alone · page-level error boundaries · 28 Playwright E2E checks · a global disclaimer footer.
 
