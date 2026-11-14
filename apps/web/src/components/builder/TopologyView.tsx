@@ -1,5 +1,5 @@
 import type { BuildStats, ModelSpec, Quant } from '@clab/engine';
-import { describeTopology } from '@clab/engine';
+import { DDR5_DUAL_CHANNEL_GBPS, NVME_READ_GBPS, describeTopology } from '@clab/engine';
 import { t, tf } from '@/i18n';
 import { fmtGb, fmtPct } from '@/lib/format';
 
@@ -84,7 +84,7 @@ export function TopologyView({ stats, model, quant, ctx }: TopologyViewProps) {
     h: 86,
     title: stats.rams.length > 0 ? tf('{n} 条内存', { n: stats.rams.length }) : t('未装内存'),
     metric: stats.ramGb > 0 ? `${stats.ramGb}GB` : '—',
-    detail: t('双通道 DDR5（估算）'),
+    detail: tf('双通道 DDR5 ≈ {b}GB/s（估算）', { b: DDR5_DUAL_CHANNEL_GBPS }),
     tone: stats.rams.length > 0 ? 'ok' : 'missing',
   };
 
@@ -95,7 +95,7 @@ export function TopologyView({ stats, model, quant, ctx }: TopologyViewProps) {
     h: 86,
     title: stats.storages[0]?.name ?? t('未装硬盘'),
     metric: stats.storages[0] ? `${stats.storages[0].capacityTb}TB` : '—',
-    detail: t('NVMe ≈ 7GB/s'),
+    detail: tf('NVMe ≈ {b}GB/s', { b: NVME_READ_GBPS }),
     tone: stats.storages.length > 0 ? 'ok' : 'missing',
   };
 
@@ -151,11 +151,9 @@ export function TopologyView({ stats, model, quant, ctx }: TopologyViewProps) {
     });
   });
 
-  const lanes = gpuCount > 1 ? 8 : 16;
+  // 通道数、链路带宽、带宽比全部来自内核，页面不再自己算一遍
+  const { lanes, pcieGbps, hbmGbps: hbm, ratio } = topo;
   const gen = stats.gpus[0]?.pcieGen ?? 4;
-  const pcieGbps = stats.gpus[0] ? (gen === 5 ? 3.938 : 1.969) * lanes : 0;
-  const hbm = stats.gpus[0]?.bandwidth ?? 0;
-  const ratio = pcieGbps > 0 ? Math.round(hbm / pcieGbps) : 0;
 
   return (
     <div className="topo-wrap">

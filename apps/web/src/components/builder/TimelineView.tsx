@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { describeTimeline, type BuildStats, type ModelSpec, type Quant } from '@clab/engine';
 import { t, tf } from '@/i18n';
 import { fmtGb } from '@/lib/format';
@@ -53,9 +54,36 @@ export function TimelineView({ stats, model, quant, ctx }: TimelineViewProps) {
 
   const yTicks = [yMin, (yMin + yMax) / 2, yMax];
 
+  // 悬停读数：鼠标在图上移动时给出该时刻的时间 / 显存 / KV / token。
+  // 只在有显卡时才启用——没有显卡的图是一条水平线，读数没有意义。
+  const [hover, setHover] = useState<number | null>(null);
+  const point = hover === null ? null : line.series[hover];
+
+  const onMove = (event: React.MouseEvent<SVGSVGElement>) => {
+    if (!hasGpu) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    if (rect.width === 0) return;
+    const svgX = ((event.clientX - rect.left) / rect.width) * W;
+    const ratio = Math.min(1, Math.max(0, (svgX - PAD.left) / PLOT_W));
+    const target = ratio * line.totalMs;
+    // 找最近的采样点，比线性插值更诚实：读数是真实采样出来的
+    let nearest = 0;
+    for (let i = 1; i < line.series.length; i += 1) {
+      if (Math.abs(line.series[i].t - target) < Math.abs(line.series[nearest].t - target)) nearest = i;
+    }
+    setHover(nearest);
+  };
+
   return (
     <div className="timeline-wrap">
-      <svg viewBox={`0 0 ${W} ${H}`} className="timeline-svg" role="img" aria-label={t('推理时序曲线')}>
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="timeline-svg"
+        role="img"
+        aria-label={t('推理时序曲线')}
+        onMouseMove={onMove}
+        onMouseLeave={() => setHover(null)}
+      >
         {/* 两段底色：预填充 / 解码 */}
         <rect
           x={PAD.left}
@@ -115,6 +143,35 @@ export function TimelineView({ stats, model, quant, ctx }: TimelineViewProps) {
         {/* 显存曲线 */}
         <path d={area} fill="var(--accent)" opacity="0.1" />
         <path d={path} fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinejoin="round" />
+
+        {/* 悬停读数：竖线 + 圆点 + 信息块 */}
+        {point && (
+          <g pointerEvents="none" data-testid="timeline-hover">
+            <line
+              x1={x(point.t)}
+              y1={PAD.top}
+              x2={x(point.t)}
+              y2={y(yMin)}
+              stroke="var(--accent)"
+              strokeWidth="1"
+              strokeDasharray="3 3"
+              opacity="0.6"
+            />
+            <circle cx={x(point.t)} cy={y(point.vram)} r="3.5" fill="var(--accent)" stroke="var(--surface)" strokeWidth="1.5" />
+            <g transform={`translate(${Math.min(Math.max(x(point.t) - 62, PAD.left), PAD.left + PLOT_W - 128)}, ${PAD.top + 8})`}>
+              <rect width="124" height="60" rx="7" fill="var(--surface)" stroke="var(--border-strong)" opacity="0.97" />
+              <text x="9" y="17" className="timeline-tip">
+                {fmtMs(point.t)} · {point.phase === 'prefill' ? t('预填充') : t('解码')}
+              </text>
+              <text x="9" y="33" className="timeline-tip-strong">
+                {t('显存')} {fmtGb(point.vram)}G
+              </text>
+              <text x="9" y="49" className="timeline-tip">
+                KV {fmtGb(point.kv)}G · {point.tokens} tokens
+              </text>
+            </g>
+          </g>
+        )}
 
         {/* 可用显存参考线：超过就是跑不动 */}
         {vramLineY !== null && (

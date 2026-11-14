@@ -28,6 +28,8 @@ interface Shot {
   view?: keyof typeof VIEW_LABEL;
   /** 截图前先套一套预设，避免空机箱 */
   preset?: string;
+  /** 截图前按 ? 打开快捷键面板 */
+  dialog?: 'shortcuts';
 }
 
 const SHOTS: Shot[] = [
@@ -45,6 +47,7 @@ const SHOTS: Shot[] = [
   { file: '10-timeline.png', path: '/builder', preset: '均衡推荐版', view: 'timeline' },
   // 对比表有十余行指标，960 会截掉下半截
   { file: '11-compare.png', path: '/compare', height: LANG_EN ? 1280 : 1220 },
+  { file: '12-shortcuts.png', path: '/models', dialog: 'shortcuts' },
 ];
 
 test('capture README screenshots', async ({ page }) => {
@@ -72,6 +75,10 @@ test('capture README screenshots', async ({ page }) => {
     if (shot.view) {
       await page.getByRole('button', { name: LANG_EN ? VIEW_LABEL[shot.view].en : VIEW_LABEL[shot.view].zh }).click();
       await page.waitForTimeout(400);
+    }
+    if (shot.dialog === 'shortcuts') {
+      await page.keyboard.press('?');
+      await page.waitForTimeout(350);
     }
     await page.screenshot({ path: join(OUT_DIR, shot.file) });
   }

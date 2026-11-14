@@ -47,6 +47,7 @@ EVENT_NAMES: dict[str, str] = {
     "manual_print": "打印说明书",
     "scenario_start": "开始场景实验",
     "scenario_complete": "完成场景实验",
+    "feedback": "用户反馈",
 }
 
 MAX_PROPS_KEYS = 20

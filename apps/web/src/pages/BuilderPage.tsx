@@ -139,20 +139,21 @@ export function BuilderPage() {
     <div className="builder-page">
       {/* ---------------- 顶部控制条 ---------------- */}
       <div className="builder-toolbar card">
-        <div className="tb-field" style={{ minWidth: 190 }}>
+        <div className="tb-field" style={{ minWidth: 216 }}>
           <label htmlFor="builder-model" className="field-label">
             {t("目标模型")}
           </label>
           <select
             id="builder-model"
-            className="input h-8 text-[12px]"
+            className="input h-8 w-full text-[12px]"
             value={customSpec ? 'custom' : model.id}
             onChange={(event) => builder.setModel(event.target.value)}
           >
             {customSpec && <option value="custom">{customSpec.name}{t("（来自推荐）")}</option>}
             {MODELS_LIST.map((item) => (
               <option key={item.id} value={item.id}>
-                {item.cn} · {item.paramsB}B
+                {/* 中文名里已经带尺寸的（35B-A3B、2.4T）不再重复一遍，否则下拉框里全是截断 */}
+                {/\d+(\.\d+)?[BT]/.test(item.cn) ? item.cn : `${item.cn} · ${item.paramsB}B`}
               </option>
             ))}
           </select>

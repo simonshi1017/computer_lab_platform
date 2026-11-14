@@ -28,7 +28,8 @@ export type EventName =
   | 'card_download'
   | 'manual_print'
   | 'scenario_start'
-  | 'scenario_complete';
+  | 'scenario_complete'
+  | 'feedback';
 
 interface QueuedEvent {
   name: EventName;

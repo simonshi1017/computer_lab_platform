@@ -54,6 +54,21 @@ async def test_accepts_known_events(client: httpx.AsyncClient) -> None:
     assert response.json() == {"accepted": 2, "dropped": 0}
 
 
+async def test_accepts_feedback_event(client: httpx.AsyncClient) -> None:
+    """反馈走埋点通道：只存计数与正文，不建工单表。"""
+    response = await client.post(
+        "/api/v1/events",
+        json={
+            "sessionId": "sess-abcdefgh",
+            "events": [
+                {"name": "feedback", "path": "/glossary", "props": {"note": "27B 在 4090 上余量太小", "length": 14}}
+            ],
+        },
+    )
+    assert response.status_code == 200
+    assert response.json() == {"accepted": 1, "dropped": 0}
+
+
 async def test_drops_unknown_events_without_error(client: httpx.AsyncClient) -> None:
     """未登记的事件静默丢弃：埋点不该让前端因为多打一个点就报错。"""
     response = await client.post(

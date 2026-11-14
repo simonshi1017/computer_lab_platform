@@ -24,6 +24,10 @@
     <td width="50%" align="center"><img src="docs/screenshots/10-timeline.png" width="420" alt="推理时序"/><br/><b>推理时序</b><br/>预填充 / 解码两段时间与显存增长，看清首字延迟花在哪</td>
   </tr>
   <tr>
+    <td width="50%" align="center"><img src="docs/screenshots/12-shortcuts.png" width="420" alt="快捷键面板"/><br/><b>快捷键</b><br/>按 <kbd>?</kbd> 列出全部快捷键，<kbd>g</kbd> 前缀跳页，输入框里不抢键</td>
+    <td width="50%" align="center"><img src="docs/screenshots/07-scenarios.png" width="420" alt="场景实验室"/><br/><b>场景实验室</b><br/>六个真实场景，一键载入配置，任务卡自动打勾</td>
+  </tr>
+  <tr>
     <td colspan="2" align="center"><img src="docs/screenshots/11-compare.png" width="620" alt="方案对比"/><br/><b>方案对比</b><br/>同一目标下最多三套方案逐行摊开：显卡、显存、价格、功耗、速度、六维评分，最优值高亮，可导出 CSV</td>
   </tr>
   <tr>
@@ -47,7 +51,7 @@ node scripts/i18n-codemod.mjs apply   # 把新增中文自动包成 t()（幂等
 node scripts/gen-content-dict.mjs     # 内容文案：生成字典并报告缺失
 ```
 
-覆盖范围：**UI 719 条 + 内容数据 434 条静态 + 37 条动态模板**，全部双语。内容数据不改 `packages/data` 的 schema（会冲击 zod 校验与「文案数字对账」测试），改由 `apps/web/src/data/` 在模块加载时按 locale 一次性本地化；`gpuClass`、`category`、id 这类逻辑值保持原值，只在显示处翻译。计算内核返回的动态建议由 `dynamicKey()` 把数字与型号归一成占位符，说明书里的多变量长句用 `tf()` 命名占位模板。
+覆盖范围：**UI 742 条 + 内容数据 434 条静态 + 37 条动态模板**，全部双语。内容数据不改 `packages/data` 的 schema（会冲击 zod 校验与「文案数字对账」测试），改由 `apps/web/src/data/` 在模块加载时按 locale 一次性本地化；`gpuClass`、`category`、id 这类逻辑值保持原值，只在显示处翻译。计算内核返回的动态建议由 `dynamicKey()` 把数字与型号归一成占位符，说明书里的多变量长句用 `tf()` 命名占位模板。
 
 切换语言会整页重载，让导航元信息、预设、筛选标签这些模块级常量按新 locale 重新初始化（和参考站按 `lang` 参数切换一致）。
 
@@ -89,6 +93,7 @@ node scripts/gen-content-dict.mjs     # 内容文案：生成字典并报告缺�
 | M10 模型库换代（2026 主流 + MoE 激活参数） | ✅ 已完成 |
 | M11 硬件拓扑图 + 推理时序曲线 | ✅ 已完成 |
 | M12 方案对比与 CSV 导出 | ✅ 已完成 |
+| M13 快捷键 / 悬停读数 / 状态栏 / 反馈 | ✅ 已完成 |
 
 内容基线：12 个模型（2026-02 至 2026-08 发布）· 16 张显卡 · 7 类部件（共 31 项）· 16 条术语 · 5 关学习路径。
 
@@ -112,6 +117,8 @@ node scripts/gen-content-dict.mjs     # 内容文案：生成字典并报告缺�
 > 两条配套改动：MoE 的**解码速度按激活参数算**（`ModelSpec.activeParamsB`），显存仍按总参数算——否则 GLM-5.2 会被估成 2 tokens/s；模型详情页同时展示「总参 / 激活」。
 
 组装台能力：实体机箱 SVG（8 类槽位）· 拖拽/点击/键盘三通道 · 实时显存功耗价格 · 六维雷达与可执行建议 · 三套预设 · 六个场景实验（任务卡自动校验）· **硬件拓扑与推理时序双视图** · 本地存档 · 说明书生成与打印。
+
+交互层（M13）：`?` 打开快捷键面板，`g` 前缀跳页（`g m` 模型百科、`g c` 方案对比），输入框内完全不响应——这个站有搜索框、预算框、备注框，单键跳转必然抢键。时序图支持鼠标悬停读数（时间 / 阶段 / 显存 / KV / token），读数取的是真实采样点而不是插值。壳层底部常驻状态栏：当前页面、快捷键入口、反馈入口。反馈不建工单表，写一条 `feedback` 埋点（正文进 props），管理员在数据看板的事件分布里能看到数量，也能在库里读到正文——对内网工具来说，反馈的瓶颈是「愿不愿意写」，不是「存在哪」。
 
 对比页（`/compare`）刻意统一目标模型 / 量化 / 上下文，只让硬件方案成为变量——否则「A 跑 9B、B 跑 27B」的价格差会被误读成方案优劣。表格行由 `compareBuilds()` 生成，最优值按「价格低、显存余量高、速度快」分别定向高亮；导出走同一套渲染函数，所以 CSV 里的语言和屏幕上一致（含 BOM，Excel 不乱码）。
 

@@ -1,6 +1,6 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { Cpu, Languages, LogIn, LogOut, Moon, Search, Sun } from 'lucide-react';
+import { Cpu, Languages, LogIn, LogOut, MessageSquarePlus, Moon, Search, Sun } from 'lucide-react';
 import { getLocale, t, toggleLocale } from '@/i18n';
 import { NAV_GROUPS, metaOf } from '@/navigation';
 import { useTheme } from '@/hooks/useTheme';
@@ -10,6 +10,9 @@ import { SiteFooter } from '@/components/SiteFooter';
 import { LoginDialog } from '@/components/auth/LoginDialog';
 import { useAuth } from '@/hooks/useAuth';
 import { initTracking, trackPageView } from '@/lib/track';
+import { modKeyLabel, useShortcuts } from '@/hooks/useShortcuts';
+import { ShortcutsDialog } from '@/components/ShortcutsDialog';
+import { FeedbackDialog } from '@/components/FeedbackDialog';
 /** 命令面板要建全站索引（模型 + 显卡 + 术语），没必要进首屏 */
 const CommandPalette = lazy(() =>
   import('@/components/CommandPalette').then((m) => ({ default: m.CommandPalette })),
@@ -22,6 +25,9 @@ export function AppShell() {
   const { status, user, logout } = useAuth();
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+  // ? 与 g 前缀跳转；和 ⌘K 分开是因为前者不依赖全站索引，没必要进懒加载 chunk
+  const { helpOpen, setHelpOpen } = useShortcuts();
 
   const initials = (user?.nickname ?? user?.email ?? t("我")).slice(0, 2).toUpperCase();
 
@@ -88,13 +94,13 @@ export function AppShell() {
             <div className="flex items-baseline justify-between">
               <span style={{ fontSize: 11.5, color: 'var(--text-2)' }}>{t('项目进度')}</span>
               <span className="mono" style={{ fontSize: 17, fontWeight: 700 }}>
-                M12
+                M13
               </span>
             </div>
             <div className="progress-track">
               <div className="progress-fill" style={{ width: '100%' }} />
             </div>
-            <div style={{ fontSize: 10.5, color: 'var(--text-3)' }}>{t('方案对比 · 已完成')}</div>
+            <div style={{ fontSize: 10.5, color: 'var(--text-3)' }}>{t('快捷键与反馈 · 已完成')}</div>
           </div>
         </div>
       </aside>
@@ -110,7 +116,7 @@ export function AppShell() {
           <button type="button" className="search-btn" onClick={() => setPaletteOpen(true)}>
             <Search size={14} />
             <span>{t('搜索页面…')}</span>
-            <span className="kbd">⌘K</span>
+            <span className="kbd">{modKeyLabel()}K</span>
           </button>
 
           <button
@@ -170,10 +176,28 @@ export function AppShell() {
           </ErrorBoundary>
         </main>
 
+        <div className="statusbar">
+          <span className="statusbar-page">
+            {t(meta?.group ?? t('页面'))} / <b>{t(meta?.label ?? t('未找到'))}</b>
+          </span>
+          <button type="button" className="statusbar-hint" onClick={() => setHelpOpen(true)}>
+            {t('按 ? 查看快捷键')} <kbd>?</kbd>
+          </button>
+          <span className="statusbar-spacer" />
+          <button type="button" className="statusbar-link" onClick={() => setFeedbackOpen(true)}>
+            <MessageSquarePlus size={12} />
+            {t('反馈问题')}
+          </button>
+          <span className="statusbar-sep">·</span>
+          <span className="statusbar-meta">{t('规则化估算 · 仅供教学参考')}</span>
+        </div>
+
         <SiteFooter />
       </div>
 
       <LoginDialog open={loginOpen} onClose={() => setLoginOpen(false)} />
+      <ShortcutsDialog open={helpOpen} onClose={() => setHelpOpen(false)} />
+      <FeedbackDialog open={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
 
       {paletteOpen && (
         <Suspense fallback={null}>
