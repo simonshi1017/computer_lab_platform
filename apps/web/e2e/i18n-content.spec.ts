@@ -7,7 +7,7 @@ import { expect, test } from '@playwright/test';
  * 这条用例的价值就是「英文态不许再漏中文」——新增页面（如 /scenarios）
  * 或新文案一旦忘了翻译，会在这里直接失败，而不是等用户截图反馈。
  */
-const PATHS = ['/', '/path', '/glossary', '/models', '/hardware', '/recommend', '/scenarios', '/builder', '/manual'];
+const PATHS = ['/', '/path', '/glossary', '/models', '/hardware', '/recommend', '/scenarios', '/compare', '/builder', '/manual'];
 
 test('English mode has no Chinese text anywhere', async ({ page }) => {
   for (const path of PATHS) {

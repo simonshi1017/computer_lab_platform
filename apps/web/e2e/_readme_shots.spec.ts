@@ -43,6 +43,8 @@ const SHOTS: Shot[] = [
   { file: '08-lab.png', path: '/builder?scenario=rag-kb' },
   { file: '09-topology.png', path: '/builder', preset: '均衡推荐版', view: 'topo' },
   { file: '10-timeline.png', path: '/builder', preset: '均衡推荐版', view: 'timeline' },
+  // 对比表有十余行指标，960 会截掉下半截
+  { file: '11-compare.png', path: '/compare', height: LANG_EN ? 1280 : 1220 },
 ];
 
 test('capture README screenshots', async ({ page }) => {

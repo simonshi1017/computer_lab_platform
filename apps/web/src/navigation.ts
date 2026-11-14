@@ -1,4 +1,4 @@
-import { BookOpen, Boxes, Cpu, FileText, FlaskConical, FolderOpen, Map, Route, Sparkles, Wrench } from 'lucide-react';
+import { BookOpen, Boxes, Cpu, FileText, FlaskConical, FolderOpen, GitCompare, Map, Route, Sparkles, Wrench } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 export interface PageMeta {
@@ -74,6 +74,16 @@ export const PAGE_META: PageMeta[] = [
     title: '场景实验室',
     subtitle: '选一个真实使用场景，一键载入推荐配置，跟着任务卡把实验做完。',
     points: ['6 个典型场景', '一键载入推荐配置', '步骤自动校验打勾'],
+  },
+  {
+    path: '/compare',
+    label: '方案对比',
+    group: '实战',
+    icon: GitCompare,
+    milestone: 'M12',
+    title: '方案对比',
+    subtitle: '同一个目标下，把几套方案摊开逐行比。',
+    points: ['最多三套并排', '统一模型与量化口径', '导出 CSV'],
   },
   {
     path: '/recommend',

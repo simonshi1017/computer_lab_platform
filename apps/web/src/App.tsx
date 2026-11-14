@@ -17,6 +17,7 @@ const GlossaryPage = lazy(() => import('@/pages/GlossaryPage').then((m) => ({ de
 const ModelsPage = lazy(() => import('@/pages/ModelsPage').then((m) => ({ default: m.ModelsPage })));
 const HardwarePage = lazy(() => import('@/pages/HardwarePage').then((m) => ({ default: m.HardwarePage })));
 const ScenariosPage = lazy(() => import('@/pages/ScenariosPage').then((m) => ({ default: m.ScenariosPage })));
+const ComparePage = lazy(() => import('@/pages/ComparePage').then((m) => ({ default: m.ComparePage })));
 const RecommendPage = lazy(() => import('@/pages/RecommendPage').then((m) => ({ default: m.RecommendPage })));
 const BuilderPage = lazy(() => import('@/pages/BuilderPage').then((m) => ({ default: m.BuilderPage })));
 const ManualPage = lazy(() => import('@/pages/ManualPage').then((m) => ({ default: m.ManualPage })));
@@ -37,6 +38,7 @@ export function App() {
             <Route path="models" element={<ModelsPage />} />
             <Route path="hardware" element={<HardwarePage />} />
             <Route path="scenarios" element={<ScenariosPage />} />
+            <Route path="compare" element={<ComparePage />} />
             <Route path="recommend" element={<RecommendPage />} />
             <Route path="builder" element={<BuilderPage />} />
             <Route path="manual" element={<ManualPage />} />

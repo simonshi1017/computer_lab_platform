@@ -2118,3 +2118,143 @@
   .lab-steps { grid-template-columns: 1fr; }
   .lab-progress { align-items: flex-start; min-width: 0; }
 }
+
+  /* ---------- 方案对比 ---------- */
+  .compare-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 14px;
+    padding: 12px 14px;
+  }
+  .compare-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 10.5px;
+    color: var(--text-3);
+  }
+  .compare-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .compare-picker {
+    padding: 12px 14px;
+  }
+  .compare-picker-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    font-size: 11.5px;
+    color: var(--text-2);
+    margin-bottom: 8px;
+  }
+  .compare-count {
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 11px;
+    color: var(--text-3);
+  }
+  .compare-picker-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 6px;
+  }
+  .compare-option {
+    text-align: left;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    padding: 8px 10px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .compare-option:hover {
+    border-color: var(--accent);
+  }
+  .compare-option[data-active='true'] {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .compare-option[data-disabled='true'] {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .compare-option-name {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .compare-option-note {
+    display: block;
+    margin-top: 2px;
+    font-size: 10.5px;
+    color: var(--text-3);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .compare-table-wrap {
+    padding: 4px 14px 10px;
+    overflow-x: auto;
+  }
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .compare-table thead th {
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border-strong);
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: bottom;
+  }
+  .compare-th-name {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .compare-th-source {
+    display: block;
+    margin-top: 2px;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-3);
+  }
+  .compare-table tbody th {
+    width: 96px;
+    padding: 7px 10px;
+    text-align: left;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--text-2);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .compare-table tbody td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 11.5px;
+    color: var(--text);
+  }
+  .compare-table tbody td[data-best='true'] {
+    color: var(--good-ink);
+    font-weight: 700;
+    background: color-mix(in srgb, var(--good-ink) 7%, transparent);
+  }
+  .compare-table tbody tr:hover td,
+  .compare-table tbody tr:hover th {
+    background: var(--surface-2);
+  }
+  .compare-foot {
+    margin: 10px 0 4px;
+    font-size: 10.5px;
+    line-height: 1.6;
+    color: var(--text-3);
+  }
